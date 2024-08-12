@@ -2,12 +2,17 @@ import { useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, ThreeElements, useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
+import { EntryScene } from "./components/three/Scene";
+import { Space } from "./components/three/space/Space";
+import { useControls } from "leva";
 
-function Box(props: any) {
-  const meshRef: any = useRef();
+function Box(props: ThreeElements["mesh"]) {
+  const meshRef = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
+
   useFrame((state, delta) => (meshRef.current.rotation.x += delta));
 
   return (
@@ -26,13 +31,11 @@ function Box(props: any) {
 }
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <Canvas>
-        <Box></Box>
-      </Canvas>
+      <EntryScene>
+        <Space></Space>
+      </EntryScene>
     </>
   );
 }
