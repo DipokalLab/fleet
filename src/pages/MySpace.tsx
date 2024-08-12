@@ -8,6 +8,7 @@ import { EntryScene } from "../components/three/Scene";
 import { Space } from "../components/three/space/Space";
 import { useControls } from "leva";
 import { LoadingScreen } from "../components/ui/Loading";
+import { LeftPanel } from "../components/ui/Menu/LeftPanel";
 
 function Box(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -33,8 +34,22 @@ function Box(props: ThreeElements["mesh"]) {
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
+  const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
 
   const intervalRef = useRef(null);
+
+  const handleLoad = () => {
+    setTimeout(() => {
+      setIsLeftPanelLoad(true);
+    }, 400);
+  };
+
+  useEffect(() => {
+    if (loadPercent >= 100) {
+      clearInterval(intervalRef.current);
+      handleLoad();
+    }
+  }, [loadPercent]);
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {
@@ -48,7 +63,8 @@ export function MySpace() {
 
   return (
     <>
-      <LoadingScreen progress={loadPercent} />
+      <LoadingScreen onLoaded={handleLoad} progress={loadPercent} />
+      <LeftPanel isLoaded={isLeftPanelLoad}>sdf</LeftPanel>
       <EntryScene>
         <Space></Space>
       </EntryScene>

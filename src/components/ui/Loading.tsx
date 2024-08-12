@@ -2,19 +2,21 @@ import { css } from "@emotion/react";
 import { useColorMode, Progressbar } from "deventds2";
 import { useState, useRef, useEffect } from "react";
 
-export function LoadingScreen({ progress }: { progress: number }) {
+export function LoadingScreen({
+  progress,
+  onLoaded,
+}: {
+  progress: number;
+  onLoaded?: any;
+}) {
   const [colorMode, setColorMode] = useColorMode();
-
-  const [isLoading, setIsLoading] = useState(false);
   const [loadPercent, setLoadPercent] = useState(10);
 
-  const intervalRef: any = useRef(null);
-
   useEffect(() => {
-    setIsLoading(true);
-    if (loadPercent > 110) {
-      setIsLoading(false);
-      clearInterval(intervalRef.current);
+    if (loadPercent >= 100) {
+      try {
+        onLoaded();
+      } catch (error) {}
     }
   }, [loadPercent]);
 
