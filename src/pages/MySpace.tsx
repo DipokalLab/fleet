@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 
@@ -8,33 +8,19 @@ import { EntryScene } from "../components/three/Scene";
 import { Space } from "../components/three/space/Space";
 import { useControls } from "leva";
 import { LoadingScreen } from "../components/ui/Loading";
-import { LeftPanel } from "../components/ui/Menu/LeftPanel";
-
-function Box(props: ThreeElements["mesh"]) {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta));
-
-  return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
-    </mesh>
-  );
-}
+import { LeftPanel } from "../components/ui/Panel/LeftPanel";
+import { OptionPanelContext } from "../context/OptionPanelContext";
+import { OptionPanel } from "../components/ui/Panel/OptionPanel";
+import { Input } from "../components/ui/common/Input";
+import { InputGroup } from "../components/ui/common/InputGroup";
+import { SubTitle } from "../components/ui/common/Text";
+import { Column } from "../components/ui/common/Column";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
   const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
+  const { isOpenOptionPanel, switchOpenOptionPanel } =
+    useContext(OptionPanelContext);
 
   const intervalRef = useRef(null);
 
@@ -64,7 +50,17 @@ export function MySpace() {
   return (
     <>
       <LoadingScreen onLoaded={handleLoad} progress={loadPercent} />
-      <LeftPanel isLoaded={isLeftPanelLoad}>sdf</LeftPanel>
+      <LeftPanel isLoaded={isLeftPanelLoad}>FLEET</LeftPanel>
+      <OptionPanel isLoaded={isOpenOptionPanel}>
+        <Column>
+          <SubTitle>Position</SubTitle>
+          <InputGroup>
+            <Input prefix={<b>X</b>} onChange={() => {}} placeholder="1" />
+            <Input prefix={<b>Y</b>} onChange={() => {}} placeholder="1" />
+            <Input prefix={<b>Z</b>} onChange={() => {}} placeholder="1" />
+          </InputGroup>
+        </Column>
+      </OptionPanel>
       <EntryScene>
         <Space></Space>
       </EntryScene>

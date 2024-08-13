@@ -5,11 +5,12 @@ import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./Routes.tsx";
 import { ThemeProvider } from "deventds2";
+import { OptionPanelProvider } from "./context/OptionPanelContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider>
+  <ThemeProvider>
+    <OptionPanelProvider>
       <RouterProvider router={router} />
-    </ThemeProvider>
-  </StrictMode>
+    </OptionPanelProvider>
+  </ThemeProvider>
 );

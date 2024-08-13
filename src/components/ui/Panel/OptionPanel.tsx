@@ -2,15 +2,15 @@ import { css } from "@emotion/react";
 import { BORDER_COLOR } from "../../../theme/color";
 import { useEffect, useRef, useState } from "react";
 
-export function LeftPanel({
+export function OptionPanel({
   children,
   isLoaded = false,
 }: {
-  children?: any;
+  children?: React.ReactNode;
   isLoaded?: boolean;
 }) {
   const [isShow, setIsShow] = useState(false);
-  const [panelWidth, setPanelWidth] = useState(200);
+  const [panelWidth, setPanelWidth] = useState(150);
 
   useEffect(() => {
     if (isLoaded) {
@@ -24,7 +24,7 @@ export function LeftPanel({
         display: "flex",
         position: "fixed",
         top: 0,
-        left: 0,
+        right: 0,
         width: panelWidth,
         height: "100%",
         backgroundColor: "#f5f5fa50",
@@ -35,7 +35,7 @@ export function LeftPanel({
         transition: ".5s",
         transform: isLoaded
           ? "translate(0px, 0px)"
-          : `translate(${-panelWidth}px, 0px)`,
+          : `translate(${panelWidth + 20}px, 0px)`,
       })}
     >
       {children}

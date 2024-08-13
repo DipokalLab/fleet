@@ -2,7 +2,7 @@ import { ThreeElements, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrbitControls } from "@react-three/drei";
 
-export function Space({ children }: { children?: any }) {
+export function Space({ children }: { children?: React.ReactNode }) {
   useThree(({ camera }) => {
     camera.rotation.set(
       THREE.MathUtils.degToRad(-20),

@@ -1,8 +1,9 @@
 import { Box } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { Objects } from "./space/Objects";
 
-export function EntryScene({ children }: { children?: any }) {
+export function EntryScene({ children }: { children?: React.ReactNode }) {
   return (
     <Canvas shadows>
       <directionalLight
@@ -26,6 +27,8 @@ export function EntryScene({ children }: { children?: any }) {
         decay={0}
         intensity={Math.PI}
       />
+
+      <Objects></Objects>
 
       {children}
     </Canvas>
