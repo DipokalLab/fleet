@@ -15,12 +15,31 @@ import { Input } from "../components/ui/common/Input";
 import { InputGroup } from "../components/ui/common/InputGroup";
 import { SubTitle } from "../components/ui/common/Text";
 import { Column } from "../components/ui/common/Column";
+import { useObjectsStore } from "../states/objects";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
   const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
-  const { isOpenOptionPanel, switchOpenOptionPanel } =
+  const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
+  const { list, updateObject } = useObjectsStore();
+  const [optionInput, setOptionInput] = useState({
+    position: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    scale: {
+      x: 1,
+      y: 1,
+      z: 1,
+    },
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+  });
 
   const intervalRef = useRef(null);
 
@@ -28,6 +47,24 @@ export function MySpace() {
     setTimeout(() => {
       setIsLeftPanelLoad(true);
     }, 400);
+  };
+
+  const handleChangeOptionInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [attribute, value] = e.target.name.split("_");
+
+    const targetIndex = list.findIndex((item) => {
+      return item.id == targetId;
+    });
+
+    list[targetIndex][attribute][value] = e.target.value;
+    setOptionInput({
+      ...optionInput,
+      [attribute]: {
+        [value]: e.target.value,
+      },
+    });
+
+    updateObject([...list]);
   };
 
   useEffect(() => {
@@ -52,13 +89,87 @@ export function MySpace() {
       <LoadingScreen onLoaded={handleLoad} progress={loadPercent} />
       <LeftPanel isLoaded={isLeftPanelLoad}>FLEET</LeftPanel>
       <OptionPanel isLoaded={isOpenOptionPanel}>
-        <Column>
-          <SubTitle>Position</SubTitle>
-          <InputGroup>
-            <Input prefix={<b>X</b>} onChange={() => {}} placeholder="1" />
-            <Input prefix={<b>Y</b>} onChange={() => {}} placeholder="1" />
-            <Input prefix={<b>Z</b>} onChange={() => {}} placeholder="1" />
-          </InputGroup>
+        <Column gap="0.5rem">
+          <Column>
+            <SubTitle>Position</SubTitle>
+            <InputGroup>
+              <Input
+                prefix={<b>X</b>}
+                name="position_x"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.position.x}
+              />
+              <Input
+                prefix={<b>Y</b>}
+                name="position_y"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.position.y}
+              />
+              <Input
+                prefix={<b>Z</b>}
+                name="position_z"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.position.z}
+              />
+            </InputGroup>
+          </Column>
+
+          <Column>
+            <SubTitle>Scale</SubTitle>
+            <InputGroup>
+              <Input
+                prefix={<b>X</b>}
+                name="scale_x"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.scale.x}
+              />
+              <Input
+                prefix={<b>Y</b>}
+                name="scale_y"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.scale.y}
+              />
+              <Input
+                prefix={<b>Z</b>}
+                name="scale_z"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.scale.z}
+              />
+            </InputGroup>
+          </Column>
+
+          <Column>
+            <SubTitle>Rotation</SubTitle>
+            <InputGroup>
+              <Input
+                prefix={<b>X</b>}
+                name="rotation_x"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.rotation.x}
+              />
+              <Input
+                prefix={<b>Y</b>}
+                name="rotation_y"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.rotation.y}
+              />
+              <Input
+                prefix={<b>Z</b>}
+                name="rotation_z"
+                onChange={handleChangeOptionInput}
+                placeholder="1"
+                value={optionInput.rotation.z}
+              />
+            </InputGroup>
+          </Column>
         </Column>
       </OptionPanel>
       <EntryScene>

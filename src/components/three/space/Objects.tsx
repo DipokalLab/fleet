@@ -32,6 +32,7 @@ export function Objects() {
     <mesh>
       {list.map((objectItem) => (
         <Object
+          userData={{ id: objectItem.id }}
           position={
             new THREE.Vector3(
               objectItem.position.x,
@@ -67,7 +68,7 @@ function Object(props: ThreeElements["mesh"]) {
     useContext(OptionPanelContext);
 
   const handleClick = () => {
-    switchOpenOptionPanel(!isActive);
+    switchOpenOptionPanel(!isActive, props.userData.id);
     setIsActive((active) => !active);
   };
 

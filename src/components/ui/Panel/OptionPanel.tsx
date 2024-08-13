@@ -10,7 +10,7 @@ export function OptionPanel({
   isLoaded?: boolean;
 }) {
   const [isShow, setIsShow] = useState(false);
-  const [panelWidth, setPanelWidth] = useState(150);
+  const [panelWidth, setPanelWidth] = useState(250);
 
   useEffect(() => {
     if (isLoaded) {
@@ -29,7 +29,7 @@ export function OptionPanel({
         height: "100%",
         backgroundColor: "#f5f5fa50",
         backdropFilter: "blur(12px)",
-        borderRight: `1px solid ${BORDER_COLOR}`,
+        borderLeft: `1px solid ${BORDER_COLOR}`,
         zIndex: 300,
         padding: "1rem",
         transition: ".5s",
