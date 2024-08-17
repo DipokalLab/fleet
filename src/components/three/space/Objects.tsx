@@ -1,8 +1,9 @@
-import { ThreeElements } from "@react-three/fiber";
+import { ThreeElements, useLoader } from "@react-three/fiber";
 import { useObjectsStore } from "../../../states/objects";
 import { useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
+import { GLTFLoader } from "three-stdlib";
 
 export function Objects() {
   const { list, createObject } = useObjectsStore();
@@ -63,6 +64,10 @@ export function Objects() {
 function Object(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
+  const gltf = useLoader(
+    GLTFLoader,
+    "https://pub-fa4196a5c66c43a29f1ba72c16185bc2.r2.dev/macbookpro_1.glb"
+  );
 
   const { isOpenOptionPanel, switchOpenOptionPanel } =
     useContext(OptionPanelContext);
@@ -74,7 +79,7 @@ function Object(props: ThreeElements["mesh"]) {
 
   return (
     <mesh onClick={handleClick} {...props} ref={meshRef}>
-      <boxGeometry args={[1, 1, 1]} />
+      <primitive object={gltf.scene} />
       <meshStandardMaterial color={isActive ? "black" : "orange"} />
     </mesh>
   );
