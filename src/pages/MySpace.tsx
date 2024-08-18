@@ -17,6 +17,7 @@ import { SubTitle, Title } from "../components/ui/common/Text";
 import { Column } from "../components/ui/common/Column";
 import { useObjectsStore } from "../states/objects";
 import { Button, Collapse } from "deventds2";
+import { useUpload } from "../hooks/useUpload";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
@@ -26,10 +27,16 @@ export function MySpace() {
 
   const intervalRef = useRef(null);
 
+  const { uploadObject } = useUpload();
+
   const handleLoad = () => {
     setTimeout(() => {
       setIsLeftPanelLoad(true);
     }, 400);
+  };
+
+  const handleUpload = () => {
+    uploadObject();
   };
 
   useEffect(() => {
@@ -55,7 +62,9 @@ export function MySpace() {
       <LeftPanel isLoaded={isLeftPanelLoad}>
         <Column>
           <Title>FLEET v0.1</Title>
-          <Button color="white">Upload</Button>
+          <Button onClick={handleUpload} color="white">
+            Upload
+          </Button>
         </Column>
       </LeftPanel>
       <OptionPanel isLoaded={isOpenOptionPanel}>

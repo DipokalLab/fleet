@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 type ObjectType = {
   id: string;
+  url: string;
+
   position?: {
     x?: number;
     y?: number;
@@ -28,6 +30,8 @@ type Store = {
 
 const defaultObject: ObjectType = {
   id: String(Math.random()),
+  url: "",
+
   position: {
     x: 0,
     y: 0,

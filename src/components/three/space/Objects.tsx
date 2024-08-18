@@ -1,39 +1,27 @@
-import { ThreeElements, useLoader } from "@react-three/fiber";
+import { ObjectMap, ThreeElements, useLoader } from "@react-three/fiber";
 import { useObjectsStore } from "../../../states/objects";
 import { useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
-import { GLTFLoader } from "three-stdlib";
+import { GLTF, GLTFLoader } from "three-stdlib";
+import { useObject } from "../../../hooks/useObject";
 
 export function Objects() {
-  const { list, createObject } = useObjectsStore();
+  const { list } = useObjectsStore();
+
+  const useObjectHooks = useObject();
 
   useEffect(() => {
-    createObject({
-      id: String(Math.random()),
-      position: {
-        x: 0,
-        y: 0,
-        z: 0,
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1,
-      },
-      rotation: {
-        x: 0,
-        y: 0,
-        z: 0,
-      },
-    });
+    useObjectHooks.create(
+      "https://pub-fa4196a5c66c43a29f1ba72c16185bc2.r2.dev/macbookpro_1.glb"
+    );
   }, []);
 
   return (
     <mesh>
       {list.map((objectItem) => (
         <Object
-          userData={{ id: objectItem.id }}
+          userData={{ id: objectItem.id, url: objectItem.url }}
           position={
             new THREE.Vector3(
               objectItem.position.x,
@@ -64,10 +52,8 @@ export function Objects() {
 function Object(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
-  const gltf = useLoader(
-    GLTFLoader,
-    "https://pub-fa4196a5c66c43a29f1ba72c16185bc2.r2.dev/macbookpro_1.glb"
-  );
+  const url: string = props.userData.url;
+  const gltf = useLoader(GLTFLoader, url);
 
   const { isOpenOptionPanel, switchOpenOptionPanel } =
     useContext(OptionPanelContext);
