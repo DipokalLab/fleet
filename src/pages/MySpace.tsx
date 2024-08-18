@@ -18,6 +18,7 @@ import { Column } from "../components/ui/common/Column";
 import { useObjectsStore } from "../states/objects";
 import { Button, Collapse } from "deventds2";
 import { useUpload } from "../hooks/useUpload";
+import { useObject } from "../hooks/useObject";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
@@ -96,6 +97,37 @@ function InputOptions({ targetId }: { targetId?: string }) {
       z: 0,
     },
   });
+  const useObjectHooks = useObject();
+  const { isOpenOptionPanel, switchOpenOptionPanel } =
+    useContext(OptionPanelContext);
+
+  const initValueOnOptions = () => {
+    if (targetId == "") {
+      return false;
+    }
+
+    const targetIndex = list.findIndex((item) => {
+      return item.id == targetId;
+    });
+
+    setOptionInput({
+      ...optionInput,
+      ["position"]: {
+        ...list[targetIndex]["position"],
+      },
+      ["scale"]: {
+        ...list[targetIndex]["scale"],
+      },
+      ["rotation"]: {
+        ...list[targetIndex]["rotation"],
+      },
+    });
+  };
+
+  const handleClickRemove = () => {
+    useObjectHooks.remove(targetId);
+    switchOpenOptionPanel(false, "");
+  };
 
   const handleChangeOptionInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const [attribute, value] = e.target.name.split("_");
@@ -114,6 +146,10 @@ function InputOptions({ targetId }: { targetId?: string }) {
 
     updateObject([...list]);
   };
+
+  useEffect(() => {
+    initValueOnOptions();
+  }, [targetId]);
 
   return (
     <Column gap="0.5rem">
@@ -196,6 +232,14 @@ function InputOptions({ targetId }: { targetId?: string }) {
             value={optionInput.rotation.z}
           />
         </InputGroup>
+      </Column>
+
+      <Column>
+        <SubTitle>Option</SubTitle>
+
+        <Button onClick={handleClickRemove} color="red">
+          Remove
+        </Button>
       </Column>
     </Column>
   );

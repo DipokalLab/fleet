@@ -32,7 +32,7 @@ export function OptionPanel({
         borderLeft: `1px solid ${BORDER_COLOR}`,
         zIndex: 300,
         padding: "1rem",
-        transition: ".5s",
+        transition: ".2s",
         transform: isLoaded
           ? "translate(0px, 0px)"
           : `translate(${panelWidth + 20}px, 0px)`,

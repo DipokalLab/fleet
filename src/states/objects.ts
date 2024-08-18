@@ -4,10 +4,10 @@ type ObjectType = {
   id: string;
   url: string;
 
-  position?: {
-    x?: number;
-    y?: number;
-    z?: number;
+  position: {
+    x: number;
+    y: number;
+    z: number;
   };
   scale?: {
     x: number;
