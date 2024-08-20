@@ -64,9 +64,84 @@ function Object(props: ThreeElements["mesh"]) {
   };
 
   return (
-    <mesh onClick={handleClick} {...props} ref={meshRef}>
-      <primitive object={gltf.scene} />
-      <meshStandardMaterial color={isActive ? "black" : "orange"} />
+    <>
+      <mesh onClick={handleClick} {...props} ref={meshRef}>
+        <primitive object={gltf.scene} />
+        <meshStandardMaterial color={isActive ? "black" : "orange"} />
+      </mesh>
+      {isActive && (
+        <>
+          <MoveableDirection targetId={props.userData.id} />
+        </>
+      )}
+    </>
+  );
+}
+
+function MoveableDirection({ targetId }: { targetId: string }) {
+  const { list } = useObjectsStore();
+  const [listIndex, setListIndex] = useState(0);
+  const weight = 0.2;
+
+  useEffect(() => {
+    const index = list.findIndex((object) => {
+      return object.id == targetId;
+    });
+    setListIndex(index);
+  }, [targetId]);
+
+  return (
+    <mesh
+      position={
+        new THREE.Vector3(
+          list[listIndex].position.x,
+          list[listIndex].position.y,
+          list[listIndex].position.z
+        )
+      }
+      scale={new THREE.Vector3(1, 1, 1)}
+    >
+      <mesh
+        visible
+        position={new THREE.Vector3(0.5, 0, 0)}
+        rotation={new THREE.Euler(0, 0, 0)}
+        geometry={new THREE.BoxGeometry(1, weight, weight)}
+        renderOrder={9999}
+        onBeforeRender={function (renderer) {
+          renderer.clearDepth();
+        }}
+      >
+        <meshStandardMaterial color={"#ff0000"} />
+      </mesh>
+
+      <mesh
+        visible
+        position={new THREE.Vector3(0, 0.5, 0)}
+        rotation={new THREE.Euler(0, 0, 0)}
+        geometry={new THREE.BoxGeometry(weight, 1, weight)}
+        renderOrder={9999}
+        onBeforeRender={function (renderer) {
+          renderer.clearDepth();
+        }}
+      >
+        <meshStandardMaterial
+          color={"#00ff00"}
+          depthTest={false}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <mesh
+        visible
+        position={new THREE.Vector3(0, 0, 0.5)}
+        rotation={new THREE.Euler(0, 0, 0)}
+        geometry={new THREE.BoxGeometry(weight, weight, 1)}
+        onBeforeRender={function (renderer) {
+          renderer.clearDepth();
+        }}
+      >
+        <meshStandardMaterial color={"#0000ff"} />
+      </mesh>
     </mesh>
   );
 }

@@ -19,6 +19,9 @@ import { useObjectsStore } from "../states/objects";
 import { Button, Collapse } from "deventds2";
 import { useUpload } from "../hooks/useUpload";
 import { useObject } from "../hooks/useObject";
+import { Row } from "../components/ui/common/Row";
+import { css } from "@emotion/react";
+import { CursorType, useCursorStore } from "../states/cursor";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
@@ -61,12 +64,24 @@ export function MySpace() {
     <>
       <LoadingScreen onLoaded={handleLoad} progress={loadPercent} />
       <LeftPanel isLoaded={isLeftPanelLoad}>
-        <Column>
-          <Title>FLEET v0.1</Title>
-          <Button onClick={handleUpload} color="white">
-            Upload
-          </Button>
-        </Column>
+        <div
+          css={css({
+            width: "100%",
+          })}
+        >
+          <Column>
+            <Column>
+              <Title>FLEET v0.1</Title>
+              <Button onClick={handleUpload} color="white">
+                Upload
+              </Button>
+            </Column>
+
+            <Column>
+              <CursorOptions />
+            </Column>
+          </Column>
+        </div>
       </LeftPanel>
       <OptionPanel isLoaded={isOpenOptionPanel}>
         <InputOptions targetId={targetId} />
@@ -242,5 +257,57 @@ function InputOptions({ targetId }: { targetId?: string }) {
         </Button>
       </Column>
     </Column>
+  );
+}
+
+function CursorOptions() {
+  const cursorStore = useCursorStore();
+
+  const setButtonColor = (type: string): "light" | "black" => {
+    if (cursorStore.type == type) {
+      return "black";
+    }
+    return "light";
+  };
+
+  const handleClickButton = (type: CursorType) => {
+    cursorStore.changeType(type);
+  };
+
+  return (
+    <>
+      <SubTitle>Cursor</SubTitle>
+
+      <Row>
+        <Button
+          size="sm"
+          color={setButtonColor("default")}
+          onClick={() => handleClickButton("default")}
+        >
+          D
+        </Button>
+        <Button
+          size="sm"
+          color={setButtonColor("positionChange")}
+          onClick={() => handleClickButton("positionChange")}
+        >
+          P
+        </Button>
+        <Button
+          size="sm"
+          color={setButtonColor("rotationChange")}
+          onClick={() => handleClickButton("rotationChange")}
+        >
+          R
+        </Button>
+        <Button
+          size="sm"
+          color={setButtonColor("scaleChange")}
+          onClick={() => handleClickButton("scaleChange")}
+        >
+          S
+        </Button>
+      </Row>
+    </>
   );
 }
