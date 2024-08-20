@@ -166,6 +166,10 @@ function InputOptions({ targetId }: { targetId?: string }) {
     initValueOnOptions();
   }, [targetId]);
 
+  useEffect(() => {
+    initValueOnOptions();
+  }, [list]);
+
   return (
     <Column gap="0.5rem">
       <Column>

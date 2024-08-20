@@ -1,10 +1,17 @@
-import { ObjectMap, ThreeElements, useLoader } from "@react-three/fiber";
+import {
+  ObjectMap,
+  ThreeElements,
+  useFrame,
+  useLoader,
+} from "@react-three/fiber";
 import { useObjectsStore } from "../../../states/objects";
 import { useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
 import { GLTF, GLTFLoader } from "three-stdlib";
 import { useObject } from "../../../hooks/useObject";
+import { useCursorStore } from "../../../states/cursor";
+import { TransformControls } from "@react-three/drei";
 
 export function Objects() {
   const { list } = useObjectsStore();
@@ -54,34 +61,132 @@ function Object(props: ThreeElements["mesh"]) {
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
   const gltf = useLoader(GLTFLoader, url);
+  const cursorStore = useCursorStore();
+  const objectStore = useObjectsStore();
+
+  const [mode, setMode] = useState<"translate" | "scale" | "rotate">(
+    "translate"
+  );
+  const [selected, setSelected] = useState(false);
+
+  const editMode = {
+    default: "translate",
+    positionChange: "translate",
+    rotationChange: "rotate",
+    scaleChange: "scale",
+  };
 
   const { isOpenOptionPanel, switchOpenOptionPanel } =
     useContext(OptionPanelContext);
 
-  const handleClick = () => {
+  const controlsRef: any = useRef();
+
+  const handleDbClick = () => {
+    setSelected(!isActive);
     switchOpenOptionPanel(!isActive, props.userData.id);
     setIsActive((active) => !active);
+    cursorStore.changeType(!isActive ? "positionChange" : "default");
   };
+
+  const handleChange = (e) => {
+    try {
+      let position = controlsRef.current.object.position;
+      let rotation = controlsRef.current.object.rotation;
+      let scale = controlsRef.current.object.scale;
+
+      const index = objectStore.list.findIndex((object) => {
+        return object.id == props.userData.id;
+      });
+
+      let temp = objectStore.list;
+
+      temp[index].position.x = position.x;
+      temp[index].position.y = position.y;
+      temp[index].position.z = position.z;
+
+      temp[index].rotation.x = rotation.x;
+      temp[index].rotation.y = rotation.y;
+      temp[index].rotation.z = rotation.z;
+
+      temp[index].scale.x = scale.x;
+      temp[index].scale.y = scale.y;
+      temp[index].scale.z = scale.z;
+
+      objectStore.updateObject([...temp]);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    const tempMode: any = editMode[cursorStore.type];
+    setMode(tempMode);
+  }, [cursorStore.type]);
 
   return (
     <>
-      <mesh onClick={handleClick} {...props} ref={meshRef}>
-        <primitive object={gltf.scene} />
-        <meshStandardMaterial color={isActive ? "black" : "orange"} />
-      </mesh>
-      {isActive && (
+      <TransformControls
+        ref={controlsRef}
+        object={meshRef}
+        mode={mode}
+        enabled={selected}
+        onMouseUp={handleChange}
+      >
+        <mesh onDoubleClick={handleDbClick} {...props} ref={meshRef}>
+          <primitive object={gltf.scene} />
+          <meshStandardMaterial color={isActive ? "black" : "orange"} />
+        </mesh>
+      </TransformControls>
+
+      {/* {isActive && (
         <>
           <MoveableDirection targetId={props.userData.id} />
         </>
-      )}
+      )} */}
     </>
   );
 }
 
 function MoveableDirection({ targetId }: { targetId: string }) {
+  const cursorStore = useCursorStore();
+
   const { list } = useObjectsStore();
   const [listIndex, setListIndex] = useState(0);
-  const weight = 0.2;
+  const weight = 0.1;
+
+  const [bar, setBar] = useState({
+    x: {
+      isHover: false,
+    },
+    y: {
+      isHover: false,
+    },
+    z: {
+      isHover: false,
+    },
+  });
+
+  const handleHoverIn = (d: string) => {
+    console.log(d);
+    setBar({
+      ...bar,
+      [d]: {
+        isHover: true,
+      },
+    });
+  };
+
+  const handleHoverOut = () => {
+    setBar({
+      x: {
+        isHover: false,
+      },
+      y: {
+        isHover: false,
+      },
+      z: {
+        isHover: false,
+      },
+    });
+  };
 
   useEffect(() => {
     const index = list.findIndex((object) => {
@@ -92,6 +197,7 @@ function MoveableDirection({ targetId }: { targetId: string }) {
 
   return (
     <mesh
+      visible={cursorStore.type == "positionChange"}
       position={
         new THREE.Vector3(
           list[listIndex].position.x,
@@ -110,8 +216,10 @@ function MoveableDirection({ targetId }: { targetId: string }) {
         onBeforeRender={function (renderer) {
           renderer.clearDepth();
         }}
+        onPointerMove={() => handleHoverIn("x")}
+        onPointerOut={handleHoverOut}
       >
-        <meshStandardMaterial color={"#ff0000"} />
+        <meshStandardMaterial color={bar.x.isHover ? "#ffff00" : "#ff0000"} />
       </mesh>
 
       <mesh
@@ -123,12 +231,10 @@ function MoveableDirection({ targetId }: { targetId: string }) {
         onBeforeRender={function (renderer) {
           renderer.clearDepth();
         }}
+        onPointerMove={() => handleHoverIn("y")}
+        onPointerOut={handleHoverOut}
       >
-        <meshStandardMaterial
-          color={"#00ff00"}
-          depthTest={false}
-          depthWrite={false}
-        />
+        <meshStandardMaterial color={bar.y.isHover ? "#ffff00" : "#00ff00"} />
       </mesh>
 
       <mesh
@@ -139,8 +245,10 @@ function MoveableDirection({ targetId }: { targetId: string }) {
         onBeforeRender={function (renderer) {
           renderer.clearDepth();
         }}
+        onPointerMove={() => handleHoverIn("z")}
+        onPointerOut={handleHoverOut}
       >
-        <meshStandardMaterial color={"#0000ff"} />
+        <meshStandardMaterial color={bar.z.isHover ? "#ffff00" : "#0000ff"} />
       </mesh>
     </mesh>
   );
