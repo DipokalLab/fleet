@@ -22,6 +22,7 @@ import { useObject } from "../hooks/useObject";
 import { Row } from "../components/ui/common/Row";
 import { css } from "@emotion/react";
 import { CursorType, useCursorStore } from "../states/cursor";
+import { TopPanel } from "../components/ui/Panel/TopPanel";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
@@ -63,6 +64,8 @@ export function MySpace() {
   return (
     <>
       <LoadingScreen onLoaded={handleLoad} progress={loadPercent} />
+
+      <TopPanel />
       <LeftPanel isLoaded={isLeftPanelLoad}>
         <div
           css={css({
@@ -75,10 +78,6 @@ export function MySpace() {
               <Button onClick={handleUpload} color="white">
                 Upload
               </Button>
-            </Column>
-
-            <Column>
-              <CursorOptions />
             </Column>
           </Column>
         </div>
@@ -261,57 +260,5 @@ function InputOptions({ targetId }: { targetId?: string }) {
         </Button>
       </Column>
     </Column>
-  );
-}
-
-function CursorOptions() {
-  const cursorStore = useCursorStore();
-
-  const setButtonColor = (type: string): "light" | "black" => {
-    if (cursorStore.type == type) {
-      return "black";
-    }
-    return "light";
-  };
-
-  const handleClickButton = (type: CursorType) => {
-    cursorStore.changeType(type);
-  };
-
-  return (
-    <>
-      <SubTitle>Cursor</SubTitle>
-
-      <Row>
-        <Button
-          size="sm"
-          color={setButtonColor("default")}
-          onClick={() => handleClickButton("default")}
-        >
-          D
-        </Button>
-        <Button
-          size="sm"
-          color={setButtonColor("positionChange")}
-          onClick={() => handleClickButton("positionChange")}
-        >
-          P
-        </Button>
-        <Button
-          size="sm"
-          color={setButtonColor("rotationChange")}
-          onClick={() => handleClickButton("rotationChange")}
-        >
-          R
-        </Button>
-        <Button
-          size="sm"
-          color={setButtonColor("scaleChange")}
-          onClick={() => handleClickButton("scaleChange")}
-        >
-          S
-        </Button>
-      </Row>
-    </>
   );
 }

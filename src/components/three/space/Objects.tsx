@@ -19,9 +19,7 @@ export function Objects() {
   const useObjectHooks = useObject();
 
   useEffect(() => {
-    useObjectHooks.create(
-      "https://pub-fa4196a5c66c43a29f1ba72c16185bc2.r2.dev/macbookpro_1.glb"
-    );
+    useObjectHooks.create("https://fleet.cartesiancs.com/macbookpro_1.glb");
   }, []);
 
   return (
@@ -81,11 +79,13 @@ function Object(props: ThreeElements["mesh"]) {
 
   const controlsRef: any = useRef();
 
-  const handleDbClick = () => {
-    setSelected(!isActive);
-    switchOpenOptionPanel(!isActive, props.userData.id);
-    setIsActive((active) => !active);
-    cursorStore.changeType(!isActive ? "positionChange" : "default");
+  const handleClick = () => {
+    if (isActive == false) {
+      cursorStore.changeType("positionChange");
+    }
+    setSelected(true);
+    switchOpenOptionPanel(true, props.userData.id);
+    setIsActive((active) => true);
   };
 
   const handleChange = (e) => {
@@ -130,7 +130,7 @@ function Object(props: ThreeElements["mesh"]) {
         enabled={selected}
         onMouseUp={handleChange}
       >
-        <mesh onDoubleClick={handleDbClick} {...props} ref={meshRef}>
+        <mesh onClick={handleClick} {...props} ref={meshRef}>
           <primitive object={gltf.scene} />
           <meshStandardMaterial color={isActive ? "black" : "orange"} />
         </mesh>

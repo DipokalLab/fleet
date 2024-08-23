@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { BORDER_COLOR } from "../../../theme/color";
 import { useEffect, useRef, useState } from "react";
+import { OTHER_TOP_PADDING } from "./TopPanel";
 
 export function OptionPanel({
   children,
@@ -32,6 +33,8 @@ export function OptionPanel({
         borderLeft: `1px solid ${BORDER_COLOR}`,
         zIndex: 300,
         padding: "1rem",
+        paddingTop: OTHER_TOP_PADDING,
+
         transition: ".2s",
         transform: isLoaded
           ? "translate(0px, 0px)"
