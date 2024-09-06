@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { useColorMode, Progressbar } from "deventds2";
 import { useState, useRef, useEffect } from "react";
 
@@ -48,8 +48,91 @@ export function LoadingScreen({
           gap: "1rem",
         })}
       >
+        <LoadAnimation />
         <Progressbar percent={progress}></Progressbar>
       </div>
+    </div>
+  );
+}
+
+const animateFleet = keyframes`
+  0% {
+    transform: translate(-20px,0);
+  }
+
+  30% {
+    transform: translate(0,0);
+  }
+
+  60% {
+    transform: translate(0,0);
+  }
+
+  100% {
+    transform: translate(30px,0);
+  }
+`;
+
+function LoadAnimation() {
+  const dotSize = "24px";
+  return (
+    <div
+      css={css({
+        position: "relative",
+      })}
+    >
+      <div
+        css={css({
+          position: "relative",
+          top: 0,
+          left: 0,
+          width: dotSize,
+          height: dotSize,
+          backgroundColor: "#4c4c4f",
+          borderRadius: "100px",
+        })}
+      ></div>
+
+      <div
+        css={css({
+          position: "absolute",
+          top: "16px",
+          left: 0,
+          width: "18px",
+          height: "5px",
+          backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          animation: `${animateFleet} 2s ease infinite`,
+        })}
+      ></div>
+
+      <div
+        css={css({
+          position: "absolute",
+          top: "8px",
+          left: 0,
+          width: "12px",
+          height: "5px",
+          backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          animation: `${animateFleet} 3s ease infinite`,
+          animationDelay: "0.23s",
+        })}
+      ></div>
+
+      <div
+        css={css({
+          position: "absolute",
+          top: "-1px",
+          left: 0,
+          width: "18px",
+          height: "7px",
+          backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          animation: `${animateFleet} 1.2s ease infinite`,
+          animationDelay: "0.43s",
+        })}
+      ></div>
     </div>
   );
 }

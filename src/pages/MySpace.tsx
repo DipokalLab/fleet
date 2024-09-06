@@ -26,7 +26,7 @@ import { TopPanel } from "../components/ui/Panel/TopPanel";
 import { BottomPanel } from "../components/ui/Panel/BottomPanel";
 import { PanelRightClose, X } from "lucide-react";
 import { ACTION_ICON_COLOR, SUBTITLE_COLOR } from "../theme/color";
-import { ModelBox } from "../components/three/common/ModelBox";
+import { ModelBox } from "../components/ui/ModelBox";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
