@@ -43,8 +43,8 @@ export function LandingPage() {
             textAlign: "center",
           })}
         >
-          Everyone, Everyone has the right to have a glamorous and fabulous
-          space. Now create a 3D portfolio to decorate your online space.
+          Everyone has the right to have a glamorous and fabulous space. Now
+          create a 3D portfolio to decorate your online space.
         </span>
         <div
           css={css({

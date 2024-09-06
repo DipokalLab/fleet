@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { SUBTITLE_COLOR } from "../../../theme/color";
+import { DESC_COLOR, SUBTITLE_COLOR } from "../../../theme/color";
 
 export function SubTitle({ children }: { children?: React.ReactNode }) {
   return (
@@ -24,6 +24,21 @@ export function Title({ children }: { children?: React.ReactNode }) {
         color: SUBTITLE_COLOR,
         fontSize: "0.9rem",
         fontWeight: "600",
+      })}
+    >
+      {children}
+    </p>
+  );
+}
+
+export function Description({ children }: { children?: React.ReactNode }) {
+  return (
+    <p
+      css={css({
+        margin: 0,
+        color: DESC_COLOR,
+        fontSize: "0.9rem",
+        fontWeight: "400",
       })}
     >
       {children}
