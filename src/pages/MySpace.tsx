@@ -13,22 +13,28 @@ import { OptionPanelContext } from "../context/OptionPanelContext";
 import { OptionPanel } from "../components/ui/Panel/OptionPanel";
 import { Input } from "../components/ui/common/Input";
 import { InputGroup } from "../components/ui/common/InputGroup";
-import { SubTitle, Title } from "../components/ui/common/Text";
+import { Description, SubTitle, Title } from "../components/ui/common/Text";
 import { Column } from "../components/ui/common/Column";
 import { useObjectsStore } from "../states/objects";
 import { Button, Collapse } from "deventds2";
 import { useUpload } from "../hooks/useUpload";
 import { useObject } from "../hooks/useObject";
-import { Row } from "../components/ui/common/Row";
+import { FullWidth, Row } from "../components/ui/common/Row";
 import { css } from "@emotion/react";
 import { CursorType, useCursorStore } from "../states/cursor";
 import { TopPanel } from "../components/ui/Panel/TopPanel";
+import { BottomPanel } from "../components/ui/Panel/BottomPanel";
+import { PanelRightClose, X } from "lucide-react";
+import { ACTION_ICON_COLOR, SUBTITLE_COLOR } from "../theme/color";
+import { ModelBox } from "../components/three/common/ModelBox";
 
 export function MySpace() {
   const [loadPercent, setLoadPercent] = useState(10);
   const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
+
+  const [isBottomPanelLoad, setIsBottomPanelLoad] = useState(false);
 
   const intervalRef = useRef(null);
 
@@ -42,6 +48,14 @@ export function MySpace() {
 
   const handleUpload = () => {
     uploadObject();
+  };
+
+  const handleClickDefaultModel = () => {
+    setIsBottomPanelLoad((isOpen) => !isOpen);
+  };
+
+  const handleCloseOptionPanel = () => {
+    switchOpenOptionPanel(false, targetId);
   };
 
   useEffect(() => {
@@ -66,25 +80,65 @@ export function MySpace() {
       <LoadingScreen onLoaded={handleLoad} progress={loadPercent} />
 
       <TopPanel />
+
       <LeftPanel isLoaded={isLeftPanelLoad}>
         <div
           css={css({
             width: "100%",
           })}
         >
-          <Column>
+          <Column gap="0.5rem">
             <Column>
               <Title>FLEET v0.1</Title>
               <Button onClick={handleUpload} color="white">
                 Upload
               </Button>
             </Column>
+
+            <Column>
+              <SubTitle>Action</SubTitle>
+              <Button onClick={handleClickDefaultModel} color="white">
+                Default Model
+              </Button>
+            </Column>
           </Column>
         </div>
       </LeftPanel>
+
       <OptionPanel isLoaded={isOpenOptionPanel}>
-        <InputOptions targetId={targetId} />
+        <InputOptions
+          targetId={targetId}
+          onClosePanel={handleCloseOptionPanel}
+        />
       </OptionPanel>
+
+      <BottomPanel isOpen={isBottomPanelLoad}>
+        <FullWidth>
+          <Column justify="space-between">
+            <Row justify="space-between">
+              <Column>
+                <Title>Default Models</Title>
+                <Description>
+                  A list of default 3D models. Decorate your space.
+                </Description>
+              </Column>
+
+              <Column>
+                <X
+                  css={css({ cursor: "pointer", color: SUBTITLE_COLOR })}
+                  onClick={handleClickDefaultModel}
+                />
+              </Column>
+            </Row>
+
+            <Row gap="1rem">
+              <ModelBox />
+
+              <ModelBox />
+            </Row>
+          </Column>
+        </FullWidth>
+      </BottomPanel>
       <EntryScene>
         <Space></Space>
       </EntryScene>
@@ -92,7 +146,13 @@ export function MySpace() {
   );
 }
 
-function InputOptions({ targetId }: { targetId?: string }) {
+function InputOptions({
+  targetId,
+  onClosePanel,
+}: {
+  targetId?: string;
+  onClosePanel?: any;
+}) {
   const { list, updateObject } = useObjectsStore();
   const [optionInput, setOptionInput] = useState({
     position: {
@@ -259,6 +319,22 @@ function InputOptions({ targetId }: { targetId?: string }) {
           Remove
         </Button>
       </Column>
+
+      <div
+        css={css({
+          color: ACTION_ICON_COLOR,
+          bottom: 0,
+          marginTop: "auto",
+          marginBottom: "5rem",
+        })}
+      >
+        <PanelRightClose
+          css={css({
+            cursor: "pointer",
+          })}
+          onClick={onClosePanel}
+        />
+      </div>
     </Column>
   );
 }

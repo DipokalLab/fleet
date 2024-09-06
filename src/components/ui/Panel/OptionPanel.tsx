@@ -38,7 +38,7 @@ export function OptionPanel({
         transition: ".2s",
         transform: isLoaded
           ? "translate(0px, 0px)"
-          : `translate(${panelWidth + 20}px, 0px)`,
+          : `translate(${panelWidth + 32}px, 0px)`,
       })}
     >
       {children}
