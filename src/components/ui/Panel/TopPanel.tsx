@@ -35,7 +35,7 @@ export function TopPanel() {
         })}
       >
         <div css={css({ paddingLeft: "1rem" })}></div>
-        <div css={css({ padding: "1rem 0rem" })}>
+        <div css={css({ padding: "0rem 0rem" })}>
           <CursorOptions />
         </div>
         <div css={css({ paddingRight: "1rem" })}>

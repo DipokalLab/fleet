@@ -19,7 +19,7 @@ export function Objects() {
   const useObjectHooks = useObject();
 
   useEffect(() => {
-    useObjectHooks.create("https://fleet.cartesiancs.com/macbookpro_1.glb");
+    // useObjectHooks.create("https://fleet.cartesiancs.com/macbookpro_1.glb");
   }, []);
 
   return (

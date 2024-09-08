@@ -7,6 +7,7 @@ export function InputGroup({ children }: { children?: React.ReactNode }) {
         display: "flex",
         flexDirection: "row",
         gap: "0.25rem",
+        justifyContent: "space-between",
       })}
     >
       {children}

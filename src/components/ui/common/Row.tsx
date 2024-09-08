@@ -15,7 +15,6 @@ export function Row({
         display: "flex",
         flexDirection: "row",
         gap: gap,
-        overflow: "scroll",
         justifyContent: justify,
       })}
     >

@@ -131,11 +131,7 @@ export function MySpace() {
               </Column>
             </Row>
 
-            <Row gap="1rem">
-              <ModelBox />
-
-              <ModelBox />
-            </Row>
+            <DefaultModelOptions />
           </Column>
         </FullWidth>
       </BottomPanel>
@@ -143,6 +139,34 @@ export function MySpace() {
         <Space></Space>
       </EntryScene>
     </>
+  );
+}
+
+function DefaultModelOptions() {
+  const useObjectHooks = useObject();
+
+  const [modelList, setModelList] = useState([
+    {
+      url: "https://fleet.cartesiancs.com/macbookpro_1.glb",
+      tag: "Macbook",
+    },
+    { url: "https://fleet.cartesiancs.com/man_01.glb", tag: "Man" },
+  ]);
+
+  const handleClickBox = (url: string) => {
+    useObjectHooks.create(url);
+  };
+
+  return (
+    <Row gap="1rem">
+      {modelList.map((item) => (
+        <ModelBox
+          onClick={() => handleClickBox(item.url)}
+          url={item.url}
+          tag={item.tag}
+        />
+      ))}
+    </Row>
   );
 }
 
