@@ -5,13 +5,18 @@ import {
   useLoader,
 } from "@react-three/fiber";
 import { useObjectsStore } from "../../../states/objects";
-import { useContext, useEffect, useRef, useState } from "react";
+import { Suspense, useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
 import { GLTF, GLTFLoader } from "three-stdlib";
 import { useObject } from "../../../hooks/useObject";
 import { useCursorStore } from "../../../states/cursor";
-import { TransformControls } from "@react-three/drei";
+import {
+  Html,
+  Preload,
+  TransformControls,
+  useProgress,
+} from "@react-three/drei";
 
 export function Objects() {
   const { list } = useObjectsStore();
@@ -26,7 +31,10 @@ export function Objects() {
     <mesh>
       {list.map((objectItem) => (
         <Object
-          userData={{ id: objectItem.id, url: objectItem.url }}
+          userData={{
+            id: objectItem.id,
+            url: `${objectItem.url}?id=${objectItem.id}`,
+          }}
           position={
             new THREE.Vector3(
               objectItem.position.x,
@@ -74,7 +82,7 @@ function Object(props: ThreeElements["mesh"]) {
     scaleChange: "scale",
   };
 
-  const { isOpenOptionPanel, switchOpenOptionPanel } =
+  const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
 
   const controlsRef: any = useRef();
@@ -127,7 +135,7 @@ function Object(props: ThreeElements["mesh"]) {
         ref={controlsRef}
         object={meshRef}
         mode={mode}
-        enabled={selected}
+        enabled={targetId == props.userData.id}
         onMouseUp={handleChange}
       >
         <mesh onClick={handleClick} {...props} ref={meshRef}>
