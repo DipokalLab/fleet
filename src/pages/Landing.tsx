@@ -1,9 +1,12 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
+import { useAuth } from "../hooks/useAuth";
+import { Row } from "../components/ui/common/Row";
 
 export function LandingPage() {
   const navigate = useNavigate();
+  const { isLogin } = useAuth();
   return (
     <div
       css={css({
@@ -51,9 +54,20 @@ export function LandingPage() {
             paddingTop: "1rem",
           })}
         >
-          <Button color="blue" onClick={() => navigate("/app")}>
-            Create Now
-          </Button>
+          {isLogin() ? (
+            <Row>
+              <Button color="black" onClick={() => navigate("/app")}>
+                Create Now
+              </Button>
+              <Button color="white" onClick={() => navigate("/profile")}>
+                Profile
+              </Button>
+            </Row>
+          ) : (
+            <Button color="blue" onClick={() => navigate("/auth")}>
+              Get Started
+            </Button>
+          )}
         </div>
       </div>
     </div>

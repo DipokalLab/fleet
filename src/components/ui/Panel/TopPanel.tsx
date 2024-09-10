@@ -5,15 +5,24 @@ import { Button, Modal } from "deventds2";
 import { CursorOptions } from "../options/CursorOption";
 import { Description, Title } from "../common/Text";
 import { Column } from "../common/Column";
+import { House } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export const TOP_PANEL_HEIGHT = "3rem";
 export const OTHER_TOP_PADDING = "4rem";
 
 export function TopPanel() {
+  const navigate = useNavigate();
+  const IconSize = "1.125rem";
+
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
   const handleClickPublishButton = () => {
     setIsPublishModalOpen(true);
+  };
+
+  const handleClickHome = () => {
+    navigate("/");
   };
 
   return (
@@ -34,7 +43,26 @@ export function TopPanel() {
           alignItems: "center",
         })}
       >
-        <div css={css({ paddingLeft: "1rem" })}></div>
+        <div css={css({ paddingLeft: "1rem", alignItems: "center" })}>
+          <button
+            css={css({
+              padding: "0.5rem 0.2rem",
+              backgroundColor: "transparent",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+            })}
+            onClick={handleClickHome}
+          >
+            <House
+              css={css({
+                width: IconSize,
+                height: IconSize,
+              })}
+            />
+          </button>
+        </div>
         <div css={css({ padding: "0rem 0rem" })}>
           <CursorOptions />
         </div>
