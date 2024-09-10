@@ -33,7 +33,7 @@ export function Objects() {
         <Object
           userData={{
             id: objectItem.id,
-            url: `${objectItem.url}?id=${objectItem.id}`,
+            url: `${objectItem.url}`,
           }}
           position={
             new THREE.Vector3(

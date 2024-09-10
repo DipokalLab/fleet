@@ -154,7 +154,7 @@ function DefaultModelOptions() {
   ]);
 
   const handleClickBox = (url: string) => {
-    useObjectHooks.create(url);
+    useObjectHooks.create(`${url}?id=${Math.random()}`);
   };
 
   return (
