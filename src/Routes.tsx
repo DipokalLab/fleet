@@ -9,6 +9,7 @@ import { LandingPage } from "./pages/Landing";
 import { AuthPage } from "./pages/Auth";
 import { ProfilePage } from "./pages/Profile";
 import { AuthDonePage } from "./pages/AuthDone";
+import { NotFoundPage } from "./pages/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -34,5 +35,9 @@ export const router = createBrowserRouter([
   {
     path: "about",
     element: <div>About</div>,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);

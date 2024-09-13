@@ -65,7 +65,7 @@ export function LeftPanel({
           transition: ".5s",
           transform: isLoaded
             ? "translate(0px, 0px)"
-            : `translate(${-panelWidth + 16}px, 0px)`,
+            : `translate(${-panelWidth - 16}px, 0px)`,
 
           [mq[0]]: {
             display: "none",
