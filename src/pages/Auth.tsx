@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { isLocal } from "../utils/isLocal";
 import { hosts } from "../api/hosts";
 import { LogIn } from "lucide-react";
+import { BackButton } from "../components/ui/BackButton";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ export function AuthPage() {
         flexDirection: "column",
       })}
     >
+      <BackButton />
+
       <div
         css={css({
           display: "flex",

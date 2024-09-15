@@ -56,8 +56,8 @@ export function LandingPage() {
         >
           {isLogin() ? (
             <Row>
-              <Button color="black" onClick={() => navigate("/app")}>
-                Create Now
+              <Button color="black" onClick={() => navigate("/dashboard")}>
+                Dashboard
               </Button>
               <Button color="white" onClick={() => navigate("/profile")}>
                 Profile

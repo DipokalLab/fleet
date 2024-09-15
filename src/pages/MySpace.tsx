@@ -30,6 +30,8 @@ import { ModelBox } from "../components/ui/ModelBox";
 import axios from "axios";
 import { getCookie } from "../utils/cookie";
 import instance from "../api/axios";
+import { hosts } from "../api/hosts";
+import { isLocal } from "../utils/isLocal";
 
 export function MySpace() {
   const toast = useToast();
@@ -103,7 +105,7 @@ export function MySpace() {
             <Column>
               <SubTitle>Action</SubTitle>
               <Button onClick={handleClickDefaultModel} color="white">
-                Default Model
+                Models
               </Button>
             </Column>
           </Column>
@@ -170,7 +172,7 @@ function DefaultModelOptions() {
       {modelList.map((item) => (
         <ModelBox
           onClick={() => handleClickBox(item.url)}
-          url={item.url}
+          url={`${item.url}`}
           tag={item.tag}
         />
       ))}
@@ -185,9 +187,12 @@ function UploadedModelOptions() {
   const getUploadedFiles = async () => {
     try {
       const getFiles = await instance.get("file");
-      console.log();
       setUploadedFiles([...getFiles.data.files]);
     } catch (error) {}
+  };
+
+  const handleClickBox = (url: string) => {
+    useObjectHooks.create(`${url}?id=${Math.random()}`);
   };
 
   useEffect(() => {
@@ -197,7 +202,15 @@ function UploadedModelOptions() {
   return (
     <Row gap="1rem">
       {uploadedFiles.map((item) => (
-        <ModelBox url={item.fileUrl} tag={item.fileTitle} />
+        <ModelBox
+          onClick={() =>
+            handleClickBox(
+              `${isLocal() ? hosts.dev : hosts.prod}/${item.fileUrl}`
+            )
+          }
+          url={`${isLocal() ? hosts.dev : hosts.prod}/${item.fileUrl}`}
+          tag={item.fileTitle}
+        />
       ))}
     </Row>
   );
