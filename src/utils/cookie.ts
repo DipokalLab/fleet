@@ -15,6 +15,14 @@ export const getCookies = () => {
   }
 };
 
+export const getCookie = (key: string) => {
+  const cookieList = getCookies();
+  if (!cookieList.hasOwnProperty(key)) {
+    return "";
+  }
+  return cookieList[key];
+};
+
 export const setCookie = (key: string, value: string) => {
   document.cookie = `${key}=${value}; path=/`;
 };

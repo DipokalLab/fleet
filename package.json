@@ -15,6 +15,7 @@
     "@react-three/drei": "^9.109.5",
     "@react-three/fiber": "^8.17.5",
     "@types/three": "^0.167.1",
+    "axios": "^1.7.7",
     "deventds2": "^0.1.10",
     "leva": "^0.9.35",
     "lucide-react": "^0.438.0",

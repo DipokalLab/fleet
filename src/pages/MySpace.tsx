@@ -16,7 +16,7 @@ import { InputGroup } from "../components/ui/common/InputGroup";
 import { Description, SubTitle, Title } from "../components/ui/common/Text";
 import { Column } from "../components/ui/common/Column";
 import { useObjectsStore } from "../states/objects";
-import { Button, Collapse } from "deventds2";
+import { Button, Collapse, useToast } from "deventds2";
 import { useUpload } from "../hooks/useUpload";
 import { useObject } from "../hooks/useObject";
 import { FullWidth, Row } from "../components/ui/common/Row";
@@ -27,8 +27,13 @@ import { BottomPanel } from "../components/ui/Panel/BottomPanel";
 import { PanelRightClose, X } from "lucide-react";
 import { ACTION_ICON_COLOR, SUBTITLE_COLOR } from "../theme/color";
 import { ModelBox } from "../components/ui/ModelBox";
+import axios from "axios";
+import { getCookie } from "../utils/cookie";
+import instance from "../api/axios";
 
 export function MySpace() {
+  const toast = useToast();
+
   const [loadPercent, setLoadPercent] = useState(10);
   const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
@@ -117,9 +122,9 @@ export function MySpace() {
           <Column justify="space-between">
             <Row justify="space-between">
               <Column>
-                <Title>Default Models</Title>
+                <Title>Models</Title>
                 <Description>
-                  A list of default 3D models. Decorate your space.
+                  A list of 3D models. Decorate your space.
                 </Description>
               </Column>
 
@@ -131,7 +136,10 @@ export function MySpace() {
               </Column>
             </Row>
 
-            <DefaultModelOptions />
+            <Row gap="1rem">
+              <UploadedModelOptions />
+              <DefaultModelOptions />
+            </Row>
           </Column>
         </FullWidth>
       </BottomPanel>
@@ -165,6 +173,31 @@ function DefaultModelOptions() {
           url={item.url}
           tag={item.tag}
         />
+      ))}
+    </Row>
+  );
+}
+
+function UploadedModelOptions() {
+  const useObjectHooks = useObject();
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  const getUploadedFiles = async () => {
+    try {
+      const getFiles = await instance.get("file");
+      console.log();
+      setUploadedFiles([...getFiles.data.files]);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getUploadedFiles();
+  }, []);
+
+  return (
+    <Row gap="1rem">
+      {uploadedFiles.map((item) => (
+        <ModelBox url={item.fileUrl} tag={item.fileTitle} />
       ))}
     </Row>
   );
