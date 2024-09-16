@@ -164,7 +164,7 @@ function DefaultModelOptions() {
   ]);
 
   const handleClickBox = (url: string) => {
-    useObjectHooks.create(`${url}?id=${Math.random()}`);
+    useObjectHooks.create(`${url}?id=${Math.random()}`, String(Math.random()));
   };
 
   return (
@@ -191,8 +191,18 @@ function UploadedModelOptions() {
     } catch (error) {}
   };
 
-  const handleClickBox = (url: string) => {
-    useObjectHooks.create(`${url}?id=${Math.random()}`);
+  const handleClickBox = async (url: string, fileId: string) => {
+    try {
+      const saveSpace = await instance.post("space/file", {
+        spaceId: location.pathname.split("/")[2],
+        fileId: fileId,
+      });
+
+      useObjectHooks.create(
+        `${url}?id=${Math.random()}`,
+        saveSpace.data.spaceFile.id
+      );
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -205,7 +215,8 @@ function UploadedModelOptions() {
         <ModelBox
           onClick={() =>
             handleClickBox(
-              `${isLocal() ? hosts.dev : hosts.prod}/${item.fileUrl}`
+              `${isLocal() ? hosts.dev : hosts.prod}/${item.fileUrl}`,
+              item.id
             )
           }
           url={`${isLocal() ? hosts.dev : hosts.prod}/${item.fileUrl}`}

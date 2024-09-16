@@ -17,13 +17,47 @@ import {
   TransformControls,
   useProgress,
 } from "@react-three/drei";
+import instance from "../../../api/axios";
+import { isLocal } from "../../../utils/isLocal";
+import { hosts } from "../../../api/hosts";
 
 export function Objects() {
   const { list } = useObjectsStore();
 
   const useObjectHooks = useObject();
 
+  const getFiles = async () => {
+    const getSpace = await instance.get(
+      `space/${location.pathname.split("/")[2]}`
+    );
+
+    const files = getSpace.data.space.files;
+
+    for (let index = 0; index < files.length; index++) {
+      const element = files[index];
+
+      useObjectHooks.create(
+        `${isLocal() ? hosts.dev : hosts.prod}/${
+          element.file.fileUrl
+        }?id=${Math.random()}`,
+        element.id,
+        {
+          px: element.px,
+          py: element.py,
+          pz: element.pz,
+          sx: element.sx,
+          sy: element.sy,
+          sz: element.sz,
+          rx: element.rx,
+          ry: element.ry,
+          rz: element.rz,
+        }
+      );
+    }
+  };
+
   useEffect(() => {
+    getFiles();
     // useObjectHooks.create("https://fleet.cartesiancs.com/macbookpro_1.glb");
   }, []);
 
@@ -87,6 +121,23 @@ function Object(props: ThreeElements["mesh"]) {
 
   const controlsRef: any = useRef();
 
+  const updateObject = async (element) => {
+    try {
+      const editSpace = await instance.put("space/file", {
+        id: props.userData.id,
+        px: element.px,
+        py: element.py,
+        pz: element.pz,
+        sx: element.sx,
+        sy: element.sy,
+        sz: element.sz,
+        rx: element.rx,
+        ry: element.ry,
+        rz: element.rz,
+      });
+    } catch (error) {}
+  };
+
   const handleClick = () => {
     if (isActive == false) {
       cursorStore.changeType("positionChange");
@@ -119,6 +170,18 @@ function Object(props: ThreeElements["mesh"]) {
       temp[index].scale.x = scale.x;
       temp[index].scale.y = scale.y;
       temp[index].scale.z = scale.z;
+
+      updateObject({
+        px: position.x,
+        py: position.y,
+        pz: position.z,
+        sx: scale.x,
+        sy: scale.y,
+        sz: scale.z,
+        rx: rotation.x,
+        ry: rotation.y,
+        rz: rotation.z,
+      });
 
       objectStore.updateObject([...temp]);
     } catch (error) {}

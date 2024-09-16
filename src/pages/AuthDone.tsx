@@ -16,7 +16,7 @@ export function AuthDonePage() {
     setCookie("token", token);
 
     setTimeout(() => {
-      location.href = "/app";
+      location.href = "/dashboard";
     }, 1000);
   }, []);
 

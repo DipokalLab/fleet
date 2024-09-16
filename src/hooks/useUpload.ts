@@ -18,8 +18,6 @@ export function useUpload() {
         const blob = new Blob([file], { type: file.type });
         const blobUrl = URL.createObjectURL(blob);
 
-        useObjectHooks.create(blobUrl);
-
         try {
           const formData = new FormData();
 
@@ -32,6 +30,13 @@ export function useUpload() {
               "Content-Type": "multipart/form-data",
             },
           });
+
+          const saveSpace = await instance.post("space/file", {
+            spaceId: location.pathname.split("/")[2],
+            fileId: uploadFile.data.fileId,
+          });
+
+          useObjectHooks.create(blobUrl, saveSpace.data.spaceFile.id);
 
           toast.message({
             text: uploadFile.data.msg,

@@ -21,12 +21,52 @@ const INIT_OBJECT_VALUE = {
 export function useObject() {
   const { list, createObject, updateObject } = useObjectsStore();
 
-  const create = (url: string) => {
-    const copyObject = JSON.parse(JSON.stringify(INIT_OBJECT_VALUE));
+  const create = (
+    url: string,
+    id: string,
+    options?: {
+      px?: number;
+      py?: number;
+      pz?: number;
+      sx?: number;
+      sy?: number;
+      sz?: number;
+      rx?: number;
+      ry?: number;
+      rz?: number;
+    }
+  ) => {
+    const {
+      px = 0,
+      py = 0,
+      pz = 0,
+      sx = 1,
+      sy = 1,
+      sz = 1,
+      rx = 0,
+      ry = 0,
+      rz = 0,
+    } = options;
+
     createObject({
-      id: String(Math.random()),
+      id: id,
       url: url,
-      ...copyObject,
+
+      position: {
+        x: px,
+        y: py,
+        z: pz,
+      },
+      scale: {
+        x: sx,
+        y: sy,
+        z: sz,
+      },
+      rotation: {
+        x: rx,
+        y: ry,
+        z: rz,
+      },
     });
   };
 
