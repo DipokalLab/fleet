@@ -35,6 +35,7 @@ import { isLocal } from "../utils/isLocal";
 
 export function MySpace() {
   const toast = useToast();
+  const { list, createObject, updateObject } = useObjectsStore();
 
   const [loadPercent, setLoadPercent] = useState(10);
   const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
@@ -73,6 +74,7 @@ export function MySpace() {
   }, [loadPercent]);
 
   useEffect(() => {
+    updateObject([]);
     intervalRef.current = setInterval(() => {
       setLoadPercent((percent) => percent + 60);
     }, 400);
@@ -198,9 +200,22 @@ function UploadedModelOptions() {
         fileId: fileId,
       });
 
+      console.log(saveSpace, `${url}?id=${Math.random()}`);
+
       useObjectHooks.create(
         `${url}?id=${Math.random()}`,
-        saveSpace.data.spaceFile.id
+        saveSpace.data.spaceFile.id,
+        {
+          px: 0,
+          py: 0,
+          pz: 0,
+          sx: 1,
+          sy: 1,
+          sz: 1,
+          rx: 0,
+          ry: 0,
+          rz: 0,
+        }
       );
     } catch (error) {}
   };
@@ -279,7 +294,18 @@ function InputOptions({
     });
   };
 
+  const removeRequest = async () => {
+    try {
+      const deleteSpaceFile = await instance.delete("space/file", {
+        data: {
+          id: targetId,
+        },
+      });
+    } catch (error) {}
+  };
+
   const handleClickRemove = () => {
+    removeRequest();
     useObjectHooks.remove(targetId);
     switchOpenOptionPanel(false, "");
   };

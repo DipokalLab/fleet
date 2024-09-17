@@ -3,6 +3,7 @@ import { create } from "zustand";
 type ObjectType = {
   id: string;
   url: string;
+  isRemoved: boolean;
 
   position: {
     x: number;
@@ -26,11 +27,13 @@ type Store = {
   list: ObjectType[];
   createObject: (object: ObjectType) => void;
   updateObject: (objects: ObjectType[]) => void;
+  deleteObject: (id: string) => void;
 };
 
 const defaultObject: ObjectType = {
   id: String(Math.random()),
   url: "",
+  isRemoved: false,
 
   position: {
     x: 0,
@@ -57,4 +60,11 @@ export const useObjectsStore = create<Store>()((set) => ({
 
   updateObject: (objects: ObjectType[]) =>
     set((state) => ({ list: [...objects] })),
+
+  deleteObject: (id: string) =>
+    set((state) => ({
+      list: state.list.map((item) =>
+        item.id === id ? { ...item, isRemoved: true } : item
+      ),
+    })),
 }));

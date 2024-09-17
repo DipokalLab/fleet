@@ -19,7 +19,7 @@ const INIT_OBJECT_VALUE = {
 };
 
 export function useObject() {
-  const { list, createObject, updateObject } = useObjectsStore();
+  const { list, createObject, deleteObject } = useObjectsStore();
 
   const create = (
     url: string,
@@ -51,7 +51,7 @@ export function useObject() {
     createObject({
       id: id,
       url: url,
-
+      isRemoved: false,
       position: {
         x: px,
         y: py,
@@ -75,9 +75,7 @@ export function useObject() {
       return object.id == id;
     });
 
-    list.splice(index, 1);
-
-    updateObject([...list]);
+    deleteObject(id);
   };
 
   return { create, remove };

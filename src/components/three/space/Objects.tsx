@@ -68,6 +68,7 @@ export function Objects() {
           userData={{
             id: objectItem.id,
             url: `${objectItem.url}`,
+            isRemoved: objectItem.isRemoved,
           }}
           position={
             new THREE.Vector3(
@@ -194,18 +195,20 @@ function Object(props: ThreeElements["mesh"]) {
 
   return (
     <>
-      <TransformControls
-        ref={controlsRef}
-        object={meshRef}
-        mode={mode}
-        enabled={targetId == props.userData.id}
-        onMouseUp={handleChange}
-      >
-        <mesh onClick={handleClick} {...props} ref={meshRef}>
-          <primitive object={gltf.scene} />
-          <meshStandardMaterial color={isActive ? "black" : "orange"} />
-        </mesh>
-      </TransformControls>
+      {!props.userData.isRemoved && (
+        <TransformControls
+          ref={controlsRef}
+          object={meshRef}
+          mode={mode}
+          enabled={targetId == props.userData.id}
+          onMouseUp={handleChange}
+        >
+          <mesh onClick={handleClick} {...props} ref={meshRef}>
+            <primitive object={gltf.scene} />
+            <meshStandardMaterial color={isActive ? "black" : "orange"} />
+          </mesh>
+        </TransformControls>
+      )}
 
       {/* {isActive && (
         <>
