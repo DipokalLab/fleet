@@ -9,12 +9,14 @@ import { ACTION_ICON_COLOR, BORDER_COLOR, DESC_COLOR } from "../theme/color";
 import { BackButton } from "../components/ui/BackButton";
 import instance from "../api/axios";
 import { useEffect, useState } from "react";
+import { Skeleton } from "../components/ui/common/Skeleton";
 
 export function DashboardPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const [spaceList, setSpaceList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleClickGoogle = () => {
     location.href = isLocal()
@@ -36,7 +38,10 @@ export function DashboardPage() {
       const getSpace = await instance.get("space");
 
       setSpaceList([...getSpace.data.spaces]);
-    } catch (error) {}
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -90,6 +95,13 @@ export function DashboardPage() {
           <Box onClick={handleClickCreateSpace}>
             <Plus css={css({ color: ACTION_ICON_COLOR })} />
           </Box>
+          {isLoading && (
+            <>
+              <Skeleton width={120} height={120}></Skeleton>
+              <Skeleton width={120} height={120}></Skeleton>
+              <Skeleton width={120} height={120}></Skeleton>
+            </>
+          )}
           {spaceList.map((item) => (
             <Box onClick={() => navigate(`/app/${item.id}`)}>
               <b>{item.title}</b>

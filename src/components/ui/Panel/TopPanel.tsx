@@ -22,7 +22,7 @@ export function TopPanel() {
   };
 
   const handleClickHome = () => {
-    navigate("/");
+    location.href = "/";
   };
 
   return (
