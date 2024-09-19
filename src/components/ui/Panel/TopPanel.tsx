@@ -1,11 +1,11 @@
 import { css } from "@emotion/react";
 import { BORDER_COLOR } from "../../../theme/color";
 import { useEffect, useRef, useState } from "react";
-import { Button, Modal, useToast } from "deventds2";
+import { Button, Input, Modal, useToast } from "deventds2";
 import { CursorOptions } from "../options/CursorOption";
 import { Description, Title } from "../common/Text";
 import { Column } from "../common/Column";
-import { House } from "lucide-react";
+import { ClipboardList, House } from "lucide-react";
 import { useNavigate } from "react-router";
 import instance from "../../../api/axios";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
@@ -39,8 +39,10 @@ export function TopPanel() {
       const getSpace = await instance.get(`space/${spaceId}`);
       setSpaceInfo({
         spaceTitle: getSpace.data.space.title,
-        isPublic: getSpace.data.space.isPublic,
+        isPublic: String(getSpace.data.space.isPublic),
       });
+
+      console.log(getSpace.data.space.isPublic);
     } catch (error) {}
   };
 
@@ -72,7 +74,10 @@ export function TopPanel() {
         text: "Successfully released.",
       });
 
-      setIsPublishModalOpen(false);
+      setSpaceInfo({
+        ...spaceInfo,
+        ["isPublic"]: "true",
+      });
     } catch (error) {}
   };
 
@@ -86,6 +91,21 @@ export function TopPanel() {
 
       debouncedSpaceTitle(e.target.value);
     } catch (error) {}
+  };
+
+  const handleClickClipboard = () => {
+    const text = `${location.origin}/space/${location.pathname.split("/")[2]}`;
+
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast.message({
+          text: "Copied to clipboard",
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to copy");
+      });
   };
 
   const handleClickHome = () => {
@@ -176,9 +196,40 @@ export function TopPanel() {
               has the link. Please click the "Make Public" button below.
             </Description>
           </Column>
-          <Button color="blue" onClick={handleMakePublic}>
-            Make Public
-          </Button>
+          {spaceInfo.isPublic == "true" && (
+            <div
+              css={css({
+                display: "flex",
+                justifyContent: "center",
+              })}
+            >
+              <Input
+                value={`${location.origin}/space/${
+                  location.pathname.split("/")[2]
+                }`}
+                subfix={
+                  <p
+                    onClick={handleClickClipboard}
+                    style={{
+                      margin: 0,
+                    }}
+                  >
+                    <ClipboardList
+                      css={css({
+                        height: "0.9rem",
+                      })}
+                    />
+                  </p>
+                }
+              ></Input>
+            </div>
+          )}
+
+          {spaceInfo.isPublic == "false" && (
+            <Button color="blue" onClick={handleMakePublic}>
+              Make Public
+            </Button>
+          )}
         </Column>
       </Modal>
     </>
