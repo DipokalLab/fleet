@@ -156,26 +156,54 @@ export function MySpace() {
 
 function DefaultModelOptions() {
   const useObjectHooks = useObject();
+  const [defaultFiles, setDefaultFiles] = useState([]);
 
-  const [modelList, setModelList] = useState([
-    {
-      url: "https://fleet.cartesiancs.com/macbookpro_1.glb",
-      tag: "Macbook",
-    },
-    { url: "https://fleet.cartesiancs.com/man_01.glb", tag: "Man" },
-  ]);
+  const handleClickBox = async (url: string, fileId: string) => {
+    const saveSpace = await instance.post("space/file", {
+      spaceId: location.pathname.split("/")[2],
+      fileId: fileId,
+    });
 
-  const handleClickBox = (url: string) => {
-    useObjectHooks.create(`${url}?id=${Math.random()}`, String(Math.random()));
+    useObjectHooks.create(
+      `${url}?id=${Math.random()}`,
+      saveSpace.data.spaceFile.id,
+      {
+        px: 0,
+        py: 0,
+        pz: 0,
+        sx: 1,
+        sy: 1,
+        sz: 1,
+        rx: 0,
+        ry: 0,
+        rz: 0,
+      }
+    );
   };
+
+  const getDefaultFiles = async () => {
+    try {
+      const getFiles = await instance.get("file/default");
+      setDefaultFiles(getFiles.data.files);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getDefaultFiles();
+  }, []);
 
   return (
     <Row gap="1rem">
-      {modelList.map((item) => (
+      {defaultFiles.map((item) => (
         <ModelBox
-          onClick={() => handleClickBox(item.url)}
-          url={`${item.url}`}
-          tag={item.tag}
+          onClick={() =>
+            handleClickBox(
+              `${isLocal() ? hosts.dev : hosts.prod}/${item.fileUrl}`,
+              item.id
+            )
+          }
+          url={`${isLocal() ? hosts.dev : hosts.prod}/${item.fileUrl}`}
+          tag={item.fileTitle}
         />
       ))}
     </Row>
@@ -199,8 +227,6 @@ function UploadedModelOptions() {
         spaceId: location.pathname.split("/")[2],
         fileId: fileId,
       });
-
-      console.log(saveSpace, `${url}?id=${Math.random()}`);
 
       useObjectHooks.create(
         `${url}?id=${Math.random()}`,
