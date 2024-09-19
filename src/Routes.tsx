@@ -11,6 +11,7 @@ import { ProfilePage } from "./pages/Profile";
 import { AuthDonePage } from "./pages/AuthDone";
 import { NotFoundPage } from "./pages/NotFound";
 import { DashboardPage } from "./pages/Dashboard";
+import { PublicSpacePage } from "./pages/PublicSpace";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
   {
     path: "/app/*",
     element: <App />,
+  },
+  {
+    path: "/space/*",
+    element: <PublicSpacePage />,
   },
   {
     path: "/auth",

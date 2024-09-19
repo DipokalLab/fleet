@@ -6,6 +6,7 @@ import { hosts } from "../api/hosts";
 import { LogIn } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { BackButton } from "../components/ui/BackButton";
+import { Nav } from "../components/ui/common/Nav";
 
 export function ProfilePage() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export function ProfilePage() {
       })}
     >
       <BackButton />
+      <Nav />
 
       <div
         css={css({

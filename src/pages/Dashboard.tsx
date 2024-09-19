@@ -10,6 +10,7 @@ import { BackButton } from "../components/ui/BackButton";
 import instance from "../api/axios";
 import { useEffect, useState } from "react";
 import { Skeleton } from "../components/ui/common/Skeleton";
+import { Nav } from "../components/ui/common/Nav";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ export function DashboardPage() {
       })}
     >
       <BackButton />
+      <Nav />
       <div
         css={css({
           display: "flex",
