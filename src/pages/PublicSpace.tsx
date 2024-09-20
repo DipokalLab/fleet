@@ -28,6 +28,7 @@ export function PublicSpacePage() {
       const files = getSpace.data.space.files;
     } catch (error) {}
   };
+
   return (
     <Canvas shadows>
       <Suspense>

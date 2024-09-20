@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./Routes.tsx";
 import { ThemeProvider } from "deventds2";
 import { OptionPanelProvider } from "./context/OptionPanelContext.tsx";
+import { ErrorBoundary } from "react-error-boundary";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
