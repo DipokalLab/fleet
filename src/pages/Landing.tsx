@@ -1,12 +1,19 @@
 import { css } from "@emotion/react";
-import { Button } from "deventds2";
+import { Button, useColorMode } from "deventds2";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import { Row } from "../components/ui/common/Row";
+import { useEffect } from "react";
 
 export function LandingPage() {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
+  const [colorMode, setColorMode] = useColorMode();
+
+  useEffect(() => {
+    setColorMode("light");
+  }, []);
+
   return (
     <div
       css={css({
@@ -46,8 +53,8 @@ export function LandingPage() {
             textAlign: "center",
           })}
         >
-          Everyone has the right to have a glamorous and fabulous space. Now
-          create a 3D portfolio to decorate your online space.
+          3D Portfolio Platform for Designers and Makers. Expand the Dimensions
+          of Your Dreams.
         </span>
         <div
           css={css({

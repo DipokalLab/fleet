@@ -7,11 +7,14 @@ import { router } from "./Routes.tsx";
 import { ThemeProvider } from "deventds2";
 import { OptionPanelProvider } from "./context/OptionPanelContext.tsx";
 import { ErrorBoundary } from "react-error-boundary";
+import { TopProgressProvider } from "./context/TopProgress.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
     <OptionPanelProvider>
-      <RouterProvider router={router} />
+      <TopProgressProvider>
+        <RouterProvider router={router} />
+      </TopProgressProvider>
     </OptionPanelProvider>
   </ThemeProvider>
 );
