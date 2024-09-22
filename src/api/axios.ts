@@ -5,7 +5,7 @@ import { getCookie } from "../utils/cookie";
 
 const instance = axios.create({
   baseURL: isLocal() ? `${hosts.dev}/api/` : `${hosts.prod}/api/`,
-  timeout: 5000,
+  timeout: 7000,
   headers: { "x-access-token": getCookie("token") },
 });
 

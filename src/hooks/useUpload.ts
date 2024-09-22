@@ -1,10 +1,13 @@
 import { useToast } from "deventds2";
 import instance from "../api/axios";
 import { useObject } from "./useObject";
+import { TopProgressContext } from "../context/TopProgress";
+import { useContext } from "react";
 
 export function useUpload() {
   const useObjectHooks = useObject();
   const toast = useToast();
+  const { updateProgress } = useContext(TopProgressContext);
 
   const uploadObject = () => {
     const input = document.createElement("input");
@@ -13,10 +16,21 @@ export function useUpload() {
     input.click();
 
     input.onchange = async function () {
+      updateProgress(0);
       const file = input.files[0];
       if (file) {
         const blob = new Blob([file], { type: file.type });
         const blobUrl = URL.createObjectURL(blob);
+
+        const maxFileSize = 5 * 1024 * 1024;
+
+        if (file && file.size > maxFileSize) {
+          toast.message({
+            text: "File size exceeded. The maximum allowed size is 5MB.",
+          });
+
+          return false;
+        }
 
         try {
           const formData = new FormData();
@@ -29,6 +43,14 @@ export function useUpload() {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.lengthComputable) {
+                const percentComplete =
+                  (progressEvent.loaded / progressEvent.total) * 100;
+                updateProgress(Math.round(percentComplete));
+                console.log(percentComplete);
+              }
+            },
           });
 
           const saveSpace = await instance.post("space/file", {
@@ -36,7 +58,17 @@ export function useUpload() {
             fileId: uploadFile.data.fileId,
           });
 
-          useObjectHooks.create(blobUrl, saveSpace.data.spaceFile.id);
+          useObjectHooks.create(blobUrl, saveSpace.data.spaceFile.id, {
+            px: 0,
+            py: 0,
+            pz: 0,
+            sx: 1,
+            sy: 1,
+            sz: 1,
+            rx: 0,
+            ry: 0,
+            rz: 0,
+          });
 
           toast.message({
             text: uploadFile.data.msg,
@@ -47,7 +79,9 @@ export function useUpload() {
           });
         }
       } else {
-        alert("No file selected!");
+        toast.message({
+          text: "No file selected!",
+        });
       }
     };
   };
