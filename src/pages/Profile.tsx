@@ -7,15 +7,20 @@ import { LogIn } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { BackButton } from "../components/ui/BackButton";
 import { Nav } from "../components/ui/common/Nav";
+import { useState } from "react";
+import { Loading } from "../components/ui/common/Loading";
 
 export function ProfilePage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleClickGoogle = () => {
-    location.href = isLocal()
-      ? `${hosts.dev}/api/auth/google`
-      : `${hosts.prod}/api/auth/google`;
+  const handleClickLogout = () => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      logout();
+    }, 200);
   };
 
   return (
@@ -60,7 +65,8 @@ export function ProfilePage() {
             paddingTop: "1rem",
           })}
         >
-          <Button color="white" width="240px" onClick={logout}>
+          <Button color="white" width="240px" onClick={handleClickLogout}>
+            {isLoading && <Loading />}
             Logout
           </Button>
         </div>

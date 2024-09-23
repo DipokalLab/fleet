@@ -11,6 +11,7 @@ import instance from "../api/axios";
 import { useEffect, useState } from "react";
 import { Skeleton } from "../components/ui/common/Skeleton";
 import { Nav } from "../components/ui/common/Nav";
+import { Loading } from "../components/ui/common/Loading";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -18,20 +19,32 @@ export function DashboardPage() {
 
   const [spaceList, setSpaceList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateLoading, setIsCreateLoading] = useState(false);
 
-  const handleClickGoogle = () => {
-    location.href = isLocal()
-      ? `${hosts.dev}/api/auth/google`
-      : `${hosts.prod}/api/auth/google`;
-  };
+  const [isTransition, setIsTransition] = useState(false);
 
   const handleClickCreateSpace = async () => {
+    if (isCreateLoading) {
+      return false;
+    }
+
+    setIsCreateLoading(true);
     try {
       const createSpace = await instance.post("space");
       const getId = createSpace.data.space.id;
 
       navigate(`/app/${getId}`);
-    } catch (error) {}
+    } catch (error) {
+      setIsCreateLoading(false);
+    }
+  };
+
+  const handleClickGoSpace = (id: string) => {
+    setIsTransition(true);
+
+    setTimeout(() => {
+      navigate(id);
+    }, 300);
   };
 
   const getSpaceList = async () => {
@@ -61,6 +74,8 @@ export function DashboardPage() {
     >
       <BackButton />
       <Nav />
+
+      <Transition isShow={isTransition} />
       <div
         css={css({
           display: "flex",
@@ -95,7 +110,11 @@ export function DashboardPage() {
           })}
         >
           <Box onClick={handleClickCreateSpace}>
-            <Plus css={css({ color: ACTION_ICON_COLOR })} />
+            {isCreateLoading ? (
+              <Loading />
+            ) : (
+              <Plus css={css({ color: ACTION_ICON_COLOR })} />
+            )}
           </Box>
           {isLoading && (
             <>
@@ -105,7 +124,7 @@ export function DashboardPage() {
             </>
           )}
           {spaceList.map((item) => (
-            <Box onClick={() => navigate(`/app/${item.id}`)}>
+            <Box onClick={() => handleClickGoSpace(`/app/${item.id}`)}>
               <b>{item.title}</b>
             </Box>
           ))}
@@ -143,5 +162,27 @@ function Box(
     >
       {children}
     </div>
+  );
+}
+
+function Transition({ isShow }: { isShow?: boolean }) {
+  return (
+    <div
+      css={css({
+        position: "fixed",
+        top: 0,
+        height: "100%",
+        width: "100vw",
+        backgroundColor: "#ffffff",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        opacity: isShow ? "100%" : "0",
+        visibility: isShow ? "visible" : "hidden",
+        transition: ".2s",
+        zIndex: 900,
+      })}
+    ></div>
   );
 }

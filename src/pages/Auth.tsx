@@ -5,14 +5,22 @@ import { isLocal } from "../utils/isLocal";
 import { hosts } from "../api/hosts";
 import { LogIn } from "lucide-react";
 import { BackButton } from "../components/ui/BackButton";
+import { Loading } from "../components/ui/common/Loading";
+import { useState } from "react";
 
 export function AuthPage() {
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleClickGoogle = () => {
-    location.href = isLocal()
-      ? `${hosts.dev}/api/auth/google`
-      : `${hosts.prod}/api/auth/google`;
+    setIsLoading(true);
+
+    setTimeout(() => {
+      location.href = isLocal()
+        ? `${hosts.dev}/api/auth/google`
+        : `${hosts.prod}/api/auth/google`;
+    }, 300);
   };
 
   return (
@@ -57,6 +65,7 @@ export function AuthPage() {
           })}
         >
           <Button color="black" width="240px" onClick={handleClickGoogle}>
+            {isLoading && <Loading />}
             Google Auth
           </Button>
         </div>
