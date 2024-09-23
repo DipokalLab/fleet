@@ -1,24 +1,24 @@
 import { OrbitControls } from "@react-three/drei";
-import instance from "../api/axios";
-import { EntryScene } from "../components/three/Scene";
+import instance from "@/api/axios";
+import { EntryScene } from "@/components/three/Scene";
 import { Canvas, ThreeElements, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 import { ObjectMap, useFrame, useLoader } from "@react-three/fiber";
-import { useObjectsStore } from "../states/objects";
+import { useObjectsStore } from "@/states/objects";
 import { Suspense, useContext, useEffect, useRef, useState } from "react";
-import { OptionPanelContext } from "../context/OptionPanelContext";
+import { OptionPanelContext } from "@/context/OptionPanelContext";
 import { GLTF, GLTFLoader } from "three-stdlib";
-import { useObject } from "../hooks/useObject";
-import { useCursorStore } from "../states/cursor";
+import { useObject } from "@/hooks/useObject";
+import { useCursorStore } from "@/states/cursor";
 import {
   Html,
   Preload,
   TransformControls,
   useProgress,
 } from "@react-three/drei";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "@/utils/isLocal";
+import { hosts } from "@/api/hosts";
 
 export function PublicSpacePage() {
   const getPublicSpace = async () => {

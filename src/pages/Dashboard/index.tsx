@@ -1,17 +1,17 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "@/utils/isLocal";
+import { hosts } from "@/api/hosts";
 import { LogIn, Plus } from "lucide-react";
-import { useAuth } from "../hooks/useAuth";
-import { ACTION_ICON_COLOR, BORDER_COLOR, DESC_COLOR } from "../theme/color";
-import { BackButton } from "../components/ui/BackButton";
-import instance from "../api/axios";
+import { useAuth } from "@/hooks/useAuth";
+import { ACTION_ICON_COLOR, BORDER_COLOR, DESC_COLOR } from "@/theme/color";
+import { BackButton } from "@/components/ui/BackButton";
+import instance from "@/api/axios";
 import { useEffect, useState } from "react";
-import { Skeleton } from "../components/ui/common/Skeleton";
-import { Nav } from "../components/ui/common/Nav";
-import { Loading } from "../components/ui/common/Loading";
+import { Skeleton } from "@/components/ui/common/Skeleton";
+import { Nav } from "@/components/ui/common/Nav";
+import { Loading } from "@/components/ui/common/Loading";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -29,6 +29,7 @@ export function DashboardPage() {
     }
 
     setIsCreateLoading(true);
+
     try {
       const createSpace = await instance.post("space");
       const getId = createSpace.data.space.id;

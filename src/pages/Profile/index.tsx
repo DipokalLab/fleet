@@ -1,14 +1,14 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "@/utils/isLocal";
+import { hosts } from "@/api/hosts";
 import { LogIn } from "lucide-react";
-import { useAuth } from "../hooks/useAuth";
-import { BackButton } from "../components/ui/BackButton";
-import { Nav } from "../components/ui/common/Nav";
+import { useAuth } from "@/hooks/useAuth";
+import { BackButton } from "@/components/ui/BackButton";
+import { Nav } from "@/components/ui/common/Nav";
 import { useState } from "react";
-import { Loading } from "../components/ui/common/Loading";
+import { Loading } from "@/components/ui/common/Loading";
 
 export function ProfilePage() {
   const navigate = useNavigate();

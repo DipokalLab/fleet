@@ -1,11 +1,11 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "@/utils/isLocal";
+import { hosts } from "@/api/hosts";
 import { LogIn } from "lucide-react";
-import { BackButton } from "../components/ui/BackButton";
-import { Loading } from "../components/ui/common/Loading";
+import { BackButton } from "@/components/ui/BackButton";
+import { Loading } from "@/components/ui/common/Loading";
 import { useState } from "react";
 
 export function AuthPage() {
