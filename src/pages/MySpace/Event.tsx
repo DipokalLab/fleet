@@ -7,7 +7,7 @@ import { Title, Description } from "@/components/ui/common/Text";
 import { OptionPanelContext } from "@/context/OptionPanelContext";
 import { css } from "@emotion/react";
 import { Button, Combobox, useToast } from "deventds2";
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { useContext, useState } from "react";
 
 export function EventModalContent({
@@ -50,11 +50,31 @@ export function EventModalContent({
       toast.message({
         text: "Created!",
       });
-    } catch (error) {}
+    } catch (error) {
+      toast.message({
+        text: "Failed",
+      });
+    }
+  };
+
+  const handleClickRemove = async () => {
+    try {
+      const deleteTrigger = await instance.delete("trigger", {
+        data: {
+          triggerId: triggerId,
+        },
+      });
+
+      onSended();
+    } catch (error) {
+      toast.message({
+        text: "Failed",
+      });
+    }
   };
 
   return (
-    <Column gap="1rem">
+    <Column gap="1.5rem">
       <Column gap="0.5rem">
         <Title>Add Event</Title>
         <Description>KEY: "PLAY_SOUND" "MOVE_URL" "SHOW_DETAIL"</Description>
@@ -75,6 +95,20 @@ export function EventModalContent({
         </InputGroup>
         <Button color="white" size="sm" onClick={handleClickSend}>
           <Plus
+            css={css({
+              width: "14px",
+              height: "14px",
+            })}
+          />
+        </Button>
+      </Column>
+
+      <Column gap="0.5rem">
+        <Title>Remove Trigger</Title>
+        <Description>Please note, this action cannot be undone.</Description>
+
+        <Button color="red" size="sm" onClick={handleClickRemove}>
+          <Trash
             css={css({
               width: "14px",
               height: "14px",

@@ -201,6 +201,7 @@ export function MySpace() {
         onClose={() => setIsTriggerModalOpen(false)}
       >
         <TriggerModalContent
+          triggerId={activeTriggerId}
           onSended={handleSendCreateTrigger}
         ></TriggerModalContent>
       </Modal>

@@ -7,7 +7,7 @@ import { OptionPanelContext } from "@/context/OptionPanelContext";
 import { BORDER_COLOR } from "@/theme/color";
 import { css } from "@emotion/react";
 import { Button, Modal } from "deventds2";
-import { Ellipsis, Pencil, Plus } from "lucide-react";
+import { Ellipsis, Pencil, Plus, Trash } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 
 export function Trigger({
@@ -111,7 +111,13 @@ export function Trigger({
   );
 }
 
-export function TriggerModalContent({ onSended }: { onSended?: () => void }) {
+export function TriggerModalContent({
+  triggerId,
+  onSended,
+}: {
+  triggerId?: string;
+  onSended?: () => void;
+}) {
   const [value, setValue] = useState("");
   const { targetId } = useContext(OptionPanelContext);
 
