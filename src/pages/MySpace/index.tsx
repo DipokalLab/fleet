@@ -34,10 +34,12 @@ import { DefaultModelOptions, UploadedModelOptions } from "./OptionsModel";
 import { InputOptions } from "./OptionsInput";
 import { Trigger, TriggerModalContent } from "./Trigger";
 import { EventModalContent } from "./Event";
+import { usePageStore } from "@/states/page";
 
 export function MySpace() {
   const toast = useToast();
   const { list, createObject, updateObject } = useObjectsStore();
+  const { isPreview } = usePageStore();
 
   const [loadPercent, setLoadPercent] = useState(10);
   const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
@@ -47,6 +49,7 @@ export function MySpace() {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const [isBottomPanelLoad, setIsBottomPanelLoad] = useState(false);
+  const [loadLock, setLoadLock] = useState(true);
 
   const [triggerList, setTriggerList] = useState([]);
   const [activeTriggerId, setActiveTriggerId] = useState("");
@@ -57,6 +60,7 @@ export function MySpace() {
   const handleLoad = () => {
     setTimeout(() => {
       setIsLeftPanelLoad(true);
+      setLoadLock(false);
     }, 400);
   };
 
@@ -113,6 +117,16 @@ export function MySpace() {
       handleLoad();
     }
   }, [loadPercent]);
+
+  useEffect(() => {
+    if (loadLock == false) {
+      if (isPreview) {
+        setIsLeftPanelLoad(false);
+      } else {
+        setIsLeftPanelLoad(true);
+      }
+    }
+  }, [isPreview]);
 
   useEffect(() => {
     updateObject([]);

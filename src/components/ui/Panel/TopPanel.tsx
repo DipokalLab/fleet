@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { BORDER_COLOR } from "../../../theme/color";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, useToast } from "deventds2";
 import { CursorOptions } from "../options/CursorOption";
 import { Description, Title } from "../common/Text";
@@ -9,21 +9,31 @@ import { ClipboardList, House } from "lucide-react";
 import { useNavigate } from "react-router";
 import instance from "../../../api/axios";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
+import { OptionPanelContext } from "@/context/OptionPanelContext";
+import { usePageStore } from "@/states/page";
 
 export const TOP_PANEL_HEIGHT = "3rem";
 export const OTHER_TOP_PADDING = "4rem";
 
 export function TopPanel() {
+  const { isPreview } = usePageStore();
+
   const toast = useToast();
+  const { switchIsPreview } = usePageStore();
 
   const navigate = useNavigate();
   const IconSize = "1.125rem";
+
+  const [isShow, setIsShow] = useState(true);
 
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [spaceInfo, setSpaceInfo] = useState({
     spaceTitle: "",
     isPublic: "false",
   });
+
+  const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
+    useContext(OptionPanelContext);
 
   const debouncedSpaceTitle = useDebouncedCallback((value) => {
     setSpaceTitle(value);
@@ -108,6 +118,18 @@ export function TopPanel() {
       });
   };
 
+  const handleClickPreview = () => {
+    setIsShow(false);
+    switchOpenOptionPanel(false, "");
+    switchIsPreview(true);
+  };
+
+  const handleStopPreview = () => {
+    setIsShow(true);
+
+    switchIsPreview(false);
+  };
+
   const handleClickHome = () => {
     location.href = "/";
   };
@@ -121,6 +143,8 @@ export function TopPanel() {
       <div
         css={css({
           display: "flex",
+          transition: ".5s",
+          transform: isShow ? "translate(0px, 0px)" : `translate(0px, -4.5rem)`,
           position: "fixed",
           top: 0,
           left: 0,
@@ -177,12 +201,38 @@ export function TopPanel() {
         <div css={css({ padding: "0rem 0rem" })}>
           <CursorOptions />
         </div>
-        <div css={css({ paddingRight: "1rem" })}>
+        <div
+          css={css({
+            paddingRight: "1rem",
+            display: "flex",
+            flexDirection: "row",
+            gap: "0.5rem",
+          })}
+        >
+          <Button size="sm" color="light" onClick={handleClickPreview}>
+            Preview
+          </Button>
+
           <Button size="sm" color="blue" onClick={handleClickPublishButton}>
             Publish
           </Button>
         </div>
       </div>
+
+      {isPreview && (
+        <div
+          css={css({
+            position: "fixed",
+            top: "0.5rem",
+            right: "0.5rem",
+            zIndex: 999,
+          })}
+        >
+          <Button size="sm" color="light" onClick={handleStopPreview}>
+            Stop Preview
+          </Button>
+        </div>
+      )}
 
       <Modal
         isOpen={isPublishModalOpen}
