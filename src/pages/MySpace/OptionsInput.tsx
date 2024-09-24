@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Canvas, ThreeElements, useFrame, useThree } from "@react-three/fiber";
 import { EntryScene } from "@/components/three/Scene";
 import { Space } from "@/components/three/space/Space";
@@ -12,7 +12,7 @@ import { InputGroup } from "@/components/ui/common/InputGroup";
 import { Description, SubTitle, Title } from "@/components/ui/common/Text";
 import { Column } from "@/components/ui/common/Column";
 import { useObjectsStore } from "@/states/objects";
-import { Button, Collapse, useToast } from "deventds2";
+import { Button, Collapse, Flex, Modal, useToast } from "deventds2";
 import { useUpload } from "@/hooks/useUpload";
 import { useObject } from "@/hooks/useObject";
 import { FullWidth, Row } from "@/components/ui/common/Row";
@@ -20,7 +20,7 @@ import { css } from "@emotion/react";
 import { CursorType, useCursorStore } from "@/states/cursor";
 import { TopPanel } from "@/components/ui/Panel/TopPanel";
 import { BottomPanel } from "@/components/ui/Panel/BottomPanel";
-import { PanelRightClose, X } from "lucide-react";
+import { PanelRightClose, Pencil, Plus, X } from "lucide-react";
 import { ACTION_ICON_COLOR, SUBTITLE_COLOR } from "@/theme/color";
 import { ModelBox } from "@/components/ui/ModelBox";
 import { getCookie } from "@/utils/cookie";
@@ -34,9 +34,11 @@ import instance from "@/api/axios";
 export function InputOptions({
   targetId,
   onClosePanel,
+  children,
 }: {
   targetId?: string;
   onClosePanel?: any;
+  children?: React.ReactNode;
 }) {
   const { list, updateObject } = useObjectsStore();
   const [optionInput, setOptionInput] = useState({
@@ -126,7 +128,7 @@ export function InputOptions({
   }, [list]);
 
   return (
-    <Column gap="0.5rem">
+    <Column gap="0.5rem" height="100%">
       <Column>
         <SubTitle>Position</SubTitle>
         <InputGroup>
@@ -208,6 +210,8 @@ export function InputOptions({
         </InputGroup>
       </Column>
 
+      {children}
+
       <Column>
         <SubTitle>Option</SubTitle>
 
@@ -221,7 +225,10 @@ export function InputOptions({
           color: ACTION_ICON_COLOR,
           bottom: 0,
           marginTop: "auto",
-          marginBottom: "5rem",
+          marginBottom: "0rem",
+          gap: "1rem",
+          display: "flex",
+          flexDirection: "column",
         })}
       >
         <PanelRightClose

@@ -12,7 +12,7 @@ import { InputGroup } from "@/components/ui/common/InputGroup";
 import { Description, SubTitle, Title } from "@/components/ui/common/Text";
 import { Column } from "@/components/ui/common/Column";
 import { useObjectsStore } from "@/states/objects";
-import { Button, Collapse, useToast } from "deventds2";
+import { Button, Collapse, Modal, useToast } from "deventds2";
 import { useUpload } from "@/hooks/useUpload";
 import { useObject } from "@/hooks/useObject";
 import { FullWidth, Row } from "@/components/ui/common/Row";
@@ -32,6 +32,7 @@ import axios from "axios";
 import instance from "@/api/axios";
 import { DefaultModelOptions, UploadedModelOptions } from "./OptionsModel";
 import { InputOptions } from "./OptionsInput";
+import { Trigger, TriggerModalContent } from "./Trigger";
 
 export function MySpace() {
   const toast = useToast();
@@ -41,8 +42,11 @@ export function MySpace() {
   const [isLeftPanelLoad, setIsLeftPanelLoad] = useState(false);
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
+  const [isTriggerModalOpen, setIsTriggerModalOpen] = useState(false);
 
   const [isBottomPanelLoad, setIsBottomPanelLoad] = useState(false);
+
+  const [triggerList, setTriggerList] = useState([]);
 
   const intervalRef = useRef(null);
 
@@ -52,6 +56,22 @@ export function MySpace() {
     setTimeout(() => {
       setIsLeftPanelLoad(true);
     }, 400);
+  };
+
+  const getTrigger = async () => {
+    try {
+      const getTriggers = await instance.get(
+        `space/${location.pathname.split("/")[2]}`
+      );
+
+      const files = getTriggers.data.space.files.filter((file) => {
+        return file.id == targetId;
+      });
+
+      const triggers = files[0].trigger;
+
+      setTriggerList([...triggers]);
+    } catch (error) {}
   };
 
   const handleUpload = () => {
@@ -65,6 +85,15 @@ export function MySpace() {
   const handleCloseOptionPanel = () => {
     switchOpenOptionPanel(false, targetId);
   };
+
+  const handleSendCreateTrigger = () => {
+    setIsTriggerModalOpen(false);
+    getTrigger();
+  };
+
+  useEffect(() => {
+    getTrigger();
+  }, [targetId]);
 
   useEffect(() => {
     if (loadPercent >= 100) {
@@ -115,10 +144,16 @@ export function MySpace() {
       </LeftPanel>
 
       <OptionPanel isLoaded={isOpenOptionPanel}>
-        <InputOptions
-          targetId={targetId}
-          onClosePanel={handleCloseOptionPanel}
-        />
+        <InputOptions targetId={targetId} onClosePanel={handleCloseOptionPanel}>
+          <Column>
+            <SubTitle>Event</SubTitle>
+
+            <Trigger
+              list={triggerList}
+              onClickTrigger={() => setIsTriggerModalOpen(true)}
+            />
+          </Column>
+        </InputOptions>
       </OptionPanel>
 
       <BottomPanel isOpen={isBottomPanelLoad}>
@@ -147,6 +182,16 @@ export function MySpace() {
           </Column>
         </FullWidth>
       </BottomPanel>
+
+      <Modal
+        isOpen={isTriggerModalOpen}
+        onClose={() => setIsTriggerModalOpen(false)}
+      >
+        <TriggerModalContent
+          onSended={handleSendCreateTrigger}
+        ></TriggerModalContent>
+      </Modal>
+
       <EntryScene>
         <Space></Space>
       </EntryScene>

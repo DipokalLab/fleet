@@ -19,6 +19,7 @@ import {
 } from "@react-three/drei";
 import { isLocal } from "@/utils/isLocal";
 import { hosts } from "@/api/hosts";
+import { useNavigate } from "react-router";
 
 export function PublicSpacePage() {
   const getPublicSpace = async () => {
@@ -110,37 +111,43 @@ function Wall(props: ThreeElements["mesh"]) {
 }
 
 function Objects() {
+  const navigate = useNavigate();
+
   const [list, setList] = useState([]);
   const getFiles = async () => {
-    const getSpace = await instance.get(
-      `space/public/${location.pathname.split("/")[2]}`
-    );
+    try {
+      const getSpace = await instance.get(
+        `space/public/${location.pathname.split("/")[2]}`
+      );
 
-    const files = getSpace.data.space.files.map((element) => {
-      return {
-        url: `${isLocal() ? hosts.dev : hosts.prod}/${
-          element.file.fileUrl
-        }?id=${Math.random()}`,
-        id: element.id,
-        position: {
-          x: element.px,
-          y: element.py,
-          z: element.pz,
-        },
-        scale: {
-          x: element.sx,
-          y: element.sy,
-          z: element.sz,
-        },
-        rotation: {
-          x: element.rx,
-          y: element.ry,
-          z: element.rz,
-        },
-      };
-    });
+      const files = getSpace.data.space.files.map((element) => {
+        return {
+          url: `${isLocal() ? hosts.dev : hosts.prod}/${
+            element.file.fileUrl
+          }?id=${Math.random()}`,
+          id: element.id,
+          position: {
+            x: element.px,
+            y: element.py,
+            z: element.pz,
+          },
+          scale: {
+            x: element.sx,
+            y: element.sy,
+            z: element.sz,
+          },
+          rotation: {
+            x: element.rx,
+            y: element.ry,
+            z: element.rz,
+          },
+        };
+      });
 
-    setList([...files]);
+      setList([...files]);
+    } catch (error) {
+      navigate("/404");
+    }
   };
 
   useEffect(() => {
