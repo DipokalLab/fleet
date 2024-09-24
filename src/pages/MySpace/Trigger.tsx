@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/common/Input";
 import { Row } from "@/components/ui/common/Row";
 import { Title, Description } from "@/components/ui/common/Text";
 import { OptionPanelContext } from "@/context/OptionPanelContext";
+import { BORDER_COLOR } from "@/theme/color";
 import { css } from "@emotion/react";
 import { Button, Modal } from "deventds2";
 import { Ellipsis, Pencil, Plus } from "lucide-react";
@@ -16,7 +17,7 @@ export function Trigger({
 }: {
   list: any;
   onClickTrigger?: () => void;
-  onClickTriggerEdit?: () => void;
+  onClickTriggerEdit?: (id: string) => void;
 }) {
   const [triggers, setTriggers] = useState([""]);
 
@@ -27,10 +28,10 @@ export function Trigger({
     } catch (error) {}
   };
 
-  const handleClickEdit = () => {
+  const handleClickEdit = (id: string) => {
     try {
       // 기존 트리거 수정 모달 띄우기
-      onClickTriggerEdit();
+      onClickTriggerEdit(id);
     } catch (error) {}
   };
 
@@ -47,23 +48,53 @@ export function Trigger({
           })}
         >
           {list.map((trigger) => (
-            <Row>
-              <Input
-                prefix={<b>WHEN</b>}
-                name="scale_x"
-                placeholder="1"
-                value={trigger.when}
-                disabled
-              />
-              <Button onClick={handleClickEdit} color="white" size="sm">
-                <Ellipsis
-                  css={css({
-                    width: "14px",
-                    height: "14px",
-                  })}
+            <Column>
+              <Row>
+                <Input
+                  prefix={<b>WHEN</b>}
+                  name="scale_x"
+                  placeholder="1"
+                  value={trigger.when}
+                  disabled
                 />
-              </Button>
-            </Row>
+                <Button
+                  onClick={() => handleClickEdit(trigger.id)}
+                  color="white"
+                  size="sm"
+                >
+                  <Ellipsis
+                    css={css({
+                      width: "14px",
+                      height: "14px",
+                    })}
+                  />
+                </Button>
+              </Row>
+              {trigger.event.length > 0 && (
+                <>
+                  {trigger.event.map((event) => (
+                    <EventBody>
+                      <Row>
+                        <span
+                          css={css({
+                            fontSize: "0.85rem",
+                          })}
+                        >
+                          {event.key}
+                        </span>
+                        <span
+                          css={css({
+                            fontSize: "0.75rem",
+                          })}
+                        >
+                          {event.value}
+                        </span>
+                      </Row>
+                    </EventBody>
+                  ))}
+                </>
+              )}
+            </Column>
           ))}
         </div>
 
@@ -127,5 +158,22 @@ export function TriggerModalContent({ onSended }: { onSended?: () => void }) {
         </Row>
       </Column>
     </Column>
+  );
+}
+
+function EventBody({ children }: { children?: React.ReactNode }) {
+  return (
+    <div
+      css={css({
+        marginLeft: "1rem",
+        borderRadius: "0.6rem",
+        backgroundColor: "#ffffff",
+        border: `0.1rem solid #F0F0F4`,
+        width: "calc(100% - 2rem)",
+        padding: "0.5rem 0.5rem",
+      })}
+    >
+      {children}
+    </div>
   );
 }

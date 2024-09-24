@@ -33,6 +33,7 @@ import instance from "@/api/axios";
 import { DefaultModelOptions, UploadedModelOptions } from "./OptionsModel";
 import { InputOptions } from "./OptionsInput";
 import { Trigger, TriggerModalContent } from "./Trigger";
+import { EventModalContent } from "./Event";
 
 export function MySpace() {
   const toast = useToast();
@@ -43,11 +44,12 @@ export function MySpace() {
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
   const [isTriggerModalOpen, setIsTriggerModalOpen] = useState(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const [isBottomPanelLoad, setIsBottomPanelLoad] = useState(false);
 
   const [triggerList, setTriggerList] = useState([]);
-
+  const [activeTriggerId, setActiveTriggerId] = useState("");
   const intervalRef = useRef(null);
 
   const { uploadObject } = useUpload();
@@ -89,6 +91,16 @@ export function MySpace() {
   const handleSendCreateTrigger = () => {
     setIsTriggerModalOpen(false);
     getTrigger();
+  };
+
+  const handleSendEditTrigger = () => {
+    setIsEventModalOpen(false);
+    getTrigger();
+  };
+
+  const handleClickEditTrigger = (id: string) => {
+    setActiveTriggerId(id);
+    setIsEventModalOpen(true);
   };
 
   useEffect(() => {
@@ -151,6 +163,7 @@ export function MySpace() {
             <Trigger
               list={triggerList}
               onClickTrigger={() => setIsTriggerModalOpen(true)}
+              onClickTriggerEdit={handleClickEditTrigger}
             />
           </Column>
         </InputOptions>
@@ -190,6 +203,16 @@ export function MySpace() {
         <TriggerModalContent
           onSended={handleSendCreateTrigger}
         ></TriggerModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+      >
+        <EventModalContent
+          triggerId={activeTriggerId}
+          onSended={handleSendEditTrigger}
+        ></EventModalContent>
       </Modal>
 
       <EntryScene>
