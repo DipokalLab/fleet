@@ -133,7 +133,14 @@ export function TriggerModalContent({
       });
 
       onSended();
+      setValue("");
     } catch (error) {}
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleClickSend();
+    }
   };
 
   return (
@@ -151,6 +158,7 @@ export function TriggerModalContent({
             placeholder="CLICK"
             value={value}
             onInput={handleChange}
+            onKeyDown={handleKeyDown}
             width={"100%"}
           />
           <Button color="white" size="sm" onClick={handleClickSend}>

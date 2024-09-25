@@ -77,7 +77,7 @@ export function EventModalContent({
     <Column gap="1.5rem">
       <Column gap="0.5rem">
         <Title>Add Event</Title>
-        <Description>KEY: "PLAY_SOUND" "MOVE_URL" "SHOW_DETAIL"</Description>
+        <Description>KEY: "FOCUS_ON" "MOVE_URL" "SHOW_DETAIL"</Description>
 
         <InputGroup>
           <Input

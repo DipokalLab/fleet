@@ -20,8 +20,12 @@ import {
 import { isLocal } from "@/utils/isLocal";
 import { hosts } from "@/api/hosts";
 import { useNavigate } from "react-router";
+import { css } from "@emotion/react";
+import { Button } from "deventds2";
 
 export function PublicSpacePage() {
+  const [isZoom, setIsZoom] = useState(false);
+
   const getPublicSpace = async () => {
     try {
       const spaceId = location.pathname.split("/")[2];
@@ -30,75 +34,81 @@ export function PublicSpacePage() {
     } catch (error) {}
   };
 
-  return (
-    <Canvas shadows>
-      <Suspense>
-        <directionalLight
-          castShadow
-          position={[0, 10, 0]}
-          intensity={4}
-          shadow-mapSize-width={1024}
-          shadow-mapSize-height={1024}
-          shadow-camera-far={50}
-          shadow-camera-left={-100}
-          shadow-camera-right={100}
-          shadow-camera-top={100}
-          shadow-camera-bottom={-100}
-        />
+  const handleStopZoom = () => {
+    setIsZoom(false);
+  };
 
-        <ambientLight intensity={Math.PI / 2} />
-        <spotLight
-          position={[10, 10, 10]}
-          angle={0.15}
-          penumbra={1}
-          decay={0}
-          intensity={Math.PI}
-        />
-
-        <PublicSpace></PublicSpace>
-        <Preload all />
-      </Suspense>
-    </Canvas>
-  );
-}
-
-function PublicSpace({ children }: { children?: React.ReactNode }) {
-  useThree(({ camera }) => {
-    camera.rotation.set(
-      THREE.MathUtils.degToRad(-20),
-      THREE.MathUtils.degToRad(20),
-      THREE.MathUtils.degToRad(3)
-    );
-  });
+  const handleStartZoom = () => {
+    setIsZoom(true);
+  };
 
   return (
-    <mesh castShadow>
-      <OrbitControls makeDefault />
+    <>
+      {isZoom && (
+        <div
+          css={css({
+            position: "fixed",
+            top: "0.5rem",
+            right: "0.5rem",
+            zIndex: 999,
+          })}
+        >
+          <Button size="sm" color="light" onClick={handleStopZoom}>
+            Stop Zoom
+          </Button>
+        </div>
+      )}
+      <Canvas shadows>
+        <Suspense>
+          <directionalLight
+            castShadow
+            position={[0, 10, 0]}
+            intensity={4}
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+            shadow-camera-far={50}
+            shadow-camera-left={-100}
+            shadow-camera-right={100}
+            shadow-camera-top={100}
+            shadow-camera-bottom={-100}
+          />
 
-      <Wall
-        position={new THREE.Vector3(0, 0, 0)}
-        rotation={new THREE.Euler(Math.PI / 2, 0, 0)}
-        geometry={new THREE.BoxGeometry(4, 3, 0.2)}
-      />
+          <ambientLight intensity={Math.PI / 2} />
+          <spotLight
+            position={[10, 10, 10]}
+            angle={0.15}
+            penumbra={1}
+            decay={0}
+            intensity={Math.PI}
+          />
 
-      <mesh position={new THREE.Vector3(0, 0.4, 0)}>
-        <Wall
-          position={new THREE.Vector3(0, 0, -1.5)}
-          rotation={new THREE.Euler(0, 0, 0)}
-          geometry={new THREE.BoxGeometry(4, 1, 0.2)}
-        />
+          <mesh castShadow>
+            <Wall
+              position={new THREE.Vector3(0, 0, 0)}
+              rotation={new THREE.Euler(Math.PI / 2, 0, 0)}
+              geometry={new THREE.BoxGeometry(4, 3, 0.2)}
+            />
 
-        <Wall
-          position={new THREE.Vector3(2, 0, 0)}
-          rotation={new THREE.Euler(0, Math.PI / 2, 0)}
-          geometry={new THREE.BoxGeometry(3, 1, 0.2)}
-        />
-      </mesh>
+            <mesh position={new THREE.Vector3(0, 0.4, 0)}>
+              <Wall
+                position={new THREE.Vector3(0, 0, -1.5)}
+                rotation={new THREE.Euler(0, 0, 0)}
+                geometry={new THREE.BoxGeometry(4, 1, 0.2)}
+              />
 
-      <Objects />
+              <Wall
+                position={new THREE.Vector3(2, 0, 0)}
+                rotation={new THREE.Euler(0, Math.PI / 2, 0)}
+                geometry={new THREE.BoxGeometry(3, 1, 0.2)}
+              />
+            </mesh>
 
-      {children}
-    </mesh>
+            <Objects onZoom={handleStartZoom} isZoom={isZoom} />
+          </mesh>
+          <Preload all />
+        </Suspense>
+      </Canvas>
+    </>
   );
 }
 
@@ -110,11 +120,18 @@ function Wall(props: ThreeElements["mesh"]) {
   );
 }
 
-function Objects() {
+function Objects({ onZoom, isZoom }: any) {
   const navigate = useNavigate();
+  const [tempTargetPosition, setTempTargetPosition] = useState(
+    new THREE.Vector3(0, 0, 0)
+  );
+  const [targetPosition, setTargetPosition] = useState(
+    new THREE.Vector3(0, 0, 0)
+  );
 
   const [list, setList] = useState([]);
   const [responseList, setResponseList] = useState([]);
+  const { camera } = useThree();
 
   const getFiles = async () => {
     try {
@@ -154,13 +171,13 @@ function Objects() {
   };
 
   const handleClick = (fileId: string) => {
-    const index = responseList.findIndex((item) => {
+    const indexList = responseList.findIndex((item) => {
       return item.id == fileId;
     });
 
-    if (responseList[index].trigger.length == 0) return false;
+    if (responseList[indexList].trigger.length == 0) return false;
 
-    const triggerMap = responseList[index].trigger.filter((trigg) => {
+    const triggerMap = responseList[indexList].trigger.filter((trigg) => {
       return trigg.when == "CLICK";
     });
 
@@ -170,61 +187,85 @@ function Objects() {
 
       for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
         const event = events[eventIndex];
-        switchEvent(event.key, event.value);
+        switch (event.key) {
+          case "MOVE_URL":
+            location.href = event.value;
+            break;
+
+          case "FOCUS_ON":
+            onZoom();
+            setTargetPosition(
+              new THREE.Vector3(
+                responseList[indexList].px,
+                responseList[indexList].py,
+                responseList[indexList].pz
+              )
+            );
+            break;
+
+          default:
+            break;
+        }
+
         console.log(event.key, event.value);
       }
     }
   };
 
-  const switchEvent = (key, value) => {
-    switch (key) {
-      case "MOVE_URL":
-        location.href = value;
-        break;
-
-      default:
-        break;
-    }
-  };
+  useEffect(() => {
+    camera.zoom = isZoom ? 4 : 1;
+    camera.updateProjectionMatrix();
+  }, [camera, isZoom]);
 
   useEffect(() => {
     getFiles();
   }, []);
 
+  useThree(({ camera }) => {
+    camera.rotation.set(
+      THREE.MathUtils.degToRad(-20),
+      THREE.MathUtils.degToRad(20),
+      THREE.MathUtils.degToRad(3)
+    );
+  });
+
   return (
-    <mesh>
-      {list.map((objectItem) => (
-        <Object
-          userData={{
-            id: objectItem.id,
-            url: `${objectItem.url}`,
-            isRemoved: objectItem.isRemoved,
-          }}
-          onClick={() => handleClick(objectItem.id)}
-          position={
-            new THREE.Vector3(
-              objectItem.position.x,
-              objectItem.position.y,
-              objectItem.position.z
-            )
-          }
-          scale={
-            new THREE.Vector3(
-              objectItem.scale.x,
-              objectItem.scale.y,
-              objectItem.scale.z
-            )
-          }
-          rotation={
-            new THREE.Euler(
-              objectItem.rotation.x,
-              objectItem.rotation.y,
-              objectItem.rotation.z
-            )
-          }
-        ></Object>
-      ))}
-    </mesh>
+    <>
+      <OrbitControls makeDefault target={targetPosition} zoom0={0.0001} />
+      <mesh>
+        {list.map((objectItem) => (
+          <Object
+            userData={{
+              id: objectItem.id,
+              url: `${objectItem.url}`,
+              isRemoved: objectItem.isRemoved,
+            }}
+            onClick={() => handleClick(objectItem.id)}
+            position={
+              new THREE.Vector3(
+                objectItem.position.x,
+                objectItem.position.y,
+                objectItem.position.z
+              )
+            }
+            scale={
+              new THREE.Vector3(
+                objectItem.scale.x,
+                objectItem.scale.y,
+                objectItem.scale.z
+              )
+            }
+            rotation={
+              new THREE.Euler(
+                objectItem.rotation.x,
+                objectItem.rotation.y,
+                objectItem.rotation.z
+              )
+            }
+          ></Object>
+        ))}
+      </mesh>
+    </>
   );
 }
 
