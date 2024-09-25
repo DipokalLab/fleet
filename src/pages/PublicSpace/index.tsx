@@ -114,6 +114,8 @@ function Objects() {
   const navigate = useNavigate();
 
   const [list, setList] = useState([]);
+  const [responseList, setResponseList] = useState([]);
+
   const getFiles = async () => {
     try {
       const getSpace = await instance.get(
@@ -145,8 +147,43 @@ function Objects() {
       });
 
       setList([...files]);
+      setResponseList([...getSpace.data.space.files]);
     } catch (error) {
       navigate("/404");
+    }
+  };
+
+  const handleClick = (fileId: string) => {
+    const index = responseList.findIndex((item) => {
+      return item.id == fileId;
+    });
+
+    if (responseList[index].trigger.length == 0) return false;
+
+    const triggerMap = responseList[index].trigger.filter((trigg) => {
+      return trigg.when == "CLICK";
+    });
+
+    for (let index = 0; index < triggerMap.length; index++) {
+      const events = triggerMap[index].event;
+      if (triggerMap[index].event.length == 0) continue;
+
+      for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
+        const event = events[eventIndex];
+        switchEvent(event.key, event.value);
+        console.log(event.key, event.value);
+      }
+    }
+  };
+
+  const switchEvent = (key, value) => {
+    switch (key) {
+      case "MOVE_URL":
+        location.href = value;
+        break;
+
+      default:
+        break;
     }
   };
 
@@ -163,6 +200,7 @@ function Objects() {
             url: `${objectItem.url}`,
             isRemoved: objectItem.isRemoved,
           }}
+          onClick={() => handleClick(objectItem.id)}
           position={
             new THREE.Vector3(
               objectItem.position.x,
