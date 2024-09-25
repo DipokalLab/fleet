@@ -5,15 +5,19 @@ import { Button, Input, Modal, useToast } from "deventds2";
 import { CursorOptions } from "../options/CursorOption";
 import { Description, Title } from "../common/Text";
 import { Column } from "../common/Column";
-import { ClipboardList, House } from "lucide-react";
+import { ClipboardList, Ellipsis, House, Settings2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import instance from "../../../api/axios";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import { OptionPanelContext } from "@/context/OptionPanelContext";
 import { usePageStore } from "@/states/page";
+import { Row } from "../common/Row";
 
 export const TOP_PANEL_HEIGHT = "3rem";
 export const OTHER_TOP_PADDING = "4rem";
+
+const breakpoints = [768];
+const mq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 
 export function TopPanel() {
   const { isPreview } = usePageStore();
@@ -31,6 +35,8 @@ export function TopPanel() {
     spaceTitle: "",
     isPublic: "false",
   });
+
+  const [isMobileShow, setIsMobileShow] = useState(false);
 
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
@@ -134,6 +140,10 @@ export function TopPanel() {
     location.href = "/";
   };
 
+  const handleClickMobileTopView = () => {
+    setIsMobileShow(true);
+  };
+
   useEffect(() => {
     getSpaceInfo();
   }, []);
@@ -198,7 +208,14 @@ export function TopPanel() {
             })}
           ></input>
         </div>
-        <div css={css({ padding: "0rem 0rem" })}>
+        <div
+          css={css({
+            padding: "0rem 0rem",
+            [mq[0]]: {
+              display: "none",
+            },
+          })}
+        >
           <CursorOptions />
         </div>
         <div
@@ -207,6 +224,9 @@ export function TopPanel() {
             display: "flex",
             flexDirection: "row",
             gap: "0.5rem",
+            [mq[0]]: {
+              display: "none",
+            },
           })}
         >
           <Button size="sm" color="light" onClick={handleClickPreview}>
@@ -218,6 +238,38 @@ export function TopPanel() {
           </Button>
         </div>
       </div>
+
+      <div
+        onClick={handleClickMobileTopView}
+        css={css({
+          display: "none",
+          position: "fixed",
+          cursor: "pointer",
+          zIndex: 800,
+          [mq[0]]: {
+            display: "flex",
+            top: "3.5rem",
+            right: "0.5rem",
+          },
+        })}
+      >
+        <Ellipsis />
+      </div>
+
+      <Modal isOpen={isMobileShow} onClose={() => setIsMobileShow(false)}>
+        <Column gap="0.5rem">
+          <CursorOptions />
+          <Row>
+            <Button size="sm" color="light" onClick={handleClickPreview}>
+              Preview
+            </Button>
+
+            <Button size="sm" color="blue" onClick={handleClickPublishButton}>
+              Publish
+            </Button>
+          </Row>
+        </Column>
+      </Modal>
 
       {isPreview && (
         <div
