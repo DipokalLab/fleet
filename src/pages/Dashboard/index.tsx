@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/common/Skeleton";
 import { Nav } from "@/components/ui/common/Nav";
 import { Loading } from "@/components/ui/common/Loading";
+import { Box } from "./SpaceItemBox";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -124,44 +125,16 @@ export function DashboardPage() {
               <Skeleton width={120} height={120}></Skeleton>
             </>
           )}
-          {spaceList.map((item) => (
-            <Box onClick={() => handleClickGoSpace(`/app/${item.id}`)}>
+          {spaceList.map((item, index) => (
+            <Box
+              index={index}
+              onClick={() => handleClickGoSpace(`/app/${item.id}`)}
+            >
               <b>{item.title}</b>
             </Box>
           ))}
         </div>
       </div>
-    </div>
-  );
-}
-
-function Box(
-  props: React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  >
-) {
-  const { children }: { children?: React.ReactNode } = props;
-
-  return (
-    <div
-      {...props}
-      css={css({
-        display: "flex",
-        width: "120px",
-        height: "120px",
-        borderRadius: "0.5rem",
-        justifyContent: "center",
-        alignItems: "center",
-        border: `1px solid #ededf2`,
-        transition: "0.2s",
-        cursor: "pointer",
-        ":hover": {
-          backgroundColor: "#ededf2",
-        },
-      })}
-    >
-      {children}
     </div>
   );
 }
