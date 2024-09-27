@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import { BORDER_COLOR } from "../../../theme/color";
 import { useEffect, useRef, useState } from "react";
 import { OTHER_TOP_PADDING } from "./TopPanel";
+import { usePageStore } from "@/states/page";
 
 export function BottomPanel({
   children,

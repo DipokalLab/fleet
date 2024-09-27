@@ -122,6 +122,7 @@ export function MySpace() {
     if (loadLock == false) {
       if (isPreview) {
         setIsLeftPanelLoad(false);
+        setIsBottomPanelLoad(false);
       } else {
         setIsLeftPanelLoad(true);
       }

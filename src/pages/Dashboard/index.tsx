@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Button } from "deventds2";
+import { Button, useToast } from "deventds2";
 import { useNavigate } from "react-router";
 import { isLocal } from "@/utils/isLocal";
 import { hosts } from "@/api/hosts";
@@ -17,6 +17,7 @@ import { Box } from "./SpaceItemBox";
 export function DashboardPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const toast = useToast();
 
   const [spaceList, setSpaceList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +34,22 @@ export function DashboardPage() {
 
     try {
       const createSpace = await instance.post("space");
+
+      if (createSpace.data.status == -2) {
+        toast.message({
+          text: "You can create up to five spaces.",
+        });
+
+        setTimeout(() => {
+          toast.message({
+            text: "Please upgrade your plan.",
+          });
+        }, 100);
+
+        setIsCreateLoading(false);
+        return false;
+      }
+
       const getId = createSpace.data.space.id;
 
       navigate(`/app/${getId}`);
