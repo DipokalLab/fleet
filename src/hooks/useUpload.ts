@@ -22,11 +22,11 @@ export function useUpload() {
         const blob = new Blob([file], { type: file.type });
         const blobUrl = URL.createObjectURL(blob);
 
-        const maxFileSize = 5 * 1024 * 1024;
+        const maxFileSize = 15 * 1024 * 1024;
 
         if (file && file.size > maxFileSize) {
           toast.message({
-            text: "File size exceeded. The maximum allowed size is 5MB.",
+            text: "File size exceeded. The maximum allowed size is 15MB.",
           });
 
           return false;

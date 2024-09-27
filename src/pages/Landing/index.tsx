@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import { Button, useColorMode } from "deventds2";
 import { useNavigate } from "react-router";
-import { useAuth } from "../hooks/useAuth";
-import { Row } from "../components/ui/common/Row";
+import { useAuth } from "@/hooks/useAuth";
+import { Row } from "@/components/ui/common/Row";
 import { useEffect } from "react";
 
 export function LandingPage() {

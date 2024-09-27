@@ -1,18 +1,26 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "@/utils/isLocal";
+import { hosts } from "@/api/hosts";
 import { LogIn } from "lucide-react";
-import { BackButton } from "../components/ui/BackButton";
+import { useAuth } from "@/hooks/useAuth";
+import { BackButton } from "@/components/ui/BackButton";
+import { Nav } from "@/components/ui/common/Nav";
+import { useState } from "react";
+import { Loading } from "@/components/ui/common/Loading";
 
-export function AuthPage() {
+export function ProfilePage() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleClickGoogle = () => {
-    location.href = isLocal()
-      ? `${hosts.dev}/api/auth/google`
-      : `${hosts.prod}/api/auth/google`;
+  const handleClickLogout = () => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      logout();
+    }, 200);
   };
 
   return (
@@ -26,6 +34,7 @@ export function AuthPage() {
       })}
     >
       <BackButton />
+      <Nav />
 
       <div
         css={css({
@@ -48,7 +57,7 @@ export function AuthPage() {
             gap: "0.5rem",
           })}
         >
-          <LogIn /> Get Started!
+          Profile
         </span>
 
         <div
@@ -56,8 +65,9 @@ export function AuthPage() {
             paddingTop: "1rem",
           })}
         >
-          <Button color="black" width="240px" onClick={handleClickGoogle}>
-            Google Auth
+          <Button color="white" width="240px" onClick={handleClickLogout}>
+            {isLoading && <Loading />}
+            Logout
           </Button>
         </div>
       </div>

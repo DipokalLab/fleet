@@ -1,37 +1,69 @@
 import { css } from "@emotion/react";
-import { Button } from "deventds2";
+import { Button, useToast } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "@/utils/isLocal";
+import { hosts } from "@/api/hosts";
 import { LogIn, Plus } from "lucide-react";
-import { useAuth } from "../hooks/useAuth";
-import { ACTION_ICON_COLOR, BORDER_COLOR, DESC_COLOR } from "../theme/color";
-import { BackButton } from "../components/ui/BackButton";
-import instance from "../api/axios";
+import { useAuth } from "@/hooks/useAuth";
+import { ACTION_ICON_COLOR, BORDER_COLOR, DESC_COLOR } from "@/theme/color";
+import { BackButton } from "@/components/ui/BackButton";
+import instance from "@/api/axios";
 import { useEffect, useState } from "react";
-import { Skeleton } from "../components/ui/common/Skeleton";
-import { Nav } from "../components/ui/common/Nav";
+import { Skeleton } from "@/components/ui/common/Skeleton";
+import { Nav } from "@/components/ui/common/Nav";
+import { Loading } from "@/components/ui/common/Loading";
+import { Box } from "./SpaceItemBox";
 
 export function DashboardPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const toast = useToast();
 
   const [spaceList, setSpaceList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateLoading, setIsCreateLoading] = useState(false);
 
-  const handleClickGoogle = () => {
-    location.href = isLocal()
-      ? `${hosts.dev}/api/auth/google`
-      : `${hosts.prod}/api/auth/google`;
-  };
+  const [isTransition, setIsTransition] = useState(false);
 
   const handleClickCreateSpace = async () => {
+    if (isCreateLoading) {
+      return false;
+    }
+
+    setIsCreateLoading(true);
+
     try {
       const createSpace = await instance.post("space");
+
+      if (createSpace.data.status == -2) {
+        toast.message({
+          text: "You can create up to five spaces.",
+        });
+
+        setTimeout(() => {
+          toast.message({
+            text: "Please upgrade your plan.",
+          });
+        }, 100);
+
+        setIsCreateLoading(false);
+        return false;
+      }
+
       const getId = createSpace.data.space.id;
 
       navigate(`/app/${getId}`);
-    } catch (error) {}
+    } catch (error) {
+      setIsCreateLoading(false);
+    }
+  };
+
+  const handleClickGoSpace = (id: string) => {
+    setIsTransition(true);
+
+    setTimeout(() => {
+      navigate(id);
+    }, 300);
   };
 
   const getSpaceList = async () => {
@@ -61,6 +93,8 @@ export function DashboardPage() {
     >
       <BackButton />
       <Nav />
+
+      <Transition isShow={isTransition} />
       <div
         css={css({
           display: "flex",
@@ -95,7 +129,11 @@ export function DashboardPage() {
           })}
         >
           <Box onClick={handleClickCreateSpace}>
-            <Plus css={css({ color: ACTION_ICON_COLOR })} />
+            {isCreateLoading ? (
+              <Loading />
+            ) : (
+              <Plus css={css({ color: ACTION_ICON_COLOR })} />
+            )}
           </Box>
           {isLoading && (
             <>
@@ -104,8 +142,11 @@ export function DashboardPage() {
               <Skeleton width={120} height={120}></Skeleton>
             </>
           )}
-          {spaceList.map((item) => (
-            <Box onClick={() => navigate(`/app/${item.id}`)}>
+          {spaceList.map((item, index) => (
+            <Box
+              index={index}
+              onClick={() => handleClickGoSpace(`/app/${item.id}`)}
+            >
               <b>{item.title}</b>
             </Box>
           ))}
@@ -115,33 +156,24 @@ export function DashboardPage() {
   );
 }
 
-function Box(
-  props: React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  >
-) {
-  const { children }: { children?: React.ReactNode } = props;
-
+function Transition({ isShow }: { isShow?: boolean }) {
   return (
     <div
-      {...props}
       css={css({
+        position: "fixed",
+        top: 0,
+        height: "100%",
+        width: "100vw",
+        backgroundColor: "#ffffff",
         display: "flex",
-        width: "120px",
-        height: "120px",
-        borderRadius: "0.5rem",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        border: `1px solid #ededf2`,
-        transition: "0.2s",
-        cursor: "pointer",
-        ":hover": {
-          backgroundColor: "#ededf2",
-        },
+        opacity: isShow ? "100%" : "0",
+        visibility: isShow ? "visible" : "hidden",
+        transition: ".2s",
+        zIndex: 900,
       })}
-    >
-      {children}
-    </div>
+    ></div>
   );
 }

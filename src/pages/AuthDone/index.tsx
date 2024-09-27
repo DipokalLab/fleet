@@ -3,7 +3,7 @@ import { Global, css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
-import { setCookie } from "../utils/cookie";
+import { setCookie } from "@/utils/cookie";
 import { CircleCheck } from "lucide-react";
 
 export function AuthDonePage() {

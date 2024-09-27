@@ -7,7 +7,7 @@ import * as THREE from "three";
 import { EntryScene } from "./components/three/Scene";
 import { Space } from "./components/three/space/Space";
 import { useControls } from "leva";
-import { MySpace } from "./pages/MySpace";
+import { MySpace } from "./pages/MySpace/";
 import { useColorMode } from "deventds2";
 
 function App() {

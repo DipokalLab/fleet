@@ -10,12 +10,15 @@ export function Input(props: InputProps) {
     display: "flex",
     flexDirection: "column",
     height: height,
+    width: "100%",
   });
 
   const InputBody = css({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    width: "100%",
+
     height: height,
   });
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { OTHER_TOP_PADDING } from "./TopPanel";
 import { Settings2 } from "lucide-react";
 import { Modal } from "deventds2";
+import { usePageStore } from "@/states/page";
 
 const breakpoints = [768];
 const mq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);

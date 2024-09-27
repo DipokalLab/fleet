@@ -20,6 +20,7 @@ import {
 import instance from "../../../api/axios";
 import { isLocal } from "../../../utils/isLocal";
 import { hosts } from "../../../api/hosts";
+import { usePageStore } from "@/states/page";
 
 export function Objects() {
   const { list } = useObjectsStore();
@@ -98,6 +99,8 @@ export function Objects() {
 }
 
 function Object(props: ThreeElements["mesh"]) {
+  const { isPreview } = usePageStore();
+
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
@@ -140,6 +143,10 @@ function Object(props: ThreeElements["mesh"]) {
   };
 
   const handleClick = () => {
+    if (isPreview) {
+      return false;
+    }
+
     if (isActive == false) {
       cursorStore.changeType("positionChange");
     }
@@ -149,6 +156,9 @@ function Object(props: ThreeElements["mesh"]) {
   };
 
   const handleChange = (e) => {
+    if (isPreview) {
+      return false;
+    }
     try {
       let position = controlsRef.current.object.position;
       let rotation = controlsRef.current.object.rotation;
@@ -197,6 +207,9 @@ function Object(props: ThreeElements["mesh"]) {
     <>
       {!props.userData.isRemoved && (
         <TransformControls
+          showX={isPreview ? false : true}
+          showY={isPreview ? false : true}
+          showZ={isPreview ? false : true}
           ref={controlsRef}
           object={meshRef}
           mode={mode}
