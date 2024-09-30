@@ -25,6 +25,7 @@ export function useObject() {
     url: string,
     id: string,
     options?: {
+      name?: string;
       px?: number;
       py?: number;
       pz?: number;
@@ -37,6 +38,7 @@ export function useObject() {
     }
   ) => {
     const {
+      name = "",
       px = 0,
       py = 0,
       pz = 0,
@@ -52,6 +54,7 @@ export function useObject() {
       id: id,
       url: url,
       isRemoved: false,
+      name: name,
       position: {
         x: px,
         y: py,

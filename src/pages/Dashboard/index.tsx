@@ -70,7 +70,14 @@ export function DashboardPage() {
     try {
       const getSpace = await instance.get("space");
 
-      setSpaceList([...getSpace.data.spaces]);
+      setSpaceList([
+        ...getSpace.data.spaces.map((item) => {
+          return {
+            ...item,
+            key: item.id,
+          };
+        }),
+      ]);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

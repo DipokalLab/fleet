@@ -37,12 +37,15 @@ export function Objects() {
     for (let index = 0; index < files.length; index++) {
       const element = files[index];
 
+      console.log(element);
+
       useObjectHooks.create(
         `${isLocal() ? hosts.dev : hosts.prod}/${
           element.file.fileUrl
         }?id=${Math.random()}`,
         element.id,
         {
+          name: element.name,
           px: element.px,
           py: element.py,
           pz: element.pz,
