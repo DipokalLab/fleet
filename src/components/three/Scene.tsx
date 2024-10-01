@@ -4,7 +4,15 @@ import * as THREE from "three";
 import { Objects } from "./space/Objects";
 import { Suspense } from "react";
 import { Space } from "./space/Space";
-
+import {
+  Bloom,
+  DepthOfField,
+  EffectComposer,
+  LensFlare,
+  Noise,
+  Vignette,
+} from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 const CubeLoader = () => {
   return (
     <mesh>
@@ -67,6 +75,13 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
 
         <Preload all />
       </Suspense>
+
+      {/* <EffectComposer>
+        <Noise
+          premultiply // enables or disables noise premultiplication
+          blendFunction={BlendFunction.ADD} // blend mode
+        />
+      </EffectComposer> */}
     </Canvas>
   );
 }

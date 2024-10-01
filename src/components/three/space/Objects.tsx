@@ -68,34 +68,36 @@ export function Objects() {
   return (
     <mesh>
       {list.map((objectItem) => (
-        <Object
-          userData={{
-            id: objectItem.id,
-            url: `${objectItem.url}`,
-            isRemoved: objectItem.isRemoved,
-          }}
-          position={
-            new THREE.Vector3(
-              objectItem.position.x,
-              objectItem.position.y,
-              objectItem.position.z
-            )
-          }
-          scale={
-            new THREE.Vector3(
-              objectItem.scale.x,
-              objectItem.scale.y,
-              objectItem.scale.z
-            )
-          }
-          rotation={
-            new THREE.Euler(
-              objectItem.rotation.x,
-              objectItem.rotation.y,
-              objectItem.rotation.z
-            )
-          }
-        ></Object>
+        <Suspense fallback={<mesh></mesh>}>
+          <Object
+            userData={{
+              id: objectItem.id,
+              url: `${objectItem.url}`,
+              isRemoved: objectItem.isRemoved,
+            }}
+            position={
+              new THREE.Vector3(
+                objectItem.position.x,
+                objectItem.position.y,
+                objectItem.position.z
+              )
+            }
+            scale={
+              new THREE.Vector3(
+                objectItem.scale.x,
+                objectItem.scale.y,
+                objectItem.scale.z
+              )
+            }
+            rotation={
+              new THREE.Euler(
+                objectItem.rotation.x,
+                objectItem.rotation.y,
+                objectItem.rotation.z
+              )
+            }
+          ></Object>
+        </Suspense>
       ))}
     </mesh>
   );

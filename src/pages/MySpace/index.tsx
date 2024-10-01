@@ -35,6 +35,7 @@ import { InputOptions } from "./OptionsInput";
 import { Trigger, TriggerModalContent } from "./Trigger";
 import { EventModalContent } from "./Event";
 import { usePageStore } from "@/states/page";
+import { Tree } from "./Tree";
 
 export function MySpace() {
   const toast = useToast();
@@ -166,6 +167,8 @@ export function MySpace() {
                 Models
               </Button>
             </Column>
+
+            <Tree />
           </Column>
         </div>
       </LeftPanel>
