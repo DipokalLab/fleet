@@ -128,6 +128,12 @@ function Object(props: ThreeElements["mesh"]) {
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
 
+  const showAxis = isPreview
+    ? false
+    : targetId == props.userData.id
+    ? true
+    : false;
+
   const controlsRef: any = useRef();
 
   const updateObject = async (element) => {
@@ -212,9 +218,9 @@ function Object(props: ThreeElements["mesh"]) {
     <>
       {!props.userData.isRemoved && (
         <TransformControls
-          showX={isPreview ? false : true}
-          showY={isPreview ? false : true}
-          showZ={isPreview ? false : true}
+          showX={showAxis}
+          showY={showAxis}
+          showZ={showAxis}
           ref={controlsRef}
           object={meshRef}
           mode={mode}

@@ -1,5 +1,9 @@
 import { css } from "@emotion/react";
 import { SUBTITLE_COLOR } from "../../theme/color";
+import { Canvas, useLoader } from "@react-three/fiber";
+import { Suspense, useRef } from "react";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import * as THREE from "three";
 
 export function ModelBox({
   url,
@@ -32,7 +36,49 @@ export function ModelBox({
         },
       })}
     >
-      {tag}
+      <LoadGlb url={url} />
     </div>
   );
+}
+
+function LoadGlb({ url }: any) {
+  try {
+    const meshRef = useRef<THREE.Mesh>(null!);
+    const gltf: any = useLoader(GLTFLoader, url);
+
+    return (
+      <Canvas shadows>
+        <Suspense>
+          <directionalLight
+            castShadow
+            position={[0, 10, 0]}
+            intensity={4}
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+            shadow-camera-far={50}
+            shadow-camera-left={-100}
+            shadow-camera-right={100}
+            shadow-camera-top={100}
+            shadow-camera-bottom={-100}
+          />
+
+          <ambientLight intensity={Math.PI / 2} />
+          <spotLight
+            position={[10, 10, 10]}
+            angle={0.15}
+            penumbra={1}
+            decay={0}
+            intensity={Math.PI}
+          />
+
+          <mesh ref={meshRef}>
+            <primitive object={gltf.scene} />
+            <meshStandardMaterial />
+          </mesh>
+        </Suspense>
+      </Canvas>
+    );
+  } catch (error) {
+    return <mesh></mesh>;
+  }
 }
