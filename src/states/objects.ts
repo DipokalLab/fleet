@@ -4,6 +4,7 @@ type ObjectType = {
   id: string;
   url: string;
   isRemoved: boolean;
+  enablePhysics: boolean;
   name: string;
 
   position: {
@@ -35,6 +36,7 @@ const defaultObject: ObjectType = {
   id: String(Math.random()),
   url: "",
   isRemoved: false,
+  enablePhysics: false,
   name: "",
 
   position: {

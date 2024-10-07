@@ -61,8 +61,6 @@ export function LeftPanel({
           backdropFilter: "blur(12px)",
           borderRight: `1px solid ${BORDER_COLOR}`,
           zIndex: 300,
-          padding: "1rem",
-          paddingTop: OTHER_TOP_PADDING,
           transition: ".5s",
           transform: isLoaded
             ? "translate(0px, 0px)"
@@ -73,7 +71,17 @@ export function LeftPanel({
           },
         })}
       >
-        {children}
+        <div
+          css={css({
+            padding: "1rem",
+            width: "100%",
+            paddingTop: OTHER_TOP_PADDING,
+            overflow: "scroll",
+            scrollbarWidth: "none",
+          })}
+        >
+          {children}
+        </div>
       </div>
 
       <Modal isOpen={isMobileShow} onClose={() => setIsMobileShow(false)}>

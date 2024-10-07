@@ -21,11 +21,19 @@ export function Tree() {
     <Column>
       <SubTitle>Objects</SubTitle>
 
-      <Column>
+      <div
+        css={css({
+          display: "flex",
+          overflow: "scroll",
+          flexDirection: "column",
+          gap: "0.25rem",
+          height: "70vh",
+        })}
+      >
         {list.map((item) => (
           <Element objectId={item.id}>{item.name || "Unnamed Object"}</Element>
         ))}
-      </Column>
+      </div>
     </Column>
   );
 }
@@ -48,7 +56,10 @@ function Element(props: TreeElementProps) {
   const boxStyle = css({
     borderRadius: "0.6rem",
     backgroundColor: "#ffffff",
-    border: `0.1rem solid #F0F0F4`,
+    border:
+      props.objectId == targetId
+        ? "0.1rem solid #3b82f6"
+        : `0.1rem solid #F0F0F4`,
     padding: "0.5rem 0.5rem",
     fontSize: "0.8rem",
     color: SUBTITLE_COLOR,

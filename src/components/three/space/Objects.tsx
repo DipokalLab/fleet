@@ -21,6 +21,7 @@ import instance from "../../../api/axios";
 import { isLocal } from "../../../utils/isLocal";
 import { hosts } from "../../../api/hosts";
 import { usePageStore } from "@/states/page";
+import { RigidBody } from "@react-three/rapier";
 
 export function Objects() {
   const { list } = useObjectsStore();
@@ -46,6 +47,8 @@ export function Objects() {
         element.id,
         {
           name: element.name,
+          enablePhysics: element.enablePhysics,
+
           px: element.px,
           py: element.py,
           pz: element.pz,
@@ -74,6 +77,7 @@ export function Objects() {
               id: objectItem.id,
               url: `${objectItem.url}`,
               isRemoved: objectItem.isRemoved,
+              enablePhysics: objectItem.enablePhysics,
             }}
             position={
               new THREE.Vector3(
@@ -227,10 +231,19 @@ function Object(props: ThreeElements["mesh"]) {
           enabled={targetId == props.userData.id}
           onMouseUp={handleChange}
         >
-          <mesh onClick={handleClick} {...props} ref={meshRef}>
-            <primitive object={gltf.scene} />
-            <meshStandardMaterial color={isActive ? "black" : "orange"} />
-          </mesh>
+          {props.userData.enablePhysics ? (
+            <RigidBody>
+              <mesh onClick={handleClick} {...props} ref={meshRef}>
+                <primitive object={gltf.scene} />
+                <meshStandardMaterial color={isActive ? "black" : "orange"} />
+              </mesh>
+            </RigidBody>
+          ) : (
+            <mesh onClick={handleClick} {...props} ref={meshRef}>
+              <primitive object={gltf.scene} />
+              <meshStandardMaterial color={isActive ? "black" : "orange"} />
+            </mesh>
+          )}
         </TransformControls>
       )}
 

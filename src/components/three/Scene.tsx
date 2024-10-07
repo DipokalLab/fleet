@@ -1,4 +1,4 @@
-import { Box, Preload } from "@react-three/drei";
+import { Box, Preload, Torus } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Objects } from "./space/Objects";
@@ -13,6 +13,7 @@ import {
   Vignette,
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
+import { CuboidCollider, Physics, RigidBody } from "@react-three/rapier";
 const CubeLoader = () => {
   return (
     <mesh>
@@ -69,11 +70,14 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
           intensity={Math.PI}
         />
 
-        {children}
+        <Physics gravity={[0, -9.8, 0]} debug>
+          {children}
 
-        <Objects></Objects>
+          <Objects></Objects>
+          <CuboidCollider position={[0, -2, 0]} args={[100, 0.5, 100]} />
 
-        <Preload all />
+          <Preload all />
+        </Physics>
       </Suspense>
 
       {/* <EffectComposer>

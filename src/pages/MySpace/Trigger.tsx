@@ -44,7 +44,6 @@ export function Trigger({
             display: "flex",
             flexDirection: "column",
             gap: "0.5rem",
-            marginBottom: "0.5rem",
           })}
         >
           {list.map((trigger) => (

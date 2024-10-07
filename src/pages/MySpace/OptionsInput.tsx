@@ -31,6 +31,7 @@ import * as THREE from "three";
 import axios from "axios";
 import instance from "@/api/axios";
 import { useDebouncedCallback } from "use-debounce";
+import { Physics } from "./Physics";
 
 export function InputOptions({
   targetId,
@@ -265,6 +266,8 @@ export function InputOptions({
       </Column>
 
       {children}
+
+      <Physics />
 
       <Column>
         <SubTitle>Option</SubTitle>
