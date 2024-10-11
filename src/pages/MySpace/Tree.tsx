@@ -6,12 +6,13 @@ import { useObjectsStore } from "@/states/objects";
 import { usePageStore } from "@/states/page";
 import { DESC_COLOR, SUBTITLE_COLOR } from "@/theme/color";
 import { css } from "@emotion/react";
-import { Package } from "lucide-react";
+import { Box, Boxes, Package } from "lucide-react";
 import { useContext } from "react";
 
 interface TreeElementProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   objectId: string;
+  objectType?: string;
 }
 
 export function Tree() {
@@ -31,7 +32,9 @@ export function Tree() {
         })}
       >
         {list.map((item) => (
-          <Element objectId={item.id}>{item.name || "Unnamed Object"}</Element>
+          <Element objectType={item.type} objectId={item.id}>
+            {item.name || "Unnamed Object"}
+          </Element>
         ))}
       </div>
     </Column>
@@ -73,6 +76,15 @@ function Element(props: TreeElementProps) {
     width: "16px",
     height: "16px",
   });
+
+  if (props.objectType == "BOX") {
+    return (
+      <div onClick={handleClick} css={boxStyle}>
+        <Boxes css={iconStyle} />
+        {props.children}
+      </div>
+    );
+  }
 
   return (
     <div onClick={handleClick} css={boxStyle}>
