@@ -14,6 +14,7 @@ import {
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import { CuboidCollider, Physics, RigidBody } from "@react-three/rapier";
+import { usePageStore } from "@/states/page";
 const CubeLoader = () => {
   return (
     <mesh>
@@ -45,6 +46,8 @@ const CubeLoader = () => {
 };
 
 export function EntryScene({ children }: { children?: React.ReactNode }) {
+  const { isPhysicsDebug } = usePageStore();
+
   return (
     <Canvas shadows>
       <Suspense fallback={<CubeLoader />}>
@@ -70,7 +73,7 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
           intensity={Math.PI}
         />
 
-        <Physics gravity={[0, -9.8, 0]} debug>
+        <Physics gravity={[0, -9.8, 0]} debug={isPhysicsDebug}>
           {children}
 
           <Objects></Objects>

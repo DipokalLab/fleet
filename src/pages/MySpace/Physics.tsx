@@ -12,8 +12,22 @@ import { Toggle } from "deventds2";
 import { Package } from "lucide-react";
 import { useContext, useState } from "react";
 
+const toggleRowStyle = css({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "0.25rem 0rem",
+});
+
+const flexEndStyle = css({
+  display: "flex",
+  alignItems: "end",
+});
+
 export function Physics() {
   const { list, updateObject } = useObjectsStore();
+  const { isPhysicsDebug, switchIsPhysicsDebug } = usePageStore();
   const [isOpen, setIsOpen] = useState(false);
   const { targetId } = useContext(OptionPanelContext);
 
@@ -41,28 +55,30 @@ export function Physics() {
     } catch (error) {}
   };
 
+  const handleClickDebugToggle = () => {
+    switchIsPhysicsDebug(!isPhysicsDebug);
+  };
+
   return (
     <Column>
-      <div
-        css={css({
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0.25rem 0rem",
-        })}
-      >
+      <div css={toggleRowStyle}>
         <SubTitle>Physics</SubTitle>
         {target && (
-          <div
-            css={css({
-              display: "flex",
-              alignItems: "end",
-            })}
-          >
+          <div css={flexEndStyle}>
             <Toggle
               checked={target.enablePhysics}
               onClick={handleClickToggle}
+            ></Toggle>
+          </div>
+        )}
+      </div>
+      <div css={toggleRowStyle}>
+        <SubTitle>Physics Debug</SubTitle>
+        {target && (
+          <div css={flexEndStyle}>
+            <Toggle
+              checked={isPhysicsDebug}
+              onClick={handleClickDebugToggle}
             ></Toggle>
           </div>
         )}
