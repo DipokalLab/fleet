@@ -40,26 +40,50 @@ export function Objects() {
 
       console.log(element);
 
-      useObjectHooks.create(
-        `${isLocal() ? hosts.dev : hosts.prod}/${
-          element.file.fileUrl
-        }?id=${Math.random()}`,
-        element.id,
-        {
-          name: element.name,
-          enablePhysics: element.enablePhysics,
+      switch (element.type) {
+        case "MODEL":
+          useObjectHooks.create(
+            `${isLocal() ? hosts.dev : hosts.prod}/${
+              element.file.fileUrl
+            }?id=${Math.random()}`,
+            element.id,
+            {
+              name: element.name,
+              enablePhysics: element.enablePhysics,
+              type: element.type,
+              px: element.px,
+              py: element.py,
+              pz: element.pz,
+              sx: element.sx,
+              sy: element.sy,
+              sz: element.sz,
+              rx: element.rx,
+              ry: element.ry,
+              rz: element.rz,
+            }
+          );
+          break;
 
-          px: element.px,
-          py: element.py,
-          pz: element.pz,
-          sx: element.sx,
-          sy: element.sy,
-          sz: element.sz,
-          rx: element.rx,
-          ry: element.ry,
-          rz: element.rz,
-        }
-      );
+        case "BOX":
+          useObjectHooks.create("", element.id, {
+            name: element.name,
+            enablePhysics: element.enablePhysics,
+            type: element.type,
+            px: element.px,
+            py: element.py,
+            pz: element.pz,
+            sx: element.sx,
+            sy: element.sy,
+            sz: element.sz,
+            rx: element.rx,
+            ry: element.ry,
+            rz: element.rz,
+          });
+          break;
+
+        default:
+          break;
+      }
     }
   };
 
@@ -78,6 +102,7 @@ export function Objects() {
               url: `${objectItem.url}`,
               isRemoved: objectItem.isRemoved,
               enablePhysics: objectItem.enablePhysics,
+              type: objectItem.type,
             }}
             position={
               new THREE.Vector3(
@@ -113,7 +138,9 @@ function Object(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
-  const gltf = useLoader(GLTFLoader, url);
+  const [gltf, setGltf] = useState<any>(
+    props.userData.type == "MODEL" ? useLoader(GLTFLoader, url) : ""
+  );
   const cursorStore = useCursorStore();
   const objectStore = useObjectsStore();
 
@@ -217,6 +244,39 @@ function Object(props: ThreeElements["mesh"]) {
     const tempMode: any = editMode[cursorStore.type];
     setMode(tempMode);
   }, [cursorStore.type]);
+
+  if (props.userData.type == "BOX") {
+    return (
+      <>
+        {!props.userData.isRemoved && (
+          <TransformControls
+            showX={showAxis}
+            showY={showAxis}
+            showZ={showAxis}
+            ref={controlsRef}
+            object={meshRef}
+            mode={mode}
+            enabled={targetId == props.userData.id}
+            onMouseUp={handleChange}
+          >
+            {props.userData.enablePhysics ? (
+              <RigidBody>
+                <mesh onClick={handleClick} {...props} ref={meshRef}>
+                  <boxGeometry />
+                  <meshStandardMaterial color={"#ffffff"} />
+                </mesh>
+              </RigidBody>
+            ) : (
+              <mesh onClick={handleClick} {...props} ref={meshRef}>
+                <boxGeometry />
+                <meshStandardMaterial color={"#ffffff"} />
+              </mesh>
+            )}
+          </TransformControls>
+        )}
+      </>
+    );
+  }
 
   return (
     <>

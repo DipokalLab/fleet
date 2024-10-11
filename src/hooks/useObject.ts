@@ -26,7 +26,7 @@ export function useObject() {
     id: string,
     options?: {
       enablePhysics?: boolean;
-
+      type?: "MODEL" | "BOX";
       name?: string;
       px?: number;
       py?: number;
@@ -42,6 +42,7 @@ export function useObject() {
     const {
       name = "",
       enablePhysics = false,
+      type = "MODEL",
       px = 0,
       py = 0,
       pz = 0,
@@ -59,6 +60,7 @@ export function useObject() {
       isRemoved: false,
       enablePhysics: enablePhysics,
       name: name,
+      type: type,
       position: {
         x: px,
         y: py,

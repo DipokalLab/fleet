@@ -58,6 +58,7 @@ export function MySpace() {
   const intervalRef = useRef(null);
 
   const { uploadObject } = useUpload();
+  const useObjectHooks = useObject();
 
   const handleLoad = () => {
     setTimeout(() => {
@@ -82,12 +83,42 @@ export function MySpace() {
     } catch (error) {}
   };
 
+  const createBox = async () => {
+    try {
+      const spaceId = location.pathname.split("/")[2];
+      const createSpaceFile = await instance.post("space/file/box3d", {
+        spaceId: spaceId,
+      });
+
+      useObjectHooks.create("", createSpaceFile.data.spaceFile.id, {
+        type: "BOX",
+        px: 0,
+        py: 0,
+        pz: 0,
+        sx: 1,
+        sy: 1,
+        sz: 1,
+        rx: 0,
+        ry: 0,
+        rz: 0,
+      });
+
+      toast.message({
+        text: "Created!",
+      });
+    } catch (error) {}
+  };
+
   const handleUpload = () => {
     uploadObject();
   };
 
   const handleClickDefaultModel = () => {
     setIsBottomPanelLoad((isOpen) => !isOpen);
+  };
+
+  const handleClickCreateBox3d = () => {
+    createBox();
   };
 
   const handleCloseOptionPanel = () => {
@@ -168,6 +199,10 @@ export function MySpace() {
               <SubTitle>Action</SubTitle>
               <Button onClick={handleClickDefaultModel} color="white">
                 Models
+              </Button>
+
+              <Button onClick={handleClickCreateBox3d} color="white">
+                CreateBox
               </Button>
             </Column>
 

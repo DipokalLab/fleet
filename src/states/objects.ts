@@ -6,6 +6,7 @@ type ObjectType = {
   isRemoved: boolean;
   enablePhysics: boolean;
   name: string;
+  type: "MODEL" | "BOX";
 
   position: {
     x: number;
@@ -38,7 +39,7 @@ const defaultObject: ObjectType = {
   isRemoved: false,
   enablePhysics: false,
   name: "",
-
+  type: "MODEL",
   position: {
     x: 0,
     y: 0,
