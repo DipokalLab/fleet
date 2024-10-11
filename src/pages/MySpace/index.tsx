@@ -36,6 +36,7 @@ import { Trigger, TriggerModalContent } from "./Trigger";
 import { EventModalContent } from "./Event";
 import { usePageStore } from "@/states/page";
 import { Tree } from "./Tree";
+import { DragAndDropFileUpload } from "./DragFileUpload";
 
 export function MySpace() {
   const toast = useToast();
@@ -146,6 +147,8 @@ export function MySpace() {
       <LoadingScreen onLoaded={handleLoad} progress={loadPercent} />
 
       <TopPanel />
+
+      <DragAndDropFileUpload />
 
       <LeftPanel isLoaded={isLeftPanelLoad}>
         <div
