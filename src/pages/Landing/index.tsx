@@ -259,17 +259,7 @@ export function LandingPage() {
                 textAlign: "center",
               }}
             >
-              <img
-                src="/user1.jpg"
-                alt="User 1"
-                style={{
-                  borderRadius: "50%",
-                  width: "50px",
-                  height: "50px",
-                  marginBottom: "0.5rem",
-                }}
-              />
-              <h3>@user1</h3>
+              <h3>@huh.hyeongjun</h3>
               <p css={css({ color: SUBTITLE_COLOR })}>
                 "This platform has transformed the way I design. The 3D features
                 are incredible!"
@@ -284,16 +274,6 @@ export function LandingPage() {
                 textAlign: "center",
               }}
             >
-              <img
-                src="/user2.jpg"
-                alt="User 2"
-                style={{
-                  borderRadius: "50%",
-                  width: "50px",
-                  height: "50px",
-                  marginBottom: "0.5rem",
-                }}
-              />
               <h3>@user2</h3>
               <p css={css({ color: SUBTITLE_COLOR })}>
                 "I love the collaboration tools. Working with my team has never
@@ -309,16 +289,6 @@ export function LandingPage() {
                 textAlign: "center",
               }}
             >
-              <img
-                src="/user3.jpg"
-                alt="User 3"
-                style={{
-                  borderRadius: "50%",
-                  width: "50px",
-                  height: "50px",
-                  marginBottom: "0.5rem",
-                }}
-              />
               <h3>@user3</h3>
               <p css={css({ color: SUBTITLE_COLOR })}>
                 "The rapid deployment feature is a game-changer. Highly
