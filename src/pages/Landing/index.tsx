@@ -309,7 +309,6 @@ export function LandingPage() {
           </Description>
           <div
             css={css({
-              width: "600px",
               margin: "0 auto",
               marginTop: "1rem",
             })}
