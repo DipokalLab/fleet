@@ -14,11 +14,15 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  touch-action: none;
+  touch-action: auto;
 }
 
 body {
   -ms-overflow-style: none;
+}
+
+canvas {
+  touch-action: none !important;
 }
 
 ::-webkit-scrollbar {

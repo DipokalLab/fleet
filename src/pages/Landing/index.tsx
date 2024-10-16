@@ -1,4 +1,4 @@
-import { css, keyframes } from "@emotion/react";
+import { css, Global, keyframes } from "@emotion/react";
 import { Button, Collapse, CollapseItem, useColorMode } from "deventds2";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
@@ -51,6 +51,7 @@ export function LandingPage() {
           justifyContent: "center",
           height: "100%",
           flexDirection: "column",
+          touchAction: "auto",
         })}
       >
         <div
