@@ -30,6 +30,8 @@ import { TopProgressContext } from "@/context/TopProgress";
 import * as THREE from "three";
 import axios from "axios";
 import instance from "@/api/axios";
+import { useDebouncedCallback } from "use-debounce";
+import { Physics } from "./Physics";
 
 export function InputOptions({
   targetId,
@@ -40,8 +42,11 @@ export function InputOptions({
   onClosePanel?: any;
   children?: React.ReactNode;
 }) {
+  const toast = useToast();
+
   const { list, updateObject } = useObjectsStore();
   const [optionInput, setOptionInput] = useState({
+    name: "",
     position: {
       x: 0,
       y: 0,
@@ -58,9 +63,14 @@ export function InputOptions({
       z: 0,
     },
   });
+
   const useObjectHooks = useObject();
   const { isOpenOptionPanel, switchOpenOptionPanel } =
     useContext(OptionPanelContext);
+
+  const debouncedSpaceFileTitle = useDebouncedCallback((value) => {
+    setSpaceFileName(value);
+  }, 1000);
 
   const initValueOnOptions = () => {
     if (targetId == "") {
@@ -73,6 +83,7 @@ export function InputOptions({
 
     setOptionInput({
       ...optionInput,
+      ["name"]: list[targetIndex]["name"],
       ["position"]: {
         ...list[targetIndex]["position"],
       },
@@ -83,6 +94,23 @@ export function InputOptions({
         ...list[targetIndex]["rotation"],
       },
     });
+  };
+
+  const setSpaceFileName = async (name: string) => {
+    try {
+      const updateSpaceFile = await instance.put("space/file/name", {
+        id: targetId,
+        spaceFileName: name,
+      });
+
+      toast.message({
+        text: "Successfully update",
+      });
+    } catch (error) {
+      toast.message({
+        text: "Fail",
+      });
+    }
   };
 
   const removeRequest = async () => {
@@ -119,6 +147,22 @@ export function InputOptions({
     updateObject([...list]);
   };
 
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const targetIndex = list.findIndex((item) => {
+      return item.id == targetId;
+    });
+
+    list[targetIndex]["name"] = e.target.value;
+    setOptionInput({
+      ...optionInput,
+      ["name"]: e.target.value,
+    });
+
+    debouncedSpaceFileTitle(e.target.value);
+
+    updateObject([...list]);
+  };
+
   useEffect(() => {
     initValueOnOptions();
   }, [targetId]);
@@ -129,6 +173,17 @@ export function InputOptions({
 
   return (
     <Column gap="0.5rem" height="100%">
+      <Column>
+        <SubTitle>Name</SubTitle>
+
+        <Input
+          name="name"
+          onChange={handleChangeName}
+          placeholder="Name"
+          value={optionInput.name}
+        />
+      </Column>
+
       <Column>
         <SubTitle>Position</SubTitle>
         <InputGroup>
@@ -211,6 +266,8 @@ export function InputOptions({
       </Column>
 
       {children}
+
+      <Physics />
 
       <Column>
         <SubTitle>Option</SubTitle>

@@ -21,6 +21,7 @@ import instance from "../../../api/axios";
 import { isLocal } from "../../../utils/isLocal";
 import { hosts } from "../../../api/hosts";
 import { usePageStore } from "@/states/page";
+import { RigidBody } from "@react-three/rapier";
 
 export function Objects() {
   const { list } = useObjectsStore();
@@ -37,23 +38,52 @@ export function Objects() {
     for (let index = 0; index < files.length; index++) {
       const element = files[index];
 
-      useObjectHooks.create(
-        `${isLocal() ? hosts.dev : hosts.prod}/${
-          element.file.fileUrl
-        }?id=${Math.random()}`,
-        element.id,
-        {
-          px: element.px,
-          py: element.py,
-          pz: element.pz,
-          sx: element.sx,
-          sy: element.sy,
-          sz: element.sz,
-          rx: element.rx,
-          ry: element.ry,
-          rz: element.rz,
-        }
-      );
+      console.log(element);
+
+      switch (element.type) {
+        case "MODEL":
+          useObjectHooks.create(
+            `${isLocal() ? hosts.dev : hosts.prod}/${
+              element.file.fileUrl
+            }?id=${Math.random()}`,
+            element.id,
+            {
+              name: element.name,
+              enablePhysics: element.enablePhysics,
+              type: element.type,
+              px: element.px,
+              py: element.py,
+              pz: element.pz,
+              sx: element.sx,
+              sy: element.sy,
+              sz: element.sz,
+              rx: element.rx,
+              ry: element.ry,
+              rz: element.rz,
+            }
+          );
+          break;
+
+        case "BOX":
+          useObjectHooks.create("", element.id, {
+            name: element.name,
+            enablePhysics: element.enablePhysics,
+            type: element.type,
+            px: element.px,
+            py: element.py,
+            pz: element.pz,
+            sx: element.sx,
+            sy: element.sy,
+            sz: element.sz,
+            rx: element.rx,
+            ry: element.ry,
+            rz: element.rz,
+          });
+          break;
+
+        default:
+          break;
+      }
     }
   };
 
@@ -65,34 +95,38 @@ export function Objects() {
   return (
     <mesh>
       {list.map((objectItem) => (
-        <Object
-          userData={{
-            id: objectItem.id,
-            url: `${objectItem.url}`,
-            isRemoved: objectItem.isRemoved,
-          }}
-          position={
-            new THREE.Vector3(
-              objectItem.position.x,
-              objectItem.position.y,
-              objectItem.position.z
-            )
-          }
-          scale={
-            new THREE.Vector3(
-              objectItem.scale.x,
-              objectItem.scale.y,
-              objectItem.scale.z
-            )
-          }
-          rotation={
-            new THREE.Euler(
-              objectItem.rotation.x,
-              objectItem.rotation.y,
-              objectItem.rotation.z
-            )
-          }
-        ></Object>
+        <Suspense fallback={<mesh></mesh>}>
+          <Object
+            userData={{
+              id: objectItem.id,
+              url: `${objectItem.url}`,
+              isRemoved: objectItem.isRemoved,
+              enablePhysics: objectItem.enablePhysics,
+              type: objectItem.type,
+            }}
+            position={
+              new THREE.Vector3(
+                objectItem.position.x,
+                objectItem.position.y,
+                objectItem.position.z
+              )
+            }
+            scale={
+              new THREE.Vector3(
+                objectItem.scale.x,
+                objectItem.scale.y,
+                objectItem.scale.z
+              )
+            }
+            rotation={
+              new THREE.Euler(
+                objectItem.rotation.x,
+                objectItem.rotation.y,
+                objectItem.rotation.z
+              )
+            }
+          ></Object>
+        </Suspense>
       ))}
     </mesh>
   );
@@ -104,7 +138,9 @@ function Object(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
-  const gltf = useLoader(GLTFLoader, url);
+  const [gltf, setGltf] = useState<any>(
+    props.userData.type == "MODEL" ? useLoader(GLTFLoader, url) : ""
+  );
   const cursorStore = useCursorStore();
   const objectStore = useObjectsStore();
 
@@ -122,6 +158,12 @@ function Object(props: ThreeElements["mesh"]) {
 
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
+
+  const showAxis = isPreview
+    ? false
+    : targetId == props.userData.id
+    ? true
+    : false;
 
   const controlsRef: any = useRef();
 
@@ -203,23 +245,65 @@ function Object(props: ThreeElements["mesh"]) {
     setMode(tempMode);
   }, [cursorStore.type]);
 
+  if (props.userData.type == "BOX") {
+    return (
+      <>
+        {!props.userData.isRemoved && (
+          <TransformControls
+            showX={showAxis}
+            showY={showAxis}
+            showZ={showAxis}
+            ref={controlsRef}
+            object={meshRef}
+            mode={mode}
+            enabled={targetId == props.userData.id}
+            onMouseUp={handleChange}
+          >
+            {props.userData.enablePhysics ? (
+              <RigidBody>
+                <mesh onClick={handleClick} {...props} ref={meshRef}>
+                  <boxGeometry />
+                  <meshStandardMaterial color={"#ffffff"} />
+                </mesh>
+              </RigidBody>
+            ) : (
+              <mesh onClick={handleClick} {...props} ref={meshRef}>
+                <boxGeometry />
+                <meshStandardMaterial color={"#ffffff"} />
+              </mesh>
+            )}
+          </TransformControls>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       {!props.userData.isRemoved && (
         <TransformControls
-          showX={isPreview ? false : true}
-          showY={isPreview ? false : true}
-          showZ={isPreview ? false : true}
+          showX={showAxis}
+          showY={showAxis}
+          showZ={showAxis}
           ref={controlsRef}
           object={meshRef}
           mode={mode}
           enabled={targetId == props.userData.id}
           onMouseUp={handleChange}
         >
-          <mesh onClick={handleClick} {...props} ref={meshRef}>
-            <primitive object={gltf.scene} />
-            <meshStandardMaterial color={isActive ? "black" : "orange"} />
-          </mesh>
+          {props.userData.enablePhysics ? (
+            <RigidBody>
+              <mesh onClick={handleClick} {...props} ref={meshRef}>
+                <primitive object={gltf.scene} />
+                <meshStandardMaterial color={isActive ? "black" : "orange"} />
+              </mesh>
+            </RigidBody>
+          ) : (
+            <mesh onClick={handleClick} {...props} ref={meshRef}>
+              <primitive object={gltf.scene} />
+              <meshStandardMaterial color={isActive ? "black" : "orange"} />
+            </mesh>
+          )}
         </TransformControls>
       )}
 

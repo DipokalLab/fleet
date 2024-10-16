@@ -109,9 +109,7 @@ export function TopPanel() {
     } catch (error) {}
   };
 
-  const handleClickClipboard = () => {
-    const text = `${location.origin}/space/${location.pathname.split("/")[2]}`;
-
+  const copyClipboard = (text: string) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
@@ -122,6 +120,22 @@ export function TopPanel() {
       .catch((err) => {
         console.error("Failed to copy");
       });
+  };
+
+  const handleClickClipboardLink = () => {
+    const text = `${location.origin}/space/${location.pathname.split("/")[2]}`;
+
+    copyClipboard(text);
+
+    const embed = ` <iframe src='https://my.spline.design/glasseffectcopy-1abf110d8b022625e5bc21697c792761/' frameborder='0' width='100%' height='100%'></iframe>`;
+  };
+
+  const handleClickClipboardEmbed = () => {
+    const embed = ` <iframe src='${location.origin}/space/${
+      location.pathname.split("/")[2]
+    }' frameborder='0' width='100%' height='100%'></iframe>`;
+
+    copyClipboard(embed);
   };
 
   const handleClickPreview = () => {
@@ -303,6 +317,9 @@ export function TopPanel() {
               css={css({
                 display: "flex",
                 justifyContent: "center",
+                flexDirection: "column",
+                gap: "0.5rem",
+                alignItems: "center",
               })}
             >
               <Input
@@ -311,7 +328,7 @@ export function TopPanel() {
                 }`}
                 subfix={
                   <p
-                    onClick={handleClickClipboard}
+                    onClick={handleClickClipboardLink}
                     style={{
                       margin: 0,
                     }}
@@ -324,6 +341,9 @@ export function TopPanel() {
                   </p>
                 }
               ></Input>
+              <Button color="light" onClick={handleClickClipboardEmbed}>
+                Copy Embed
+              </Button>
             </div>
           )}
 
