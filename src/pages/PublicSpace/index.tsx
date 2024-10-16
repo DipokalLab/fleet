@@ -22,6 +22,7 @@ import { hosts } from "@/api/hosts";
 import { useNavigate } from "react-router";
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
+import { RigidBody } from "@react-three/rapier";
 
 export function PublicSpacePage() {
   const [isZoom, setIsZoom] = useState(false);
@@ -140,33 +141,66 @@ function Objects({ onZoom, isZoom }: any) {
       );
 
       const files = getSpace.data.space.files.map((element) => {
-        return {
-          url: `${isLocal() ? hosts.dev : hosts.prod}/${
-            element.file.fileUrl
-          }?id=${Math.random()}`,
-          id: element.id,
-          position: {
-            x: element.px,
-            y: element.py,
-            z: element.pz,
-          },
-          scale: {
-            x: element.sx,
-            y: element.sy,
-            z: element.sz,
-          },
-          rotation: {
-            x: element.rx,
-            y: element.ry,
-            z: element.rz,
-          },
-        };
+        switch (element.type) {
+          case "MODEL":
+            return {
+              url: `${isLocal() ? hosts.dev : hosts.prod}/${
+                element.file.fileUrl
+              }?id=${Math.random()}`,
+              id: element.id,
+              enablePhysics: element.enablePhysics,
+              type: element.type,
+              position: {
+                x: element.px,
+                y: element.py,
+                z: element.pz,
+              },
+              scale: {
+                x: element.sx,
+                y: element.sy,
+                z: element.sz,
+              },
+              rotation: {
+                x: element.rx,
+                y: element.ry,
+                z: element.rz,
+              },
+            };
+            break;
+
+          case "BOX":
+            return {
+              url: ``,
+              id: element.id,
+              enablePhysics: element.enablePhysics,
+              type: element.type,
+              position: {
+                x: element.px,
+                y: element.py,
+                z: element.pz,
+              },
+              scale: {
+                x: element.sx,
+                y: element.sy,
+                z: element.sz,
+              },
+              rotation: {
+                x: element.rx,
+                y: element.ry,
+                z: element.rz,
+              },
+            };
+            break;
+          default:
+            break;
+        }
       });
 
       setList([...files]);
       setResponseList([...getSpace.data.space.files]);
     } catch (error) {
-      navigate("/404");
+      console.log(error);
+      //navigate("/404");
     }
   };
 
@@ -239,6 +273,8 @@ function Objects({ onZoom, isZoom }: any) {
               id: objectItem.id,
               url: `${objectItem.url}`,
               isRemoved: objectItem.isRemoved,
+              enablePhysics: objectItem.enablePhysics,
+              type: objectItem.type,
             }}
             onClick={() => handleClick(objectItem.id)}
             position={
@@ -273,7 +309,30 @@ function Object(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
-  const gltf = useLoader(GLTFLoader, url);
+
+  const [gltf, setGltf] = useState<any>(
+    props.userData.type == "MODEL" ? useLoader(GLTFLoader, url) : ""
+  );
+
+  if (props.userData.type == "BOX") {
+    return (
+      <>
+        {props.userData.enablePhysics ? (
+          <RigidBody>
+            <mesh {...props} ref={meshRef}>
+              <boxGeometry />
+              <meshStandardMaterial color={"#ffffff"} />
+            </mesh>
+          </RigidBody>
+        ) : (
+          <mesh {...props} ref={meshRef}>
+            <boxGeometry />
+            <meshStandardMaterial color={"#ffffff"} />
+          </mesh>
+        )}
+      </>
+    );
+  }
 
   return (
     <>

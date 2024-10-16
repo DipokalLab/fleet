@@ -16,7 +16,7 @@ import { Button, Collapse, Modal, useToast } from "deventds2";
 import { useUpload } from "@/hooks/useUpload";
 import { useObject } from "@/hooks/useObject";
 import { FullWidth, Row } from "@/components/ui/common/Row";
-import { css } from "@emotion/react";
+import { css, Global } from "@emotion/react";
 import { CursorType, useCursorStore } from "@/states/cursor";
 import { TopPanel } from "@/components/ui/Panel/TopPanel";
 import { BottomPanel } from "@/components/ui/Panel/BottomPanel";
