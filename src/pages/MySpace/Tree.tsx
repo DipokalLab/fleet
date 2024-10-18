@@ -90,6 +90,15 @@ function Element(props: TreeElementProps) {
     );
   }
 
+  if (props.objectType == "MESH") {
+    return (
+      <div onClick={handleClick} css={boxStyle}>
+        <Boxes css={iconStyle} />
+        {props.children}
+      </div>
+    );
+  }
+
   return (
     <div onClick={handleClick} css={boxStyle}>
       <Package css={iconStyle} />

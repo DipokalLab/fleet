@@ -81,6 +81,28 @@ export function Objects() {
           });
           break;
 
+        case "MESH":
+          useObjectHooks.create(
+            `${isLocal() ? hosts.dev : hosts.prod}/${
+              element.file.fileUrl
+            }?id=${Math.random()}`,
+            element.id,
+            {
+              name: element.name,
+              enablePhysics: element.enablePhysics,
+              type: element.type,
+              px: element.px,
+              py: element.py,
+              pz: element.pz,
+              sx: element.sx,
+              sy: element.sy,
+              sz: element.sz,
+              rx: element.rx,
+              ry: element.ry,
+              rz: element.rz,
+            }
+          );
+          break;
         default:
           break;
       }
@@ -139,7 +161,9 @@ function Object(props: ThreeElements["mesh"]) {
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
   const [gltf, setGltf] = useState<any>(
-    props.userData.type == "MODEL" ? useLoader(GLTFLoader, url) : ""
+    ["MODEL", "MESH"].includes(props.userData.type)
+      ? useLoader(GLTFLoader, url)
+      : ""
   );
   const cursorStore = useCursorStore();
   const objectStore = useObjectsStore();

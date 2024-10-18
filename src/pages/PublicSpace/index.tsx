@@ -196,6 +196,32 @@ function Objects({ onZoom, isZoom }: any) {
               },
             };
             break;
+
+          case "MESH":
+            return {
+              url: `${isLocal() ? hosts.dev : hosts.prod}/${
+                element.file.fileUrl
+              }?id=${Math.random()}`,
+              id: element.id,
+              enablePhysics: element.enablePhysics,
+              type: element.type,
+              position: {
+                x: element.px,
+                y: element.py,
+                z: element.pz,
+              },
+              scale: {
+                x: element.sx,
+                y: element.sy,
+                z: element.sz,
+              },
+              rotation: {
+                x: element.rx,
+                y: element.ry,
+                z: element.rz,
+              },
+            };
+            break;
           default:
             break;
         }
@@ -316,7 +342,9 @@ function Object(props: ThreeElements["mesh"]) {
   const url: string = props.userData.url;
 
   const [gltf, setGltf] = useState<any>(
-    props.userData.type == "MODEL" ? useLoader(GLTFLoader, url) : ""
+    ["MODEL", "MESH"].includes(props.userData.type)
+      ? useLoader(GLTFLoader, url)
+      : ""
   );
 
   if (props.userData.type == "BOX") {

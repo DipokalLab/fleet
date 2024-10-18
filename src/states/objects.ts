@@ -6,7 +6,7 @@ type ObjectType = {
   isRemoved: boolean;
   enablePhysics: boolean;
   name: string;
-  type: "MODEL" | "BOX";
+  type: "MODEL" | "BOX" | "MESH";
 
   position: {
     x: number;

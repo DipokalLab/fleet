@@ -26,7 +26,7 @@ export function useObject() {
     id: string,
     options?: {
       enablePhysics?: boolean;
-      type?: "MODEL" | "BOX";
+      type?: "MODEL" | "BOX" | "MESH";
       name?: string;
       px?: number;
       py?: number;
