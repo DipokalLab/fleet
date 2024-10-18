@@ -213,7 +213,7 @@ export function MySpace() {
               </Column>
             </Row>
 
-            <Row gap="1rem">
+            <Row gap="1rem" overflow="visible">
               <UploadedModelOptions />
               <DefaultModelOptions />
             </Row>

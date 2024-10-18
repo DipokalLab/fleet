@@ -10,7 +10,7 @@ import { DESC_COLOR, SUBTITLE_COLOR } from "@/theme/color";
 import { css } from "@emotion/react";
 import axios from "axios";
 import { Button, useToast } from "deventds2";
-import { Box, Boxes, Package } from "lucide-react";
+import { Asterisk, Box, Boxes, Circle, Package } from "lucide-react";
 import { useContext } from "react";
 
 interface TreeElementProps
@@ -103,15 +103,23 @@ export function Mesh() {
       <SubTitle>Mesh</SubTitle>
       <Column gap="0.5rem">
         <Button onClick={handleClickCreateBox3d} color="white">
-          CreateBox
+          <Box css={IconStyle} />
+          Box3d
         </Button>
         <Button onClick={handleClickCreateUVSphere} color="white">
-          CreateUVSphere
+          <Circle css={IconStyle} />
+          UVSphere
         </Button>
         <Button onClick={handleClickCreateCylinder} color="white">
+          <Asterisk css={IconStyle} />
           Cylinder
         </Button>
       </Column>
     </Column>
   );
 }
+
+const IconStyle = css({
+  width: "0.9rem",
+  height: "0.9rem",
+});
