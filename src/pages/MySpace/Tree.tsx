@@ -32,9 +32,13 @@ export function Tree() {
         })}
       >
         {list.map((item) => (
-          <Element objectType={item.type} objectId={item.id}>
-            {item.name || "Unnamed Object"}
-          </Element>
+          <>
+            {item.isRemoved == false && (
+              <Element objectType={item.type} objectId={item.id}>
+                {item.name || "Unnamed Object"}
+              </Element>
+            )}
+          </>
         ))}
       </div>
     </Column>

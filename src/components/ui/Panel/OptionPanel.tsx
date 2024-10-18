@@ -59,6 +59,7 @@ export function OptionPanel({
         css={css({
           padding: "1rem",
           width: "100%",
+          overflowX: "hidden",
           paddingTop: OTHER_TOP_PADDING,
 
           [mq[0]]: {

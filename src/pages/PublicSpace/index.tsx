@@ -22,7 +22,7 @@ import { hosts } from "@/api/hosts";
 import { useNavigate } from "react-router";
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
-import { RigidBody } from "@react-three/rapier";
+import { CuboidCollider, Physics, RigidBody } from "@react-three/rapier";
 
 export function PublicSpacePage() {
   const [isZoom, setIsZoom] = useState(false);
@@ -83,29 +83,34 @@ export function PublicSpacePage() {
             intensity={Math.PI}
           />
 
-          <mesh castShadow>
-            <Wall
-              position={new THREE.Vector3(0, 0, 0)}
-              rotation={new THREE.Euler(Math.PI / 2, 0, 0)}
-              geometry={new THREE.BoxGeometry(4, 3, 0.2)}
-            />
-
-            <mesh position={new THREE.Vector3(0, 0.4, 0)}>
+          <Physics gravity={[0, -9.8, 0]}>
+            <mesh castShadow>
               <Wall
-                position={new THREE.Vector3(0, 0, -1.5)}
-                rotation={new THREE.Euler(0, 0, 0)}
-                geometry={new THREE.BoxGeometry(4, 1, 0.2)}
+                position={new THREE.Vector3(0, 0, 0)}
+                rotation={new THREE.Euler(Math.PI / 2, 0, 0)}
+                geometry={new THREE.BoxGeometry(4, 3, 0.2)}
               />
 
-              <Wall
-                position={new THREE.Vector3(2, 0, 0)}
-                rotation={new THREE.Euler(0, Math.PI / 2, 0)}
-                geometry={new THREE.BoxGeometry(3, 1, 0.2)}
-              />
+              <mesh position={new THREE.Vector3(0, 0.4, 0)}>
+                <Wall
+                  position={new THREE.Vector3(0, 0, -1.5)}
+                  rotation={new THREE.Euler(0, 0, 0)}
+                  geometry={new THREE.BoxGeometry(4, 1, 0.2)}
+                />
+
+                <Wall
+                  position={new THREE.Vector3(2, 0, 0)}
+                  rotation={new THREE.Euler(0, Math.PI / 2, 0)}
+                  geometry={new THREE.BoxGeometry(3, 1, 0.2)}
+                />
+              </mesh>
+
+              <Objects onZoom={handleStartZoom} isZoom={isZoom} />
             </mesh>
 
-            <Objects onZoom={handleStartZoom} isZoom={isZoom} />
-          </mesh>
+            <CuboidCollider position={[0, -2, 0]} args={[100, 0.5, 100]} />
+          </Physics>
+
           <Preload all />
         </Suspense>
       </Canvas>

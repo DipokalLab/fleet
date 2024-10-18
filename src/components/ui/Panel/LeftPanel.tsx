@@ -84,7 +84,11 @@ export function LeftPanel({
         </div>
       </div>
 
-      <Modal isOpen={isMobileShow} onClose={() => setIsMobileShow(false)}>
+      <Modal
+        isOpen={isMobileShow}
+        onClose={() => setIsMobileShow(false)}
+        isScroll={true}
+      >
         {children}
       </Modal>
     </>
