@@ -369,10 +369,19 @@ function Object(props: ThreeElements["mesh"]) {
 
   return (
     <>
-      <mesh {...props} ref={meshRef}>
-        <primitive object={gltf.scene} />
-        <meshStandardMaterial color={isActive ? "black" : "orange"} />
-      </mesh>
+      {props.userData.enablePhysics ? (
+        <RigidBody>
+          <mesh {...props} ref={meshRef}>
+            <primitive object={gltf.scene} />
+            <meshStandardMaterial color={isActive ? "black" : "orange"} />
+          </mesh>
+        </RigidBody>
+      ) : (
+        <mesh {...props} ref={meshRef}>
+          <primitive object={gltf.scene} />
+          <meshStandardMaterial color={isActive ? "black" : "orange"} />
+        </mesh>
+      )}
     </>
   );
 }
