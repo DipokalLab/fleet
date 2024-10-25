@@ -1,4 +1,4 @@
-import { Box, Preload, Torus } from "@react-three/drei";
+import { Box, Environment, Preload, Torus } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Objects } from "./space/Objects";

@@ -32,9 +32,13 @@ export function Tree() {
         })}
       >
         {list.map((item) => (
-          <Element objectType={item.type} objectId={item.id}>
-            {item.name || "Unnamed Object"}
-          </Element>
+          <>
+            {item.isRemoved == false && (
+              <Element objectType={item.type} objectId={item.id}>
+                {item.name || "Unnamed Object"}
+              </Element>
+            )}
+          </>
         ))}
       </div>
     </Column>
@@ -78,6 +82,15 @@ function Element(props: TreeElementProps) {
   });
 
   if (props.objectType == "BOX") {
+    return (
+      <div onClick={handleClick} css={boxStyle}>
+        <Boxes css={iconStyle} />
+        {props.children}
+      </div>
+    );
+  }
+
+  if (props.objectType == "MESH") {
     return (
       <div onClick={handleClick} css={boxStyle}>
         <Boxes css={iconStyle} />

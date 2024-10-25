@@ -22,7 +22,7 @@ import { hosts } from "@/api/hosts";
 import { useNavigate } from "react-router";
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
-import { RigidBody } from "@react-three/rapier";
+import { CuboidCollider, Physics, RigidBody } from "@react-three/rapier";
 
 export function PublicSpacePage() {
   const [isZoom, setIsZoom] = useState(false);
@@ -83,29 +83,34 @@ export function PublicSpacePage() {
             intensity={Math.PI}
           />
 
-          <mesh castShadow>
-            <Wall
-              position={new THREE.Vector3(0, 0, 0)}
-              rotation={new THREE.Euler(Math.PI / 2, 0, 0)}
-              geometry={new THREE.BoxGeometry(4, 3, 0.2)}
-            />
-
-            <mesh position={new THREE.Vector3(0, 0.4, 0)}>
+          <Physics gravity={[0, -9.8, 0]}>
+            <mesh castShadow>
               <Wall
-                position={new THREE.Vector3(0, 0, -1.5)}
-                rotation={new THREE.Euler(0, 0, 0)}
-                geometry={new THREE.BoxGeometry(4, 1, 0.2)}
+                position={new THREE.Vector3(0, 0, 0)}
+                rotation={new THREE.Euler(Math.PI / 2, 0, 0)}
+                geometry={new THREE.BoxGeometry(4, 3, 0.2)}
               />
 
-              <Wall
-                position={new THREE.Vector3(2, 0, 0)}
-                rotation={new THREE.Euler(0, Math.PI / 2, 0)}
-                geometry={new THREE.BoxGeometry(3, 1, 0.2)}
-              />
+              <mesh position={new THREE.Vector3(0, 0.4, 0)}>
+                <Wall
+                  position={new THREE.Vector3(0, 0, -1.5)}
+                  rotation={new THREE.Euler(0, 0, 0)}
+                  geometry={new THREE.BoxGeometry(4, 1, 0.2)}
+                />
+
+                <Wall
+                  position={new THREE.Vector3(2, 0, 0)}
+                  rotation={new THREE.Euler(0, Math.PI / 2, 0)}
+                  geometry={new THREE.BoxGeometry(3, 1, 0.2)}
+                />
+              </mesh>
+
+              <Objects onZoom={handleStartZoom} isZoom={isZoom} />
             </mesh>
 
-            <Objects onZoom={handleStartZoom} isZoom={isZoom} />
-          </mesh>
+            <CuboidCollider position={[0, -2, 0]} args={[100, 0.5, 100]} />
+          </Physics>
+
           <Preload all />
         </Suspense>
       </Canvas>
@@ -149,6 +154,8 @@ function Objects({ onZoom, isZoom }: any) {
               }?id=${Math.random()}`,
               id: element.id,
               enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
               type: element.type,
               position: {
                 x: element.px,
@@ -173,6 +180,36 @@ function Objects({ onZoom, isZoom }: any) {
               url: ``,
               id: element.id,
               enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
+              type: element.type,
+              position: {
+                x: element.px,
+                y: element.py,
+                z: element.pz,
+              },
+              scale: {
+                x: element.sx,
+                y: element.sy,
+                z: element.sz,
+              },
+              rotation: {
+                x: element.rx,
+                y: element.ry,
+                z: element.rz,
+              },
+            };
+            break;
+
+          case "MESH":
+            return {
+              url: `${isLocal() ? hosts.dev : hosts.prod}/${
+                element.file.fileUrl
+              }?id=${Math.random()}`,
+              id: element.id,
+              enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
               type: element.type,
               position: {
                 x: element.px,
@@ -275,6 +312,10 @@ function Objects({ onZoom, isZoom }: any) {
               isRemoved: objectItem.isRemoved,
               enablePhysics: objectItem.enablePhysics,
               type: objectItem.type,
+              shadow: {
+                cast: objectItem.shadowCast,
+                receive: objectItem.shadowReceive,
+              },
             }}
             onClick={() => handleClick(objectItem.id)}
             position={
@@ -311,7 +352,9 @@ function Object(props: ThreeElements["mesh"]) {
   const url: string = props.userData.url;
 
   const [gltf, setGltf] = useState<any>(
-    props.userData.type == "MODEL" ? useLoader(GLTFLoader, url) : ""
+    ["MODEL", "MESH"].includes(props.userData.type)
+      ? useLoader(GLTFLoader, url)
+      : ""
   );
 
   if (props.userData.type == "BOX") {
@@ -319,13 +362,23 @@ function Object(props: ThreeElements["mesh"]) {
       <>
         {props.userData.enablePhysics ? (
           <RigidBody>
-            <mesh {...props} ref={meshRef}>
+            <mesh
+              {...props}
+              ref={meshRef}
+              castShadow={props.userData.shadow.cast}
+              receiveShadow={props.userData.shadow.receive}
+            >
               <boxGeometry />
               <meshStandardMaterial color={"#ffffff"} />
             </mesh>
           </RigidBody>
         ) : (
-          <mesh {...props} ref={meshRef}>
+          <mesh
+            {...props}
+            ref={meshRef}
+            castShadow={props.userData.shadow.cast}
+            receiveShadow={props.userData.shadow.receive}
+          >
             <boxGeometry />
             <meshStandardMaterial color={"#ffffff"} />
           </mesh>
@@ -336,10 +389,29 @@ function Object(props: ThreeElements["mesh"]) {
 
   return (
     <>
-      <mesh {...props} ref={meshRef}>
-        <primitive object={gltf.scene} />
-        <meshStandardMaterial color={isActive ? "black" : "orange"} />
-      </mesh>
+      {props.userData.enablePhysics ? (
+        <RigidBody>
+          <mesh
+            {...props}
+            ref={meshRef}
+            castShadow={props.userData.shadow.cast}
+            receiveShadow={props.userData.shadow.receive}
+          >
+            <primitive object={gltf.scene} />
+            <meshStandardMaterial color={isActive ? "black" : "orange"} />
+          </mesh>
+        </RigidBody>
+      ) : (
+        <mesh
+          {...props}
+          ref={meshRef}
+          castShadow={props.userData.shadow.cast}
+          receiveShadow={props.userData.shadow.receive}
+        >
+          <primitive object={gltf.scene} />
+          <meshStandardMaterial color={isActive ? "black" : "orange"} />
+        </mesh>
+      )}
     </>
   );
 }

@@ -37,6 +37,7 @@ import { EventModalContent } from "./Event";
 import { usePageStore } from "@/states/page";
 import { Tree } from "./Tree";
 import { DragAndDropFileUpload } from "./DragFileUpload";
+import { Mesh } from "./Mesh";
 
 export function MySpace() {
   const toast = useToast();
@@ -83,42 +84,12 @@ export function MySpace() {
     } catch (error) {}
   };
 
-  const createBox = async () => {
-    try {
-      const spaceId = location.pathname.split("/")[2];
-      const createSpaceFile = await instance.post("space/file/box3d", {
-        spaceId: spaceId,
-      });
-
-      useObjectHooks.create("", createSpaceFile.data.spaceFile.id, {
-        type: "BOX",
-        px: 0,
-        py: 0,
-        pz: 0,
-        sx: 1,
-        sy: 1,
-        sz: 1,
-        rx: 0,
-        ry: 0,
-        rz: 0,
-      });
-
-      toast.message({
-        text: "Created!",
-      });
-    } catch (error) {}
-  };
-
   const handleUpload = () => {
     uploadObject();
   };
 
   const handleClickDefaultModel = () => {
     setIsBottomPanelLoad((isOpen) => !isOpen);
-  };
-
-  const handleClickCreateBox3d = () => {
-    createBox();
   };
 
   const handleCloseOptionPanel = () => {
@@ -200,11 +171,9 @@ export function MySpace() {
               <Button onClick={handleClickDefaultModel} color="white">
                 Models
               </Button>
-
-              <Button onClick={handleClickCreateBox3d} color="white">
-                CreateBox
-              </Button>
             </Column>
+
+            <Mesh />
 
             <Tree />
           </Column>
@@ -244,7 +213,7 @@ export function MySpace() {
               </Column>
             </Row>
 
-            <Row gap="1rem">
+            <Row gap="1rem" overflow="visible">
               <UploadedModelOptions />
               <DefaultModelOptions />
             </Row>

@@ -6,7 +6,7 @@ type ObjectType = {
   isRemoved: boolean;
   enablePhysics: boolean;
   name: string;
-  type: "MODEL" | "BOX";
+  type: "MODEL" | "BOX" | "MESH";
 
   position: {
     x: number;
@@ -23,6 +23,11 @@ type ObjectType = {
     x: number;
     y: number;
     z: number;
+  };
+
+  shadow?: {
+    cast: boolean;
+    receive: boolean;
   };
 };
 
@@ -54,6 +59,10 @@ const defaultObject: ObjectType = {
     x: 0,
     y: 0,
     z: 0,
+  },
+  shadow: {
+    cast: false,
+    receive: false,
   },
 };
 

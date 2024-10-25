@@ -123,7 +123,7 @@ export function UploadedModelOptions() {
   }, []);
 
   return (
-    <Row gap="1rem">
+    <Row gap="1rem" overflow="visible">
       {uploadedFiles.map((item) => (
         <Column>
           <ModelBox
@@ -226,7 +226,7 @@ export function DefaultModelOptions() {
   }, []);
 
   return (
-    <Row gap="1rem">
+    <Row gap="1rem" overflow="scroll">
       {defaultFiles.map((item) => (
         <ModelBox
           onClick={() =>

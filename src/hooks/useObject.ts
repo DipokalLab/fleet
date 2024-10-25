@@ -26,7 +26,7 @@ export function useObject() {
     id: string,
     options?: {
       enablePhysics?: boolean;
-      type?: "MODEL" | "BOX";
+      type?: "MODEL" | "BOX" | "MESH";
       name?: string;
       px?: number;
       py?: number;
@@ -37,6 +37,8 @@ export function useObject() {
       rx?: number;
       ry?: number;
       rz?: number;
+      shadowCast?: boolean;
+      shadowReceive?: boolean;
     }
   ) => {
     const {
@@ -52,6 +54,8 @@ export function useObject() {
       rx = 0,
       ry = 0,
       rz = 0,
+      shadowCast = false,
+      shadowReceive = false,
     } = options;
 
     createObject({
@@ -75,6 +79,10 @@ export function useObject() {
         x: rx,
         y: ry,
         z: rz,
+      },
+      shadow: {
+        cast: shadowCast,
+        receive: shadowReceive,
       },
     });
   };

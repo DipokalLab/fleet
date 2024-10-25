@@ -1,10 +1,20 @@
 import { Navbar, NavbarItem } from "deventds2";
-import { Global, css } from "@emotion/react";
+import { Global, css, keyframes } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { setCookie } from "@/utils/cookie";
 import { CircleCheck } from "lucide-react";
+
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+`;
 
 export function AuthDonePage() {
   const nativate = useNavigate();
@@ -57,6 +67,7 @@ export function AuthDonePage() {
             css={css({
               color: "#30c73c",
               transform: "scale(2.0)",
+              animation: `${fadeIn} 0.4s ease forwards`,
             })}
           />
         </div>
