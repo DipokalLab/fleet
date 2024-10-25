@@ -9,6 +9,8 @@ import { Suspense, useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
 import { GLTF, GLTFLoader } from "three-stdlib";
+import { useFBX } from "@react-three/drei";
+
 import { useObject } from "../../../hooks/useObject";
 import { useCursorStore } from "../../../states/cursor";
 import {

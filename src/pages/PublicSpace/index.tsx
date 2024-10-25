@@ -154,6 +154,8 @@ function Objects({ onZoom, isZoom }: any) {
               }?id=${Math.random()}`,
               id: element.id,
               enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
               type: element.type,
               position: {
                 x: element.px,
@@ -178,6 +180,8 @@ function Objects({ onZoom, isZoom }: any) {
               url: ``,
               id: element.id,
               enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
               type: element.type,
               position: {
                 x: element.px,
@@ -204,6 +208,8 @@ function Objects({ onZoom, isZoom }: any) {
               }?id=${Math.random()}`,
               id: element.id,
               enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
               type: element.type,
               position: {
                 x: element.px,
@@ -306,6 +312,10 @@ function Objects({ onZoom, isZoom }: any) {
               isRemoved: objectItem.isRemoved,
               enablePhysics: objectItem.enablePhysics,
               type: objectItem.type,
+              shadow: {
+                cast: objectItem.shadowCast,
+                receive: objectItem.shadowReceive,
+              },
             }}
             onClick={() => handleClick(objectItem.id)}
             position={
@@ -352,13 +362,23 @@ function Object(props: ThreeElements["mesh"]) {
       <>
         {props.userData.enablePhysics ? (
           <RigidBody>
-            <mesh {...props} ref={meshRef}>
+            <mesh
+              {...props}
+              ref={meshRef}
+              castShadow={props.userData.shadow.cast}
+              receiveShadow={props.userData.shadow.receive}
+            >
               <boxGeometry />
               <meshStandardMaterial color={"#ffffff"} />
             </mesh>
           </RigidBody>
         ) : (
-          <mesh {...props} ref={meshRef}>
+          <mesh
+            {...props}
+            ref={meshRef}
+            castShadow={props.userData.shadow.cast}
+            receiveShadow={props.userData.shadow.receive}
+          >
             <boxGeometry />
             <meshStandardMaterial color={"#ffffff"} />
           </mesh>
@@ -371,13 +391,23 @@ function Object(props: ThreeElements["mesh"]) {
     <>
       {props.userData.enablePhysics ? (
         <RigidBody>
-          <mesh {...props} ref={meshRef}>
+          <mesh
+            {...props}
+            ref={meshRef}
+            castShadow={props.userData.shadow.cast}
+            receiveShadow={props.userData.shadow.receive}
+          >
             <primitive object={gltf.scene} />
             <meshStandardMaterial color={isActive ? "black" : "orange"} />
           </mesh>
         </RigidBody>
       ) : (
-        <mesh {...props} ref={meshRef}>
+        <mesh
+          {...props}
+          ref={meshRef}
+          castShadow={props.userData.shadow.cast}
+          receiveShadow={props.userData.shadow.receive}
+        >
           <primitive object={gltf.scene} />
           <meshStandardMaterial color={isActive ? "black" : "orange"} />
         </mesh>
