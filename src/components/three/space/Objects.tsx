@@ -50,6 +50,8 @@ export function Objects() {
             {
               name: element.name,
               enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
               type: element.type,
               px: element.px,
               py: element.py,
@@ -69,6 +71,8 @@ export function Objects() {
             name: element.name,
             enablePhysics: element.enablePhysics,
             type: element.type,
+            shadowCast: element.shadowCast,
+            shadowReceive: element.shadowReceive,
             px: element.px,
             py: element.py,
             pz: element.pz,
@@ -90,6 +94,8 @@ export function Objects() {
             {
               name: element.name,
               enablePhysics: element.enablePhysics,
+              shadowCast: element.shadowCast,
+              shadowReceive: element.shadowReceive,
               type: element.type,
               px: element.px,
               py: element.py,
@@ -111,7 +117,6 @@ export function Objects() {
 
   useEffect(() => {
     getFiles();
-    // useObjectHooks.create("https://fleet.cartesiancs.com/macbookpro_1.glb");
   }, []);
 
   return (
@@ -125,6 +130,10 @@ export function Objects() {
               isRemoved: objectItem.isRemoved,
               enablePhysics: objectItem.enablePhysics,
               type: objectItem.type,
+              shadow: {
+                cast: objectItem.shadow.cast,
+                receive: objectItem.shadow.receive,
+              },
             }}
             position={
               new THREE.Vector3(
@@ -285,13 +294,25 @@ function Object(props: ThreeElements["mesh"]) {
           >
             {props.userData.enablePhysics ? (
               <RigidBody>
-                <mesh onClick={handleClick} {...props} ref={meshRef}>
+                <mesh
+                  onClick={handleClick}
+                  {...props}
+                  ref={meshRef}
+                  castShadow={props.userData.shadow.cast}
+                  receiveShadow={props.userData.shadow.receive}
+                >
                   <boxGeometry />
                   <meshStandardMaterial color={"#ffffff"} />
                 </mesh>
               </RigidBody>
             ) : (
-              <mesh onClick={handleClick} {...props} ref={meshRef}>
+              <mesh
+                onClick={handleClick}
+                {...props}
+                ref={meshRef}
+                castShadow={props.userData.shadow.cast}
+                receiveShadow={props.userData.shadow.receive}
+              >
                 <boxGeometry />
                 <meshStandardMaterial color={"#ffffff"} />
               </mesh>
@@ -317,13 +338,25 @@ function Object(props: ThreeElements["mesh"]) {
         >
           {props.userData.enablePhysics ? (
             <RigidBody>
-              <mesh onClick={handleClick} {...props} ref={meshRef}>
+              <mesh
+                onClick={handleClick}
+                {...props}
+                ref={meshRef}
+                castShadow={props.userData.shadow.cast}
+                receiveShadow={props.userData.shadow.receive}
+              >
                 <primitive object={gltf.scene} />
                 <meshStandardMaterial color={isActive ? "black" : "orange"} />
               </mesh>
             </RigidBody>
           ) : (
-            <mesh onClick={handleClick} {...props} ref={meshRef}>
+            <mesh
+              onClick={handleClick}
+              {...props}
+              ref={meshRef}
+              castShadow={props.userData.shadow.cast}
+              receiveShadow={props.userData.shadow.receive}
+            >
               <primitive object={gltf.scene} />
               <meshStandardMaterial color={isActive ? "black" : "orange"} />
             </mesh>

@@ -24,6 +24,11 @@ type ObjectType = {
     y: number;
     z: number;
   };
+
+  shadow?: {
+    cast: boolean;
+    receive: boolean;
+  };
 };
 
 type Store = {
@@ -54,6 +59,10 @@ const defaultObject: ObjectType = {
     x: 0,
     y: 0,
     z: 0,
+  },
+  shadow: {
+    cast: false,
+    receive: false,
   },
 };
 
