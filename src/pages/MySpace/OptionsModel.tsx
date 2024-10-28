@@ -37,6 +37,10 @@ import {
   DropdownItem,
 } from "@/components/ui/common/Dropdown";
 
+const breakpoints = [576, 768, 992, 1200];
+
+const mq = breakpoints.map((bp) => `@media (min-width: ${bp}px)`);
+
 export function UploadedModelOptions() {
   const useObjectHooks = useObject();
   const toast = useToast();
@@ -123,9 +127,39 @@ export function UploadedModelOptions() {
   }, []);
 
   return (
-    <Row gap="1rem" overflow="visible">
+    <div
+      css={css({
+        display: "grid",
+        overflowY: "scroll",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        [mq[0]]: {
+          gridTemplateColumns: "repeat(2, 1fr)",
+        },
+        [mq[1]]: {
+          gridTemplateColumns: "repeat(4, 1fr)",
+        },
+        [mq[2]]: {
+          gridTemplateColumns: "repeat(6, 1fr)",
+        },
+        [mq[3]]: {
+          gridTemplateColumns: "repeat(8, 1fr)",
+        },
+        [mq[4]]: {
+          gridTemplateColumns: "repeat(10, 1fr)",
+        },
+        width: "100%",
+        height: "180px",
+        gap: "1rem",
+      })}
+    >
       {uploadedFiles.map((item) => (
-        <Column>
+        <div
+          css={css({
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          })}
+        >
           <ModelBox
             onClick={() =>
               handleClickBox(
@@ -181,9 +215,9 @@ export function UploadedModelOptions() {
               </DropdownItem>
             </Dropdown>
           </div>
-        </Column>
+        </div>
       ))}
-    </Row>
+    </div>
   );
 }
 
