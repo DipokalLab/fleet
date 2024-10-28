@@ -8,7 +8,7 @@ import { useObjectsStore } from "../../../states/objects";
 import { Suspense, useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
-import { GLTF, GLTFLoader } from "three-stdlib";
+import { GLTF, GLTFLoader, FBXLoader } from "three-stdlib";
 import { useFBX } from "@react-three/drei";
 
 import { useObject } from "../../../hooks/useObject";
@@ -171,11 +171,7 @@ function Object(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
-  const [gltf, setGltf] = useState<any>(
-    ["MODEL", "MESH"].includes(props.userData.type)
-      ? useLoader(GLTFLoader, url)
-      : ""
-  );
+
   const cursorStore = useCursorStore();
   const objectStore = useObjectsStore();
 
@@ -347,7 +343,9 @@ function Object(props: ThreeElements["mesh"]) {
                 castShadow={props.userData.shadow.cast}
                 receiveShadow={props.userData.shadow.receive}
               >
-                <primitive object={gltf.scene} />
+                {["MODEL", "MESH"].includes(props.userData.type) && (
+                  <PrimitiveModel url={url} />
+                )}
                 <meshStandardMaterial color={isActive ? "black" : "orange"} />
               </mesh>
             </RigidBody>
@@ -359,7 +357,9 @@ function Object(props: ThreeElements["mesh"]) {
               castShadow={props.userData.shadow.cast}
               receiveShadow={props.userData.shadow.receive}
             >
-              <primitive object={gltf.scene} />
+              {["MODEL", "MESH"].includes(props.userData.type) && (
+                <PrimitiveModel url={url} />
+              )}
               <meshStandardMaterial color={isActive ? "black" : "orange"} />
             </mesh>
           )}
@@ -373,6 +373,24 @@ function Object(props: ThreeElements["mesh"]) {
       )} */}
     </>
   );
+}
+
+function PrimitiveModel({ url }: { url?: string }) {
+  const filename = url.split("?")[0];
+
+  if (filename.split(".")[filename.split(".").length - 1] == "glb") {
+    const [gltf, setGltf] = useState<any>(useLoader(GLTFLoader, url));
+
+    return <primitive object={gltf.scene} />;
+  }
+
+  if (filename.split(".")[filename.split(".").length - 1] == "fbx") {
+    const [fbx, setFbx] = useState<any>(useLoader(FBXLoader, url));
+
+    return <primitive object={fbx} />;
+  }
+
+  return <></>;
 }
 
 function MoveableDirection({ targetId }: { targetId: string }) {

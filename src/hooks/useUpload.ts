@@ -26,7 +26,7 @@ export function useUpload() {
 
       const fileExtension = file.name.split(".").pop().toLowerCase();
 
-      if (fileExtension != "glb") {
+      if (fileExtension != "glb" && fileExtension != "fbx") {
         toast.message({
           text: "Wrong File Type.",
         });
@@ -90,7 +90,7 @@ export function useUpload() {
   const uploadObject = () => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = ".glb,.gltf";
+    input.accept = ".glb,.gltf,.fbx";
 
     input.click();
 
