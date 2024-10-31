@@ -1,4 +1,4 @@
-import { Box, Environment, Preload, Torus } from "@react-three/drei";
+import { Box, Environment, Grid, Preload, Torus } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Objects } from "./space/Objects";
@@ -81,6 +81,20 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
 
           <Preload all />
         </Physics>
+
+        <Grid
+          position={[0, -1.5, 0]}
+          args={[1000, 1000]}
+          cellSize={1}
+          cellThickness={0.5}
+          cellColor="white"
+          sectionSize={20}
+          sectionThickness={1.5}
+          sectionColor="#e1e3e6"
+          fadeDistance={100}
+          fadeStrength={1}
+          followCamera={true}
+        />
       </Suspense>
 
       {/* <EffectComposer>

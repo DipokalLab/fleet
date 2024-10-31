@@ -236,6 +236,8 @@ export function LandingPage() {
         </Column>
       </Section>
 
+      
+
       <Section>
         <Column gap="1rem" justify="center">
           <SubTitle textAlign="center">User Reviews</SubTitle>
