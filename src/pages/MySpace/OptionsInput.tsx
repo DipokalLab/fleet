@@ -33,6 +33,7 @@ import instance from "@/api/axios";
 import { useDebouncedCallback } from "use-debounce";
 import { Physics } from "./Physics";
 import { Shadow } from "./Shadow";
+import { Materials } from "./Materials";
 
 export function InputOptions({
   targetId,
@@ -271,6 +272,8 @@ export function InputOptions({
       <Physics />
 
       <Shadow />
+
+      <Materials />
 
       <Column>
         <SubTitle>Option</SubTitle>

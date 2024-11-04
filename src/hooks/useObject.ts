@@ -1,4 +1,4 @@
-import { useObjectsStore } from "../states/objects";
+import { ObjectMaterialsType, useObjectsStore } from "../states/objects";
 
 const INIT_OBJECT_VALUE = {
   position: {
@@ -39,6 +39,7 @@ export function useObject() {
       rz?: number;
       shadowCast?: boolean;
       shadowReceive?: boolean;
+      materials?: ObjectMaterialsType[];
     }
   ) => {
     const {
@@ -56,6 +57,7 @@ export function useObject() {
       rz = 0,
       shadowCast = false,
       shadowReceive = false,
+      materials = [],
     } = options;
 
     createObject({
@@ -84,6 +86,7 @@ export function useObject() {
         cast: shadowCast,
         receive: shadowReceive,
       },
+      materials: materials,
     });
   };
 

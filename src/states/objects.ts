@@ -1,5 +1,10 @@
 import { create } from "zustand";
 
+export type ObjectMaterialsType = {
+  type: "STANDARD" | "DEPTH" | "NORMAL";
+  color: string;
+};
+
 type ObjectType = {
   id: string;
   url: string;
@@ -29,6 +34,8 @@ type ObjectType = {
     cast: boolean;
     receive: boolean;
   };
+
+  materials?: ObjectMaterialsType[];
 };
 
 type Store = {
@@ -64,6 +71,7 @@ const defaultObject: ObjectType = {
     cast: false,
     receive: false,
   },
+  materials: [],
 };
 
 export const useObjectsStore = create<Store>()((set) => ({

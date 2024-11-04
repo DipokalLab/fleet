@@ -31,30 +31,52 @@ export function Objects() {
   const useObjectHooks = useObject();
 
   const getFiles = async () => {
-    const getSpace = await instance.get(
-      `space/${location.pathname.split("/")[2]}`
-    );
+    try {
+      const getSpace = await instance.get(
+        `space/${location.pathname.split("/")[2]}`
+      );
 
-    const files = getSpace.data.space.files;
+      const files = getSpace.data.space.files;
 
-    for (let index = 0; index < files.length; index++) {
-      const element = files[index];
+      for (let index = 0; index < files.length; index++) {
+        const element = files[index];
 
-      console.log(element);
+        console.log(element);
 
-      switch (element.type) {
-        case "MODEL":
-          useObjectHooks.create(
-            `${isLocal() ? hosts.dev : hosts.prod}/${
-              element.file.fileUrl
-            }?id=${Math.random()}`,
-            element.id,
-            {
+        switch (element.type) {
+          case "MODEL":
+            useObjectHooks.create(
+              `${isLocal() ? hosts.dev : hosts.prod}/${
+                element.file.fileUrl
+              }?id=${Math.random()}`,
+              element.id,
+              {
+                name: element.name,
+                enablePhysics: element.enablePhysics,
+                shadowCast: element.shadowCast,
+                shadowReceive: element.shadowReceive,
+                type: element.type,
+                px: element.px,
+                py: element.py,
+                pz: element.pz,
+                sx: element.sx,
+                sy: element.sy,
+                sz: element.sz,
+                rx: element.rx,
+                ry: element.ry,
+                rz: element.rz,
+                materials: [],
+              }
+            );
+            break;
+
+          case "BOX":
+            useObjectHooks.create("", element.id, {
               name: element.name,
               enablePhysics: element.enablePhysics,
+              type: element.type,
               shadowCast: element.shadowCast,
               shadowReceive: element.shadowReceive,
-              type: element.type,
               px: element.px,
               py: element.py,
               pz: element.pz,
@@ -64,57 +86,40 @@ export function Objects() {
               rx: element.rx,
               ry: element.ry,
               rz: element.rz,
-            }
-          );
-          break;
+              materials: [],
+            });
+            break;
 
-        case "BOX":
-          useObjectHooks.create("", element.id, {
-            name: element.name,
-            enablePhysics: element.enablePhysics,
-            type: element.type,
-            shadowCast: element.shadowCast,
-            shadowReceive: element.shadowReceive,
-            px: element.px,
-            py: element.py,
-            pz: element.pz,
-            sx: element.sx,
-            sy: element.sy,
-            sz: element.sz,
-            rx: element.rx,
-            ry: element.ry,
-            rz: element.rz,
-          });
-          break;
-
-        case "MESH":
-          useObjectHooks.create(
-            `${isLocal() ? hosts.dev : hosts.prod}/${
-              element.file.fileUrl
-            }?id=${Math.random()}`,
-            element.id,
-            {
-              name: element.name,
-              enablePhysics: element.enablePhysics,
-              shadowCast: element.shadowCast,
-              shadowReceive: element.shadowReceive,
-              type: element.type,
-              px: element.px,
-              py: element.py,
-              pz: element.pz,
-              sx: element.sx,
-              sy: element.sy,
-              sz: element.sz,
-              rx: element.rx,
-              ry: element.ry,
-              rz: element.rz,
-            }
-          );
-          break;
-        default:
-          break;
+          case "MESH":
+            useObjectHooks.create(
+              `${isLocal() ? hosts.dev : hosts.prod}/${
+                element.file.fileUrl
+              }?id=${Math.random()}`,
+              element.id,
+              {
+                name: element.name,
+                enablePhysics: element.enablePhysics,
+                shadowCast: element.shadowCast,
+                shadowReceive: element.shadowReceive,
+                type: element.type,
+                px: element.px,
+                py: element.py,
+                pz: element.pz,
+                sx: element.sx,
+                sy: element.sy,
+                sz: element.sz,
+                rx: element.rx,
+                ry: element.ry,
+                rz: element.rz,
+                materials: [],
+              }
+            );
+            break;
+          default:
+            break;
+        }
       }
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
