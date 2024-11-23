@@ -66,7 +66,7 @@ export function LandingPage() {
             gap: "1rem",
           })}
         >
-          <HeadTitle>FLEET</HeadTitle>
+          <HeadTitle>Powerful tool for space designer.</HeadTitle>
 
           <DescriptionCenter>
             3D Portfolio Platform for Designers and Makers. Expand the
@@ -236,8 +236,6 @@ export function LandingPage() {
         </Column>
       </Section>
 
-      
-
       <Section>
         <Column gap="1rem" justify="center">
           <SubTitle textAlign="center">User Reviews</SubTitle>
@@ -391,6 +389,7 @@ function HeadTitle({ children }: { children?: React.ReactNode }) {
       css={css({
         fontSize: "3.75rem",
         fontWeight: "700",
+        textAlign: "center",
       })}
     >
       {children}

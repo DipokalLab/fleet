@@ -152,6 +152,7 @@ export function DashboardPage() {
           {spaceList.map((item, index) => (
             <Box
               index={index}
+              image={`${isLocal() ? hosts.dev : hosts.prod}/${item.screenshot}`}
               onClick={() => handleClickGoSpace(`/app/${item.id}`)}
             >
               <b>{item.title}</b>

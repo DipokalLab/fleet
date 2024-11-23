@@ -1,4 +1,11 @@
-import { Box, Environment, Grid, Preload, Torus } from "@react-three/drei";
+import {
+  Box,
+  Environment,
+  Grid,
+  Preload,
+  Torus,
+  useFBO,
+} from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Objects } from "./space/Objects";
@@ -56,6 +63,7 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
 
   const { list } = useObjectsStore();
   const [responseList, setResponseList] = useState([]);
+  const [whenScreenshot, setWhenScreenshot] = useState(false);
 
   const useObjectHooks = useObject();
 
@@ -130,6 +138,9 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
       }
 
       setResponseList([...getSpace.data.space.files]);
+      setTimeout(() => {
+        setWhenScreenshot(true);
+      }, 3000);
     } catch (error) {}
   };
 
@@ -138,8 +149,10 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
   }, []);
 
   return (
-    <Canvas shadows>
+    <Canvas id="mainCanvas" shadows>
       <Suspense fallback={<CubeLoader />}>
+        <Screenshot whenScreenshot={whenScreenshot} />
+
         <directionalLight
           castShadow
           position={[0, 10, 0]}
@@ -173,14 +186,14 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
 
         <Grid
           position={[0, -1.5, 0]}
-          args={[1000, 1000]}
+          args={[4000, 4000]}
           cellSize={1}
           cellThickness={0.5}
           cellColor="white"
           sectionSize={20}
           sectionThickness={1.5}
-          sectionColor="#e1e3e6"
-          fadeDistance={100}
+          sectionColor="#f0f2f5"
+          fadeDistance={1000}
           fadeStrength={1}
           followCamera={true}
         />
@@ -194,4 +207,47 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
       </EffectComposer> */}
     </Canvas>
   );
+}
+
+function Screenshot({ whenScreenshot }: { whenScreenshot?: boolean }) {
+  const { gl, scene, camera } = useThree();
+
+  const uploadScreenshot = async (blob) => {
+    try {
+      const formData = new FormData();
+
+      formData.append("image", blob, "screenshot.png");
+      const spaceId = location.pathname.split("/")[2];
+
+      const requestUploadFile = await instance.put(
+        `space/screenshot/${spaceId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+    } catch (error) {}
+  };
+
+  const render = () => {
+    gl.render(scene, camera);
+
+    gl.domElement.toBlob((blob) => {
+      if (blob) {
+        uploadScreenshot(blob);
+      } else {
+        console.error("Failed to capture screenshot as Blob.");
+      }
+    }, "image/png");
+  };
+
+  useEffect(() => {
+    if (whenScreenshot) {
+      render();
+    }
+  }, [whenScreenshot]);
+
+  return <></>;
 }

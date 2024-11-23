@@ -17,10 +17,12 @@ interface BoxType
     HTMLDivElement
   > {
   index?: number;
+  image?: string;
 }
 
 export function Box(props: BoxType) {
-  const { children }: { children?: React.ReactNode } = props;
+  const { children, image }: { children?: React.ReactNode; image?: string } =
+    props;
 
   return (
     <div
@@ -37,6 +39,10 @@ export function Box(props: BoxType) {
         cursor: "pointer",
         animation: `${fadeIn} 0.4s ease-in-out`,
         animationDelay: `0.${props.index}s`,
+        backgroundImage: image ? `url(${image})` : undefined,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         ":hover": {
           backgroundColor: "#ededf2",
         },
