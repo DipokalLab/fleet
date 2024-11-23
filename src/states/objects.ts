@@ -43,6 +43,7 @@ type Store = {
   createObject: (object: ObjectType) => void;
   updateObject: (objects: ObjectType[]) => void;
   deleteObject: (id: string) => void;
+  clearObject: () => void;
 };
 
 const defaultObject: ObjectType = {
@@ -82,6 +83,8 @@ export const useObjectsStore = create<Store>()((set) => ({
 
   updateObject: (objects: ObjectType[]) =>
     set((state) => ({ list: [...objects] })),
+
+  clearObject: () => set((state) => ({ list: [] })),
 
   deleteObject: (id: string) =>
     set((state) => ({

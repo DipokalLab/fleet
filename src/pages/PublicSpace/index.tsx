@@ -23,9 +23,93 @@ import { useNavigate } from "react-router";
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { CuboidCollider, Physics, RigidBody } from "@react-three/rapier";
+import { Objects } from "@/components/three/space/Objects";
 
 export function PublicSpacePage() {
   const [isZoom, setIsZoom] = useState(false);
+
+  const { list } = useObjectsStore();
+  const [responseList, setResponseList] = useState([]);
+
+  const useObjectHooks = useObject();
+
+  const getFiles = async () => {
+    try {
+      const getSpace = await instance.get(
+        `space/${location.pathname.split("/")[2]}`
+      );
+
+      const files = getSpace.data.space.files;
+
+      useObjectHooks.clear();
+
+      for (let index = 0; index < files.length; index++) {
+        const element = files[index];
+
+        switch (element.type) {
+          case "MODEL":
+            useObjectHooks.create(
+              `${isLocal() ? hosts.dev : hosts.prod}/${
+                element.file.fileUrl
+              }?id=${Math.random()}`,
+              element.id,
+              {
+                name: element.name,
+                enablePhysics: element.enablePhysics,
+                shadowCast: element.shadowCast,
+                shadowReceive: element.shadowReceive,
+                type: element.type,
+                px: element.px,
+                py: element.py,
+                pz: element.pz,
+                sx: element.sx,
+                sy: element.sy,
+                sz: element.sz,
+                rx: element.rx,
+                ry: element.ry,
+                rz: element.rz,
+                materials: [],
+              }
+            );
+            break;
+
+          case "MESH":
+            useObjectHooks.create(
+              `${isLocal() ? hosts.dev : hosts.prod}/${
+                element.file.fileUrl
+              }?id=${Math.random()}`,
+              element.id,
+              {
+                name: element.name,
+                enablePhysics: element.enablePhysics,
+                shadowCast: element.shadowCast,
+                shadowReceive: element.shadowReceive,
+                type: element.type,
+                px: element.px,
+                py: element.py,
+                pz: element.pz,
+                sx: element.sx,
+                sy: element.sy,
+                sz: element.sz,
+                rx: element.rx,
+                ry: element.ry,
+                rz: element.rz,
+                materials: [],
+              }
+            );
+            break;
+          default:
+            break;
+        }
+      }
+
+      setResponseList([...getSpace.data.space.files]);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getFiles();
+  }, []);
 
   const getPublicSpace = async () => {
     try {
@@ -85,27 +169,13 @@ export function PublicSpacePage() {
 
           <Physics gravity={[0, -9.8, 0]}>
             <mesh castShadow>
-              <Wall
-                position={new THREE.Vector3(0, 0, 0)}
-                rotation={new THREE.Euler(Math.PI / 2, 0, 0)}
-                geometry={new THREE.BoxGeometry(4, 3, 0.2)}
+              <Objects
+                objectList={list}
+                responseList={responseList}
+                type="public"
+                onZoom={handleStartZoom}
+                isZoom={isZoom}
               />
-
-              <mesh position={new THREE.Vector3(0, 0.4, 0)}>
-                <Wall
-                  position={new THREE.Vector3(0, 0, -1.5)}
-                  rotation={new THREE.Euler(0, 0, 0)}
-                  geometry={new THREE.BoxGeometry(4, 1, 0.2)}
-                />
-
-                <Wall
-                  position={new THREE.Vector3(2, 0, 0)}
-                  rotation={new THREE.Euler(0, Math.PI / 2, 0)}
-                  geometry={new THREE.BoxGeometry(3, 1, 0.2)}
-                />
-              </mesh>
-
-              <Objects onZoom={handleStartZoom} isZoom={isZoom} />
             </mesh>
 
             <CuboidCollider position={[0, -2, 0]} args={[100, 0.5, 100]} />
@@ -126,7 +196,7 @@ function Wall(props: ThreeElements["mesh"]) {
   );
 }
 
-function Objects({ onZoom, isZoom }: any) {
+function ObjectsTemp({ onZoom, isZoom }: any) {
   const navigate = useNavigate();
   const [tempTargetPosition, setTempTargetPosition] = useState(
     new THREE.Vector3(0, 0, 0)

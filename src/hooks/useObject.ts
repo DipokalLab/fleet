@@ -19,7 +19,7 @@ const INIT_OBJECT_VALUE = {
 };
 
 export function useObject() {
-  const { list, createObject, deleteObject } = useObjectsStore();
+  const { list, createObject, deleteObject, clearObject } = useObjectsStore();
 
   const create = (
     url: string,
@@ -98,5 +98,9 @@ export function useObject() {
     deleteObject(id);
   };
 
-  return { create, remove };
+  const clear = () => {
+    clearObject();
+  };
+
+  return { create, remove, clear };
 }
