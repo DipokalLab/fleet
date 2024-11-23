@@ -30,6 +30,7 @@ export function Nav() {
         <SideMenuItem onClick={() => navigate("/profile")}>
           Profile
         </SideMenuItem>
+        <SideMenuItem onClick={() => navigate("/credit")}>Makers</SideMenuItem>
       </SideMenu>
     </>
   );

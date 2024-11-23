@@ -10,7 +10,7 @@ import { Nav } from "@/components/ui/common/Nav";
 import { useState } from "react";
 import { Loading } from "@/components/ui/common/Loading";
 
-export function ProfilePage() {
+export function CreditPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +57,7 @@ export function ProfilePage() {
             gap: "0.5rem",
           })}
         >
-          Profile
+          Credit
         </span>
 
         <div
@@ -65,9 +65,14 @@ export function ProfilePage() {
             paddingTop: "1rem",
           })}
         >
-          <Button color="white" width="240px" onClick={handleClickLogout}>
-            {isLoading && <Loading />}
-            Logout
+          <Button
+            color="white"
+            width="240px"
+            onClick={() =>
+              (location.href = "https://www.linkedin.com/in/huhhyeongjun/")
+            }
+          >
+            Maker (Hyeong Jun Huh)
           </Button>
         </div>
       </div>

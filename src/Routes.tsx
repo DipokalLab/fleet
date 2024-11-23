@@ -13,6 +13,7 @@ import { NotFoundPage } from "./pages/NotFound";
 import { DashboardPage } from "./pages/Dashboard";
 import { PublicSpacePage } from "./pages/PublicSpace";
 import { FallbackPage } from "./pages/Fallback";
+import { CreditPage } from "./pages/Credit";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,11 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardPage />,
+    errorElement: <FallbackPage />,
+  },
+  {
+    path: "/credit",
+    element: <CreditPage />,
     errorElement: <FallbackPage />,
   },
   {
