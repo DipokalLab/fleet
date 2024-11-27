@@ -29,7 +29,7 @@ export function Box(props: BoxType) {
       {...props}
       css={css({
         display: "flex",
-        width: "120px",
+        width: "180px",
         height: "120px",
         borderRadius: "0.5rem",
         justifyContent: "center",

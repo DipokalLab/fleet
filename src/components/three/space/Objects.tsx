@@ -5,12 +5,12 @@ import {
   useLoader,
   useThree,
 } from "@react-three/fiber";
-import { useObjectsStore } from "../../../states/objects";
+import { ObjectMaterialsType, useObjectsStore } from "../../../states/objects";
 import { Suspense, useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
 import { GLTF, GLTFLoader, FBXLoader } from "three-stdlib";
-import { OrbitControls, useFBX } from "@react-three/drei";
+import { OrbitControls, useFBX, useGLTF } from "@react-three/drei";
 
 import { useObject } from "../../../hooks/useObject";
 import { useCursorStore } from "../../../states/cursor";
@@ -112,7 +112,7 @@ export function Objects({
 
       {objectList.map((objectItem) => (
         <Suspense fallback={<mesh></mesh>}>
-          <Object
+          <ObjectModel
             props={{
               userData: {
                 id: objectItem.id,
@@ -125,6 +125,7 @@ export function Objects({
                   cast: objectItem.shadow.cast,
                   receive: objectItem.shadow.receive,
                 },
+                materials: objectItem.materials,
               },
 
               position: new THREE.Vector3(
@@ -146,7 +147,7 @@ export function Objects({
             actions={{
               onClickNext: () => handleClick(objectItem.id),
             }}
-          ></Object>
+          ></ObjectModel>
         </Suspense>
       ))}
     </>
@@ -157,7 +158,7 @@ type ObjectActions = {
   onClickNext?: any;
 };
 
-function Object({
+function ObjectModel({
   props,
   actions,
 }: {
@@ -302,10 +303,14 @@ function Object({
                 castShadow={props.userData.shadow.cast}
                 receiveShadow={props.userData.shadow.receive}
               >
-                {["MODEL", "MESH"].includes(props.userData.type) && (
-                  <PrimitiveModel url={url} />
+                {props.userData.type == "MODEL" && <PrimitiveModel url={url} />}
+
+                {props.userData.type == "MESH" && (
+                  <ExtractGeometry
+                    url={url}
+                    materials={props.userData.materials}
+                  />
                 )}
-                <meshStandardMaterial color={isActive ? "black" : "orange"} />
               </mesh>
             </RigidBody>
           ) : (
@@ -316,10 +321,14 @@ function Object({
               castShadow={props.userData.shadow.cast}
               receiveShadow={props.userData.shadow.receive}
             >
-              {["MODEL", "MESH"].includes(props.userData.type) && (
-                <PrimitiveModel url={url} />
+              {props.userData.type == "MODEL" && <PrimitiveModel url={url} />}
+
+              {props.userData.type == "MESH" && (
+                <ExtractGeometry
+                  url={url}
+                  materials={props.userData.materials}
+                />
               )}
-              <meshStandardMaterial color={isActive ? "black" : "orange"} />
             </mesh>
           )}
         </TransformControls>
@@ -344,4 +353,43 @@ function PrimitiveModel({ url }: { url?: string }) {
   }
 
   return <></>;
+}
+
+function PrimitiveMeshModel({ url }: { url?: string }) {
+  const filename = url.split("?")[0];
+}
+
+//NOTE: glb 타입만 가능
+function ExtractGeometry({
+  url,
+  materials = [],
+}: {
+  url?: string;
+  materials?: ObjectMaterialsType[];
+}) {
+  try {
+    const { nodes } = useGLTF(url);
+
+    const geometries = Object.values(nodes)
+      .filter((node: any) => node.isMesh)
+      .map((mesh: any) => mesh.geometry);
+
+    return (
+      <group>
+        {geometries.map((geometry, index) => (
+          <>
+            <mesh key={index} geometry={geometry}>
+              {materials.map((material) => (
+                <>
+                  {material.type == "STANDARD" && (
+                    <meshBasicMaterial color={`${material.value}`} />
+                  )}
+                </>
+              ))}
+            </mesh>
+          </>
+        ))}
+      </group>
+    );
+  } catch (error) {}
 }

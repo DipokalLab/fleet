@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 export type ObjectMaterialsType = {
   type: "STANDARD" | "DEPTH" | "NORMAL";
-  color: string;
+  value: string;
 };
 
 type ObjectType = {

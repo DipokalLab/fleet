@@ -44,8 +44,23 @@ export function Materials() {
     });
     list[targetIndex]["materials"].push({
       type: "STANDARD",
-      color: "#ffffff",
+      value: "#ffffff",
     });
+
+    updateObject([...list]);
+  };
+
+  const handleChangeColor = (e, index) => {
+    console.log(e.target.value);
+
+    const targetIndex = list.findIndex((item) => {
+      return item.id == targetId;
+    });
+
+    list[targetIndex]["materials"][index] = {
+      type: list[targetIndex]["materials"][index].type,
+      value: e.target.value,
+    };
 
     updateObject([...list]);
   };
@@ -53,26 +68,59 @@ export function Materials() {
   return (
     <Column>
       <SubTitle>Materials</SubTitle>
-      <Column>
-        {target && (
-          <>
-            {target.materials.map((item) => (
-              <>
-                <div>{item.type}</div>
-              </>
-            ))}
-          </>
-        )}
-      </Column>
+      <Column gap="0.25rem">
+        <Column gap="0.25rem">
+          {target && (
+            <>
+              {target.materials.map((item, index) => (
+                <>
+                  <div
+                    css={css({
+                      borderRadius: "0.6rem",
+                      backgroundColor: "#ffffff",
+                      border: `0.1rem solid #F0F0F4`,
+                      padding: "0.25rem 0.5rem",
+                    })}
+                  >
+                    <span
+                      css={css({
+                        color: SUBTITLE_COLOR,
+                        fontSize: "14px",
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      })}
+                    >
+                      {item.type}{" "}
+                      <div>
+                        <input
+                          type="color"
+                          id="head"
+                          name="head"
+                          value={`${item.value}`}
+                          onChange={(e) => handleChangeColor(e, index)}
+                        />
+                        <label htmlFor="head">{item.value}</label>
+                      </div>
+                    </span>
+                  </div>
+                </>
+              ))}
+            </>
+          )}
+        </Column>
 
-      <Button onClick={handleClickAdd} color="white">
-        <Plus
-          css={css({
-            width: "14px",
-            height: "14px",
-          })}
-        />
-      </Button>
+        <Button onClick={handleClickAdd} color="white">
+          <Plus
+            css={css({
+              width: "14px",
+              height: "14px",
+            })}
+          />
+        </Button>
+      </Column>
     </Column>
   );
 }
