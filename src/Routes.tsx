@@ -14,6 +14,8 @@ import { DashboardPage } from "./pages/Dashboard";
 import { PublicSpacePage } from "./pages/PublicSpace";
 import { FallbackPage } from "./pages/Fallback";
 import { CreditPage } from "./pages/Credit";
+import { PrivacyPage } from "./pages/Docs/Privacy";
+import { DocsPage } from "./pages/Docs";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +56,16 @@ export const router = createBrowserRouter([
   {
     path: "/credit",
     element: <CreditPage />,
+    errorElement: <FallbackPage />,
+  },
+  {
+    path: "/docs",
+    element: <DocsPage />,
+    errorElement: <FallbackPage />,
+  },
+  {
+    path: "/docs/privacy",
+    element: <PrivacyPage />,
     errorElement: <FallbackPage />,
   },
   {

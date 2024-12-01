@@ -23,6 +23,7 @@
     "deventds2": "^0.1.10",
     "leva": "^0.9.35",
     "lucide-react": "^0.438.0",
+    "marked-react": "^2.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^4.0.13",
