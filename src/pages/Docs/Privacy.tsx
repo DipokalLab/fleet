@@ -43,7 +43,6 @@ export function PrivacyPage() {
         flexDirection: "column",
       })}
     >
-      <BackButton />
       <Nav />
 
       <div

@@ -33,7 +33,6 @@ export function CreditPage() {
         flexDirection: "column",
       })}
     >
-      <BackButton />
       <Nav />
 
       <div

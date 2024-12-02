@@ -33,7 +33,6 @@ export function ProfilePage() {
         flexDirection: "column",
       })}
     >
-      <BackButton />
       <Nav />
 
       <div

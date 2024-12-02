@@ -33,7 +33,6 @@ export function DocsPage() {
         flexDirection: "column",
       })}
     >
-      <BackButton />
       <Nav />
 
       <div
