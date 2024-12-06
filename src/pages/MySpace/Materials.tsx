@@ -1,5 +1,10 @@
 import instance from "@/api/axios";
 import { Column } from "@/components/ui/common/Column";
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownItem,
+} from "@/components/ui/common/Dropdown";
 import { Row } from "@/components/ui/common/Row";
 import { SubTitle } from "@/components/ui/common/Text";
 import { OptionPanelContext } from "@/context/OptionPanelContext";
@@ -10,7 +15,7 @@ import { DESC_COLOR, SUBTITLE_COLOR } from "@/theme/color";
 import { css } from "@emotion/react";
 import { Button, Toggle } from "deventds2";
 import { Package, Plus } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 const toggleRowStyle = css({
   display: "flex",
@@ -65,6 +70,19 @@ export function Materials() {
     updateObject([...list]);
   };
 
+  const handleClickDropdownChange = (index, type, value) => {
+    const targetIndex = list.findIndex((item) => {
+      return item.id == targetId;
+    });
+
+    list[targetIndex]["materials"][index] = {
+      type: type,
+      value: value,
+    };
+
+    updateObject([...list]);
+  };
+
   return (
     <Column>
       <SubTitle>Materials</SubTitle>
@@ -93,16 +111,61 @@ export function Materials() {
                         gap: "0.5rem",
                       })}
                     >
-                      {item.type}{" "}
+                      <Dropdown
+                        title="test"
+                        actionComponent={
+                          <MaterialsTypeTitle>{item.type}</MaterialsTypeTitle>
+                        }
+                      >
+                        <DropdownItem>
+                          <DropdownButton
+                            onClicked={() => {
+                              handleClickDropdownChange(
+                                index,
+                                "STANDARD",
+                                item.value
+                              );
+                            }}
+                          >
+                            STANDARD
+                          </DropdownButton>
+                          <DropdownButton
+                            onClicked={() => {
+                              handleClickDropdownChange(
+                                index,
+                                "DEPTH",
+                                item.value
+                              );
+                            }}
+                          >
+                            DEPTH
+                          </DropdownButton>
+                          <DropdownButton
+                            onClicked={() => {
+                              handleClickDropdownChange(
+                                index,
+                                "NORMAL",
+                                item.value
+                              );
+                            }}
+                          >
+                            NORMAL
+                          </DropdownButton>
+                        </DropdownItem>
+                      </Dropdown>
                       <div>
-                        <input
-                          type="color"
-                          id="head"
-                          name="head"
-                          value={`${item.value}`}
-                          onChange={(e) => handleChangeColor(e, index)}
-                        />
-                        <label htmlFor="head">{item.value}</label>
+                        {item.type == "STANDARD" && (
+                          <>
+                            <input
+                              type="color"
+                              id="head"
+                              name="head"
+                              value={`${item.value}`}
+                              onChange={(e) => handleChangeColor(e, index)}
+                            />
+                            <label htmlFor="head">{item.value}</label>
+                          </>
+                        )}
                       </div>
                     </span>
                   </div>
@@ -123,4 +186,8 @@ export function Materials() {
       </Column>
     </Column>
   );
+}
+
+function MaterialsTypeTitle({ children }: { children?: React.ReactNode }) {
+  return <span>{children}</span>;
 }

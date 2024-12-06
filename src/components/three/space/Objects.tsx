@@ -384,6 +384,8 @@ function ExtractGeometry({
                   {material.type == "STANDARD" && (
                     <meshBasicMaterial color={`${material.value}`} />
                   )}
+                  {material.type == "DEPTH" && <meshDepthMaterial />}
+                  {material.type == "NORMAL" && <meshNormalMaterial />}
                 </>
               ))}
             </mesh>
