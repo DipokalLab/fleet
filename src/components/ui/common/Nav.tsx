@@ -1,9 +1,22 @@
 import { css } from "@emotion/react";
-import { ChevronLeft, CircleUser, LayoutDashboard } from "lucide-react";
+import {
+  BookText,
+  ChevronLeft,
+  CircleUser,
+  Folder,
+  FolderCode,
+  House,
+  LayoutDashboard,
+  User,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { SideMenu, SideMenuItem } from "./SIdeMenu";
 
+const IconStyle = css({
+  width: "18px",
+  height: "18px",
+});
 export function Nav() {
   const navigate = useNavigate();
   const [nowActive, setNowActive] = useState("");
@@ -23,15 +36,21 @@ export function Nav() {
   return (
     <>
       <SideMenu>
-        <SideMenuItem onClick={() => navigate("/")}>/</SideMenuItem>
+        <SideMenuItem onClick={() => navigate("/")}>
+          <House css={IconStyle} /> Home
+        </SideMenuItem>
         <SideMenuItem onClick={() => navigate("/dashboard")}>
-          Dashboard
+          <Folder css={IconStyle} /> Dashboard
         </SideMenuItem>
         <SideMenuItem onClick={() => navigate("/profile")}>
-          Profile
+          <User css={IconStyle} /> Profile
         </SideMenuItem>
-        <SideMenuItem onClick={() => navigate("/credit")}>Makers</SideMenuItem>
-        <SideMenuItem onClick={() => navigate("/docs")}>Docs</SideMenuItem>
+        <SideMenuItem onClick={() => navigate("/credit")}>
+          <FolderCode css={IconStyle} /> Makers
+        </SideMenuItem>
+        <SideMenuItem onClick={() => navigate("/docs")}>
+          <BookText css={IconStyle} /> Docs
+        </SideMenuItem>
       </SideMenu>
     </>
   );

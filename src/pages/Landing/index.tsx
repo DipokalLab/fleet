@@ -16,6 +16,8 @@ import {
   Workflow,
 } from "lucide-react";
 import { Title } from "@/components/ui/common/Text";
+import { Footer } from "./Footer";
+import { Navbar } from "./Navbar";
 
 const featIconStyle = css({
   width: "32px",
@@ -45,6 +47,7 @@ export function LandingPage() {
 
   return (
     <>
+      <Navbar />
       <div
         css={css({
           display: "flex",
@@ -338,47 +341,47 @@ export function LandingPage() {
   );
 }
 
-const SubTitleFotterStyle = css({
-  fontSize: "0.9rem",
-  color: "#8f8f96",
-  cursor: "pointer",
-});
+// const SubTitleFotterStyle = css({
+//   fontSize: "0.9rem",
+//   color: "#8f8f96",
+//   cursor: "pointer",
+// });
 
-function Footer() {
-  return (
-    <div
-      css={css({
-        backgroundColor: "#f1f2f4",
-        display: "flex",
-        padding: "1rem",
-        flexDirection: "column",
-        gap: "0.5rem",
-      })}
-    >
-      <Title>@ cartesiancs</Title>
-      <span
-        onClick={() => (location.href = "https://cartesiancs.com/")}
-        css={SubTitleFotterStyle}
-      >
-        company
-      </span>
-      <span
-        onClick={() =>
-          (location.href = "https://www.linkedin.com/company/cartesiancs/")
-        }
-        css={SubTitleFotterStyle}
-      >
-        linkedin
-      </span>
-      <span
-        onClick={() => (location.href = "https://github.com/cartesiancs")}
-        css={SubTitleFotterStyle}
-      >
-        github
-      </span>
-    </div>
-  );
-}
+// function Footer() {
+//   return (
+//     <div
+//       css={css({
+//         backgroundColor: "#f1f2f4",
+//         display: "flex",
+//         padding: "1rem",
+//         flexDirection: "column",
+//         gap: "0.5rem",
+//       })}
+//     >
+//       <Title>@ cartesiancs</Title>
+//       <span
+//         onClick={() => (location.href = "https://cartesiancs.com/")}
+//         css={SubTitleFotterStyle}
+//       >
+//         company
+//       </span>
+//       <span
+//         onClick={() =>
+//           (location.href = "https://www.linkedin.com/company/cartesiancs/")
+//         }
+//         css={SubTitleFotterStyle}
+//       >
+//         linkedin
+//       </span>
+//       <span
+//         onClick={() => (location.href = "https://github.com/cartesiancs")}
+//         css={SubTitleFotterStyle}
+//       >
+//         github
+//       </span>
+//     </div>
+//   );
+// }
 
 function BottomBox() {
   return (

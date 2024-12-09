@@ -131,15 +131,19 @@ export function SideMenuItem({
           display: "flex",
 
           width: "100%",
-          justifyContent: "center",
+          justifyContent: "start",
           alignItems: "center",
           padding: "0.5rem 0.25rem",
+          height: "22px",
         })}
       >
         <b
           css={css({
             fontSize: "14px",
             fontWeight: "500",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
           })}
         >
           {children}
