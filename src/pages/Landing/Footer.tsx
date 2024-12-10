@@ -101,7 +101,7 @@ export function Footer() {
         </div>
       </div>
       <p css={css({ textAlign: "center", color: "#666" })}>
-        © {new Date().getFullYear()} Plausible Analytics. All rights reserved.
+        © {new Date().getFullYear()} cartesiancs.
       </p>
     </footer>
   );
