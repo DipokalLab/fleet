@@ -1,9 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from "react";
 import { css, keyframes } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "deventds2";
-import { Menu, X } from "lucide-react"; // lucide icon import
+import { Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const blurBackground = {
@@ -94,7 +93,6 @@ const fadeOut = keyframes`
   }
 `;
 
-// 오버레이 스타일 생성 함수
 const fullScreenMenuStyle = (isFadingIn: boolean) =>
   css({
     position: "fixed",
@@ -126,22 +124,19 @@ const fullScreenMenuStyle = (isFadingIn: boolean) =>
     },
   });
 
-export const Navbar: React.FC = () => {
+export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const navigate = useNavigate();
   const { isLogin } = useAuth();
 
-  // menuOpen 상태에 따라 menuVisible을 제어
   useEffect(() => {
     if (menuOpen) {
-      // 메뉴를 열 때: 바로 보여줌
       setMenuVisible(true);
     } else if (!menuOpen && menuVisible) {
-      // 메뉴를 닫을 때: fadeOut 애니메이션을 위해 약간의 지연 후 제거
       const timeout = setTimeout(() => {
         setMenuVisible(false);
-      }, 300); // fadeOut 애니메이션 시간과 동일
+      }, 300);
       return () => clearTimeout(timeout);
     }
   }, [menuOpen, menuVisible]);
@@ -214,4 +209,4 @@ export const Navbar: React.FC = () => {
       )}
     </>
   );
-};
+}

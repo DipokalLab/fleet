@@ -1,3 +1,5 @@
+# Privacy
+
 Last updated November 30, 2024
 
 This Privacy Notice for cartesiancs ("we," "us," or "our"), describes how and why we might access, collect, store, use, and/or share ("process") your personal information when you use our services ("Services"), including when you:
@@ -59,7 +61,7 @@ debit/credit card numbers
 usernames
 Sensitive Information. We do not process sensitive information.
 
-Payment Data. We may collect data necessary to process your payment if you choose to make purchases, such as your payment instrument number, and the security code associated with your payment instrument. All payment data is handled and stored by blockchain. You may find their privacy notice link(s) here: ****\_\_****.
+Payment Data. We may collect data necessary to process your payment if you choose to make purchases, such as your payment instrument number, and the security code associated with your payment instrument. All payment data is handled and stored by blockchain. You may find their privacy notice link(s) here: \***\*\_\_\*\***.
 
 Social Media Login Data. We may provide you with the option to register with us using your existing social media account details, like your Facebook, X, or other social media account. If you choose to register in this way, we will collect certain profile information about you from the social media provider, as described in the section called "HOW DO WE HANDLE YOUR SOCIAL LOGINS?" below.
 
@@ -94,7 +96,7 @@ We also permit third parties and service providers to use online tracking techno
 
 To the extent these online tracking technologies are deemed to be a "sale"/"sharing" (which includes targeted advertising, as defined under the applicable laws) under applicable US state laws, you can opt out of these online tracking technologies by submitting a request as described below under section "DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?"
 
-Specific information about how we use such technologies and how you can refuse certain cookies is set out in our Cookie Notice: ****\_\_****.
+Specific information about how we use such technologies and how you can refuse certain cookies is set out in our Cookie Notice: \***\*\_\_\*\***.
 
 Google Analytics
 
@@ -142,7 +144,7 @@ If you would at any time like to review or change the information in your accoun
 Log in to your account settings and update your user account.
 Upon your request to terminate your account, we will deactivate or delete your account and information from our active databases. However, we may retain some information in our files to prevent fraud, troubleshoot problems, assist with any investigations, enforce our legal terms and/or comply with applicable legal requirements.
 
-Cookies and similar technologies: Most Web browsers are set to accept cookies by default. If you prefer, you can usually choose to set your browser to remove cookies and to reject cookies. If you choose to remove cookies or reject cookies, this could affect certain features or services of our Services. For further information, please see our Cookie Notice: ****\_\_****.
+Cookies and similar technologies: Most Web browsers are set to accept cookies by default. If you prefer, you can usually choose to set your browser to remove cookies and to reject cookies. If you choose to remove cookies or reject cookies, this could affect certain features or services of our Services. For further information, please see our Cookie Notice: \***\*\_\_\*\***.
 
 If you have questions or comments about your privacy rights, you may email us at 3457xc@gmail.com.
 

@@ -9,13 +9,14 @@ import { LandingPage } from "./pages/Landing";
 import { AuthPage } from "./pages/Auth";
 import { ProfilePage } from "./pages/Profile";
 import { AuthDonePage } from "./pages/AuthDone";
-import { NotFoundPage } from "./pages/NotFound";
+import { NotFoundPage } from "./pages/Error/NotFound";
 import { DashboardPage } from "./pages/Dashboard";
 import { PublicSpacePage } from "./pages/PublicSpace";
-import { FallbackPage } from "./pages/Fallback";
+import { FallbackPage } from "./pages/Error/Fallback";
 import { CreditPage } from "./pages/Credit";
 import { PrivacyPage } from "./pages/Docs/Privacy";
 import { DocsPage } from "./pages/Docs";
+import { AboutPage } from "./pages/About";
 
 export const router = createBrowserRouter([
   {
@@ -70,7 +71,8 @@ export const router = createBrowserRouter([
   },
   {
     path: "about",
-    element: <div>About</div>,
+    element: <AboutPage />,
+    errorElement: <FallbackPage />,
   },
   {
     path: "/404",

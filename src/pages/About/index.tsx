@@ -15,22 +15,11 @@ import { Navbar } from "@/components/landing/common/Navbar";
 import Markdown from "marked-react";
 import { MarkdownContent } from "@/components/landing/docs/Markdown";
 
-export function PrivacyPage() {
-  const navigate = useNavigate();
-  const { logout } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+export function AboutPage() {
   const [content, setContent] = useState("");
 
-  const handleClickLogout = () => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      logout();
-    }, 200);
-  };
-
   const getText = async () => {
-    const response = await fetch("/docs/Privacy.md");
+    const response = await fetch("/docs/About.md");
     const text = await response.text();
     setContent(text);
   };
@@ -44,7 +33,6 @@ export function PrivacyPage() {
       <Navbar />
 
       <MarkdownContent content={content} />
-
       <Footer></Footer>
     </>
   );

@@ -23,11 +23,9 @@ export function DragAndDropFileUpload() {
       }
     };
 
-    // body에 이벤트 리스너 등록
     window.addEventListener("dragover", handleDragOver);
     window.addEventListener("drop", handleDrop);
 
-    // 컴포넌트 언마운트 시 이벤트 리스너 제거
     return () => {
       window.removeEventListener("dragover", handleDragOver);
       window.removeEventListener("drop", handleDrop);

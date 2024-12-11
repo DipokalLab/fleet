@@ -93,8 +93,15 @@ export function Footer() {
             >
               @cartesiancs
             </li>
-            <li css={ItemStyle}>About</li>
-            <li css={ItemStyle}>Privacy</li>
+            <li css={ItemStyle} onClick={() => (location.href = "/about")}>
+              About
+            </li>
+            <li
+              css={ItemStyle}
+              onClick={() => (location.href = "/docs/privacy")}
+            >
+              Privacy
+            </li>
             <li css={ItemStyle}>Data policy</li>
             <li css={ItemStyle}>Terms</li>
           </ul>

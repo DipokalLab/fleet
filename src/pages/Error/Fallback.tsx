@@ -1,12 +1,12 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "../../utils/isLocal";
+import { hosts } from "../../api/hosts";
 import { LogIn } from "lucide-react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
-export function NotFoundPage() {
+export function FallbackPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -57,7 +57,7 @@ export function NotFoundPage() {
             },
           })}
         >
-          404
+          ERROR
         </span>
         <span
           css={css({
@@ -69,7 +69,7 @@ export function NotFoundPage() {
             zIndex: 99,
           })}
         >
-          Not Found
+          An error occurred
         </span>
 
         <div

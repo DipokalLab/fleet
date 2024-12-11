@@ -16,8 +16,8 @@ import {
   Workflow,
 } from "lucide-react";
 import { Title } from "@/components/ui/common/Text";
-import { Footer } from "./Footer";
-import { Navbar } from "./Navbar";
+import { Footer } from "@/components/landing/common/Footer";
+import { Navbar } from "@/components/landing/common/Navbar";
 
 const featIconStyle = css({
   width: "32px",
