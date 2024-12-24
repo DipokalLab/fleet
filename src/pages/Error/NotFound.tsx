@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "../utils/isLocal";
-import { hosts } from "../api/hosts";
+import { isLocal } from "../../utils/isLocal";
+import { hosts } from "../../api/hosts";
 import { LogIn } from "lucide-react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 export function NotFoundPage() {
   const navigate = useNavigate();

@@ -1,26 +1,19 @@
 import { css } from "@emotion/react";
 import { Button } from "deventds2";
 import { useNavigate } from "react-router";
-import { isLocal } from "@/utils/isLocal";
-import { hosts } from "@/api/hosts";
+import { isLocal } from "../../utils/isLocal";
+import { hosts } from "../../api/hosts";
 import { LogIn } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { BackButton } from "@/components/ui/BackButton";
-import { Nav } from "@/components/ui/common/Nav";
-import { useState } from "react";
-import { Loading } from "@/components/ui/common/Loading";
+import { useAuth } from "../../hooks/useAuth";
 
-export function ProfilePage() {
+export function FallbackPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleClickLogout = () => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      logout();
-    }, 200);
+  const handleClickGoogle = () => {
+    location.href = isLocal()
+      ? `${hosts.dev}/api/auth/google`
+      : `${hosts.prod}/api/auth/google`;
   };
 
   return (
@@ -33,8 +26,6 @@ export function ProfilePage() {
         flexDirection: "column",
       })}
     >
-      <Nav />
-
       <div
         css={css({
           display: "flex",
@@ -49,24 +40,50 @@ export function ProfilePage() {
       >
         <span
           css={css({
-            fontSize: "1.125rem",
+            position: "fixed",
+
+            fontSize: "2.75rem",
+            transform: "scale(5)",
+            fontWeight: "600",
+            color: "#f5f5f7",
+            alignItems: "center",
+            textAlign: "center",
+            display: "flex",
+            gap: "0.5rem",
+            transition: "0.2s",
+
+            ":hover": {
+              transform: "scale(7)",
+            },
+          })}
+        >
+          ERROR
+        </span>
+        <span
+          css={css({
+            fontSize: "1.75rem",
             fontWeight: "600",
             alignItems: "center",
             display: "flex",
             gap: "0.5rem",
+            zIndex: 99,
           })}
         >
-          Profile
+          An error occurred
         </span>
 
         <div
           css={css({
             paddingTop: "1rem",
+            zIndex: 99,
           })}
         >
-          <Button color="white" width="240px" onClick={handleClickLogout}>
-            {isLoading && <Loading />}
-            Logout
+          <Button
+            color="black"
+            width="240px"
+            onClick={() => (location.href = "/")}
+          >
+            Home
           </Button>
         </div>
       </div>

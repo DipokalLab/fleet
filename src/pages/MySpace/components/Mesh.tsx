@@ -31,7 +31,7 @@ export function Mesh() {
     return blob;
   };
 
-  const sendMesh = async (blob) => {
+  const sendMesh = async (blob, realUrl) => {
     const url = window.URL.createObjectURL(blob);
 
     try {
@@ -52,8 +52,12 @@ export function Mesh() {
         }
       );
 
-      useObjectHooks.create(url, requestUploadFile.data.spaceFile.id, {
+      useObjectHooks.create(realUrl, requestUploadFile.data.spaceFile.id, {
+        name: "",
         type: "MESH",
+        enablePhysics: false,
+        shadowCast: false,
+        shadowReceive: false,
         px: 0,
         py: 0,
         pz: 0,
@@ -63,6 +67,7 @@ export function Mesh() {
         rx: 0,
         ry: 0,
         rz: 0,
+        materials: [],
       });
 
       toast.message({
@@ -73,17 +78,17 @@ export function Mesh() {
 
   const createBox = async () => {
     const getBlob = await modelUrlToBlob("/model/box.glb");
-    await sendMesh(getBlob);
+    await sendMesh(getBlob, "/model/box.glb");
   };
 
   const createSphere = async () => {
     const getBlob = await modelUrlToBlob("/model/uvsphere.glb");
-    await sendMesh(getBlob);
+    await sendMesh(getBlob, "/model/uvsphere.glb");
   };
 
   const createCylinder = async () => {
     const getBlob = await modelUrlToBlob("/model/cylinder.glb");
-    await sendMesh(getBlob);
+    await sendMesh(getBlob, "/model/cylinder.glb");
   };
 
   const handleClickCreateBox3d = () => {

@@ -30,14 +30,17 @@ import { TopProgressContext } from "@/context/TopProgress";
 import * as THREE from "three";
 import axios from "axios";
 import instance from "@/api/axios";
-import { DefaultModelOptions, UploadedModelOptions } from "./OptionsModel";
-import { InputOptions } from "./OptionsInput";
-import { Trigger, TriggerModalContent } from "./Trigger";
-import { EventModalContent } from "./Event";
+import {
+  DefaultModelOptions,
+  UploadedModelOptions,
+} from "./components/OptionsModel";
+import { InputOptions } from "./components/OptionsInput";
+import { Trigger, TriggerModalContent } from "./components/Trigger";
+import { EventModalContent } from "./components/Event";
 import { usePageStore } from "@/states/page";
-import { Tree } from "./Tree";
-import { DragAndDropFileUpload } from "./DragFileUpload";
-import { Mesh } from "./Mesh";
+import { Tree } from "./components/Tree";
+import { DragAndDropFileUpload } from "./components/DragFileUpload";
+import { Mesh } from "./components/Mesh";
 
 export function MySpace() {
   const toast = useToast();

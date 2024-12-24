@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/common/Skeleton";
 import { Nav } from "@/components/ui/common/Nav";
 import { Loading } from "@/components/ui/common/Loading";
 import { Box } from "./SpaceItemBox";
+import { SideMenu, SideMenuItem } from "../../components/ui/common/SIdeMenu";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -98,10 +99,9 @@ export function DashboardPage() {
         flexDirection: "column",
       })}
     >
-      <BackButton />
       <Nav />
-
       <Transition isShow={isTransition} />
+
       <div
         css={css({
           display: "flex",
@@ -152,6 +152,7 @@ export function DashboardPage() {
           {spaceList.map((item, index) => (
             <Box
               index={index}
+              image={`${isLocal() ? hosts.dev : hosts.prod}/${item.screenshot}`}
               onClick={() => handleClickGoSpace(`/app/${item.id}`)}
             >
               <b>{item.title}</b>

@@ -15,6 +15,9 @@ import {
   SquareChartGantt,
   Workflow,
 } from "lucide-react";
+import { Title } from "@/components/ui/common/Text";
+import { Footer } from "@/components/landing/common/Footer";
+import { Navbar } from "@/components/landing/common/Navbar";
 
 const featIconStyle = css({
   width: "32px",
@@ -44,6 +47,7 @@ export function LandingPage() {
 
   return (
     <>
+      <Navbar />
       <div
         css={css({
           display: "flex",
@@ -66,7 +70,7 @@ export function LandingPage() {
             gap: "1rem",
           })}
         >
-          <HeadTitle>FLEET</HeadTitle>
+          <HeadTitle>Powerful tool for space designer.</HeadTitle>
 
           <DescriptionCenter>
             3D Portfolio Platform for Designers and Makers. Expand the
@@ -275,7 +279,7 @@ export function LandingPage() {
                 textAlign: "center",
               }}
             >
-              <h3>@user2</h3>
+              <h3>@anonymous</h3>
               <p css={css({ color: SUBTITLE_COLOR })}>
                 "I love the collaboration tools. Working with my team has never
                 been easier."
@@ -290,7 +294,7 @@ export function LandingPage() {
                 textAlign: "center",
               }}
             >
-              <h3>@user3</h3>
+              <h3>@anonymous</h3>
               <p css={css({ color: SUBTITLE_COLOR })}>
                 "The rapid deployment feature is a game-changer. Highly
                 recommend!"
@@ -315,7 +319,7 @@ export function LandingPage() {
           >
             <Collapse>
               <CollapseItem title={"Q. Who made this?"}>
-                Created by Hyeongjun Huh, a software developer residing in
+                Created by Hyeongjun Huh, a software developer residing in S.
                 Korea. I am currently 19 years old. If you are curious about the
                 projects I have made, please visit my portfolio site at
                 hhj.devent.kr
@@ -331,9 +335,53 @@ export function LandingPage() {
           </div>
         </Column>
       </Section>
+
+      <Footer />
     </>
   );
 }
+
+// const SubTitleFotterStyle = css({
+//   fontSize: "0.9rem",
+//   color: "#8f8f96",
+//   cursor: "pointer",
+// });
+
+// function Footer() {
+//   return (
+//     <div
+//       css={css({
+//         backgroundColor: "#f1f2f4",
+//         display: "flex",
+//         padding: "1rem",
+//         flexDirection: "column",
+//         gap: "0.5rem",
+//       })}
+//     >
+//       <Title>@ cartesiancs</Title>
+//       <span
+//         onClick={() => (location.href = "https://cartesiancs.com/")}
+//         css={SubTitleFotterStyle}
+//       >
+//         company
+//       </span>
+//       <span
+//         onClick={() =>
+//           (location.href = "https://www.linkedin.com/company/cartesiancs/")
+//         }
+//         css={SubTitleFotterStyle}
+//       >
+//         linkedin
+//       </span>
+//       <span
+//         onClick={() => (location.href = "https://github.com/cartesiancs")}
+//         css={SubTitleFotterStyle}
+//       >
+//         github
+//       </span>
+//     </div>
+//   );
+// }
 
 function BottomBox() {
   return (
@@ -389,6 +437,7 @@ function HeadTitle({ children }: { children?: React.ReactNode }) {
       css={css({
         fontSize: "3.75rem",
         fontWeight: "700",
+        textAlign: "center",
       })}
     >
       {children}

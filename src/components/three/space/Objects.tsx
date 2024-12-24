@@ -3,13 +3,14 @@ import {
   ThreeElements,
   useFrame,
   useLoader,
+  useThree,
 } from "@react-three/fiber";
-import { useObjectsStore } from "../../../states/objects";
+import { ObjectMaterialsType, useObjectsStore } from "../../../states/objects";
 import { Suspense, useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OptionPanelContext } from "../../../context/OptionPanelContext";
-import { GLTF, GLTFLoader } from "three-stdlib";
-import { useFBX } from "@react-three/drei";
+import { GLTF, GLTFLoader, FBXLoader } from "three-stdlib";
+import { OrbitControls, useFBX, useGLTF } from "@react-three/drei";
 
 import { useObject } from "../../../hooks/useObject";
 import { useCursorStore } from "../../../states/cursor";
@@ -25,157 +26,151 @@ import { hosts } from "../../../api/hosts";
 import { usePageStore } from "@/states/page";
 import { RigidBody } from "@react-three/rapier";
 
-export function Objects() {
-  const { list } = useObjectsStore();
+type ObjectSpaceType = "edit" | "preview" | "public";
 
-  const useObjectHooks = useObject();
+export function Objects({
+  objectList,
+  responseList,
+  onZoom,
+  isZoom,
+  type = "edit",
+}: {
+  objectList?: any;
+  responseList?: any;
+  onZoom?: any;
+  isZoom?: boolean;
+  type: ObjectSpaceType;
+}) {
+  const [targetPosition, setTargetPosition] = useState(
+    new THREE.Vector3(0, 0, 0)
+  );
 
-  const getFiles = async () => {
-    const getSpace = await instance.get(
-      `space/${location.pathname.split("/")[2]}`
-    );
+  const { camera } = useThree();
 
-    const files = getSpace.data.space.files;
+  const handleClick = (fileId: string) => {
+    if (type != "public") {
+      return false;
+    }
 
-    for (let index = 0; index < files.length; index++) {
-      const element = files[index];
+    const indexList = responseList.findIndex((item) => {
+      return item.id == fileId;
+    });
 
-      console.log(element);
+    if (responseList[indexList].trigger.length == 0) return false;
 
-      switch (element.type) {
-        case "MODEL":
-          useObjectHooks.create(
-            `${isLocal() ? hosts.dev : hosts.prod}/${
-              element.file.fileUrl
-            }?id=${Math.random()}`,
-            element.id,
-            {
-              name: element.name,
-              enablePhysics: element.enablePhysics,
-              shadowCast: element.shadowCast,
-              shadowReceive: element.shadowReceive,
-              type: element.type,
-              px: element.px,
-              py: element.py,
-              pz: element.pz,
-              sx: element.sx,
-              sy: element.sy,
-              sz: element.sz,
-              rx: element.rx,
-              ry: element.ry,
-              rz: element.rz,
-            }
-          );
-          break;
+    const triggerMap = responseList[indexList].trigger.filter((trigg) => {
+      return trigg.when == "CLICK";
+    });
 
-        case "BOX":
-          useObjectHooks.create("", element.id, {
-            name: element.name,
-            enablePhysics: element.enablePhysics,
-            type: element.type,
-            shadowCast: element.shadowCast,
-            shadowReceive: element.shadowReceive,
-            px: element.px,
-            py: element.py,
-            pz: element.pz,
-            sx: element.sx,
-            sy: element.sy,
-            sz: element.sz,
-            rx: element.rx,
-            ry: element.ry,
-            rz: element.rz,
-          });
-          break;
+    for (let index = 0; index < triggerMap.length; index++) {
+      const events = triggerMap[index].event;
+      if (triggerMap[index].event.length == 0) continue;
 
-        case "MESH":
-          useObjectHooks.create(
-            `${isLocal() ? hosts.dev : hosts.prod}/${
-              element.file.fileUrl
-            }?id=${Math.random()}`,
-            element.id,
-            {
-              name: element.name,
-              enablePhysics: element.enablePhysics,
-              shadowCast: element.shadowCast,
-              shadowReceive: element.shadowReceive,
-              type: element.type,
-              px: element.px,
-              py: element.py,
-              pz: element.pz,
-              sx: element.sx,
-              sy: element.sy,
-              sz: element.sz,
-              rx: element.rx,
-              ry: element.ry,
-              rz: element.rz,
-            }
-          );
-          break;
-        default:
-          break;
+      for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
+        const event = events[eventIndex];
+        switch (event.key) {
+          case "MOVE_URL":
+            location.href = event.value;
+            break;
+
+          case "FOCUS_ON":
+            onZoom();
+            setTargetPosition(
+              new THREE.Vector3(
+                responseList[indexList].px,
+                responseList[indexList].py,
+                responseList[indexList].pz
+              )
+            );
+            break;
+
+          default:
+            break;
+        }
+
+        console.log(event.key, event.value);
       }
     }
   };
 
   useEffect(() => {
-    getFiles();
-  }, []);
+    camera.zoom = isZoom ? 4 : 1;
+    camera.updateProjectionMatrix();
+  }, [camera, isZoom]);
+
+  useThree(({ camera }) => {
+    camera.rotation.set(
+      THREE.MathUtils.degToRad(-20),
+      THREE.MathUtils.degToRad(20),
+      THREE.MathUtils.degToRad(3)
+    );
+  });
 
   return (
-    <mesh>
-      {list.map((objectItem) => (
+    <>
+      <OrbitControls makeDefault target={targetPosition} zoom0={0.0001} />
+
+      {objectList.map((objectItem) => (
         <Suspense fallback={<mesh></mesh>}>
-          <Object
-            userData={{
-              id: objectItem.id,
-              url: `${objectItem.url}`,
-              isRemoved: objectItem.isRemoved,
-              enablePhysics: objectItem.enablePhysics,
-              type: objectItem.type,
-              shadow: {
-                cast: objectItem.shadow.cast,
-                receive: objectItem.shadow.receive,
+          <ObjectModel
+            props={{
+              userData: {
+                id: objectItem.id,
+                url: `${objectItem.url}`,
+                isRemoved: objectItem.isRemoved,
+                enablePhysics: objectItem.enablePhysics,
+                type: objectItem.type,
+                sceneType: type,
+                shadow: {
+                  cast: objectItem.shadow.cast,
+                  receive: objectItem.shadow.receive,
+                },
+                materials: objectItem.materials,
               },
-            }}
-            position={
-              new THREE.Vector3(
+
+              position: new THREE.Vector3(
                 objectItem.position.x,
                 objectItem.position.y,
                 objectItem.position.z
-              )
-            }
-            scale={
-              new THREE.Vector3(
+              ),
+              scale: new THREE.Vector3(
                 objectItem.scale.x,
                 objectItem.scale.y,
                 objectItem.scale.z
-              )
-            }
-            rotation={
-              new THREE.Euler(
+              ),
+              rotation: new THREE.Euler(
                 objectItem.rotation.x,
                 objectItem.rotation.y,
                 objectItem.rotation.z
-              )
-            }
-          ></Object>
+              ),
+            }}
+            actions={{
+              onClickNext: () => handleClick(objectItem.id),
+            }}
+          ></ObjectModel>
         </Suspense>
       ))}
-    </mesh>
+    </>
   );
 }
 
-function Object(props: ThreeElements["mesh"]) {
+type ObjectActions = {
+  onClickNext?: any;
+};
+
+function ObjectModel({
+  props,
+  actions,
+}: {
+  props: ThreeElements["mesh"];
+  actions?: ObjectActions;
+}) {
   const { isPreview } = usePageStore();
 
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
   const url: string = props.userData.url;
-  const [gltf, setGltf] = useState<any>(
-    ["MODEL", "MESH"].includes(props.userData.type)
-      ? useLoader(GLTFLoader, url)
-      : ""
-  );
+
   const cursorStore = useCursorStore();
   const objectStore = useObjectsStore();
 
@@ -194,11 +189,14 @@ function Object(props: ThreeElements["mesh"]) {
   const { isOpenOptionPanel, switchOpenOptionPanel, targetId } =
     useContext(OptionPanelContext);
 
-  const showAxis = isPreview
-    ? false
-    : targetId == props.userData.id
-    ? true
-    : false;
+  const showAxis =
+    props.userData.sceneType == "edit"
+      ? isPreview
+        ? false
+        : targetId == props.userData.id
+        ? true
+        : false
+      : false;
 
   const controlsRef: any = useRef();
 
@@ -230,6 +228,9 @@ function Object(props: ThreeElements["mesh"]) {
     setSelected(true);
     switchOpenOptionPanel(true, props.userData.id);
     setIsActive((active) => true);
+    if (props.userData.sceneType == "public") {
+      actions.onClickNext();
+    }
   };
 
   const handleChange = (e) => {
@@ -280,51 +281,6 @@ function Object(props: ThreeElements["mesh"]) {
     setMode(tempMode);
   }, [cursorStore.type]);
 
-  if (props.userData.type == "BOX") {
-    return (
-      <>
-        {!props.userData.isRemoved && (
-          <TransformControls
-            showX={showAxis}
-            showY={showAxis}
-            showZ={showAxis}
-            ref={controlsRef}
-            object={meshRef}
-            mode={mode}
-            enabled={targetId == props.userData.id}
-            onMouseUp={handleChange}
-          >
-            {props.userData.enablePhysics ? (
-              <RigidBody>
-                <mesh
-                  onClick={handleClick}
-                  {...props}
-                  ref={meshRef}
-                  castShadow={props.userData.shadow.cast}
-                  receiveShadow={props.userData.shadow.receive}
-                >
-                  <boxGeometry />
-                  <meshStandardMaterial color={"#ffffff"} />
-                </mesh>
-              </RigidBody>
-            ) : (
-              <mesh
-                onClick={handleClick}
-                {...props}
-                ref={meshRef}
-                castShadow={props.userData.shadow.cast}
-                receiveShadow={props.userData.shadow.receive}
-              >
-                <boxGeometry />
-                <meshStandardMaterial color={"#ffffff"} />
-              </mesh>
-            )}
-          </TransformControls>
-        )}
-      </>
-    );
-  }
-
   return (
     <>
       {!props.userData.isRemoved && (
@@ -347,8 +303,14 @@ function Object(props: ThreeElements["mesh"]) {
                 castShadow={props.userData.shadow.cast}
                 receiveShadow={props.userData.shadow.receive}
               >
-                <primitive object={gltf.scene} />
-                <meshStandardMaterial color={isActive ? "black" : "orange"} />
+                {props.userData.type == "MODEL" && <PrimitiveModel url={url} />}
+
+                {props.userData.type == "MESH" && (
+                  <ExtractGeometry
+                    url={url}
+                    materials={props.userData.materials}
+                  />
+                )}
               </mesh>
             </RigidBody>
           ) : (
@@ -359,127 +321,77 @@ function Object(props: ThreeElements["mesh"]) {
               castShadow={props.userData.shadow.cast}
               receiveShadow={props.userData.shadow.receive}
             >
-              <primitive object={gltf.scene} />
-              <meshStandardMaterial color={isActive ? "black" : "orange"} />
+              {props.userData.type == "MODEL" && <PrimitiveModel url={url} />}
+
+              {props.userData.type == "MESH" && (
+                <ExtractGeometry
+                  url={url}
+                  materials={props.userData.materials}
+                />
+              )}
             </mesh>
           )}
         </TransformControls>
       )}
-
-      {/* {isActive && (
-        <>
-          <MoveableDirection targetId={props.userData.id} />
-        </>
-      )} */}
     </>
   );
 }
 
-function MoveableDirection({ targetId }: { targetId: string }) {
-  const cursorStore = useCursorStore();
+function PrimitiveModel({ url }: { url?: string }) {
+  const filename = url.split("?")[0];
 
-  const { list } = useObjectsStore();
-  const [listIndex, setListIndex] = useState(0);
-  const weight = 0.1;
+  if (filename.split(".")[filename.split(".").length - 1] == "glb") {
+    const [gltf, setGltf] = useState<any>(useLoader(GLTFLoader, url));
 
-  const [bar, setBar] = useState({
-    x: {
-      isHover: false,
-    },
-    y: {
-      isHover: false,
-    },
-    z: {
-      isHover: false,
-    },
-  });
+    return <primitive object={gltf.scene} />;
+  }
 
-  const handleHoverIn = (d: string) => {
-    console.log(d);
-    setBar({
-      ...bar,
-      [d]: {
-        isHover: true,
-      },
-    });
-  };
+  if (filename.split(".")[filename.split(".").length - 1] == "fbx") {
+    const [fbx, setFbx] = useState<any>(useLoader(FBXLoader, url));
 
-  const handleHoverOut = () => {
-    setBar({
-      x: {
-        isHover: false,
-      },
-      y: {
-        isHover: false,
-      },
-      z: {
-        isHover: false,
-      },
-    });
-  };
+    return <primitive object={fbx} />;
+  }
 
-  useEffect(() => {
-    const index = list.findIndex((object) => {
-      return object.id == targetId;
-    });
-    setListIndex(index);
-  }, [targetId]);
+  return <></>;
+}
 
-  return (
-    <mesh
-      visible={cursorStore.type == "positionChange"}
-      position={
-        new THREE.Vector3(
-          list[listIndex].position.x,
-          list[listIndex].position.y,
-          list[listIndex].position.z
-        )
-      }
-      scale={new THREE.Vector3(1, 1, 1)}
-    >
-      <mesh
-        visible
-        position={new THREE.Vector3(0.5, 0, 0)}
-        rotation={new THREE.Euler(0, 0, 0)}
-        geometry={new THREE.BoxGeometry(1, weight, weight)}
-        renderOrder={9999}
-        onBeforeRender={function (renderer) {
-          renderer.clearDepth();
-        }}
-        onPointerMove={() => handleHoverIn("x")}
-        onPointerOut={handleHoverOut}
-      >
-        <meshStandardMaterial color={bar.x.isHover ? "#ffff00" : "#ff0000"} />
-      </mesh>
+function PrimitiveMeshModel({ url }: { url?: string }) {
+  const filename = url.split("?")[0];
+}
 
-      <mesh
-        visible
-        position={new THREE.Vector3(0, 0.5, 0)}
-        rotation={new THREE.Euler(0, 0, 0)}
-        geometry={new THREE.BoxGeometry(weight, 1, weight)}
-        renderOrder={9999}
-        onBeforeRender={function (renderer) {
-          renderer.clearDepth();
-        }}
-        onPointerMove={() => handleHoverIn("y")}
-        onPointerOut={handleHoverOut}
-      >
-        <meshStandardMaterial color={bar.y.isHover ? "#ffff00" : "#00ff00"} />
-      </mesh>
+//NOTE: glb 타입만 가능
+function ExtractGeometry({
+  url,
+  materials = [],
+}: {
+  url?: string;
+  materials?: ObjectMaterialsType[];
+}) {
+  try {
+    const { nodes } = useGLTF(url);
 
-      <mesh
-        visible
-        position={new THREE.Vector3(0, 0, 0.5)}
-        rotation={new THREE.Euler(0, 0, 0)}
-        geometry={new THREE.BoxGeometry(weight, weight, 1)}
-        onBeforeRender={function (renderer) {
-          renderer.clearDepth();
-        }}
-        onPointerMove={() => handleHoverIn("z")}
-        onPointerOut={handleHoverOut}
-      >
-        <meshStandardMaterial color={bar.z.isHover ? "#ffff00" : "#0000ff"} />
-      </mesh>
-    </mesh>
-  );
+    const geometries = Object.values(nodes)
+      .filter((node: any) => node.isMesh)
+      .map((mesh: any) => mesh.geometry);
+
+    return (
+      <group>
+        {geometries.map((geometry, index) => (
+          <>
+            <mesh key={index} geometry={geometry}>
+              {materials.map((material) => (
+                <>
+                  {material.type == "STANDARD" && (
+                    <meshBasicMaterial color={`${material.value}`} />
+                  )}
+                  {material.type == "DEPTH" && <meshDepthMaterial />}
+                  {material.type == "NORMAL" && <meshNormalMaterial />}
+                </>
+              ))}
+            </mesh>
+          </>
+        ))}
+      </group>
+    );
+  } catch (error) {}
 }

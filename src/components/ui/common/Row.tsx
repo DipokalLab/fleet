@@ -5,7 +5,7 @@ export function Row({
   children,
   gap = "0.25rem",
   justify = "unset",
-  overflow = "auto",
+  overflow = "visible",
 }: {
   children?: React.ReactNode;
   gap?: string;
