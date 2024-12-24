@@ -29,6 +29,9 @@ export function PublicSpacePage() {
   const [isZoom, setIsZoom] = useState(false);
 
   const { list } = useObjectsStore();
+  const [spaceOption, setSpaceOption] = useState({
+    backgroundColor: "ffffff",
+  });
   const [responseList, setResponseList] = useState([]);
 
   const useObjectHooks = useObject();
@@ -41,6 +44,11 @@ export function PublicSpacePage() {
 
       const files = getSpace.data.space.files;
 
+      setSpaceOption({
+        backgroundColor: getSpace.data.space.backgroundColor,
+      });
+
+      console.log(getSpace.data.space.backgroundColor);
       useObjectHooks.clear();
 
       for (let index = 0; index < files.length; index++) {
@@ -145,6 +153,11 @@ export function PublicSpacePage() {
       )}
       <Canvas shadows>
         <Suspense>
+          <color
+            attach="background"
+            args={[`#${spaceOption.backgroundColor}`]}
+          />
+
           <directionalLight
             castShadow
             position={[0, 10, 0]}

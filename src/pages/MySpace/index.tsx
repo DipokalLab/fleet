@@ -41,6 +41,7 @@ import { usePageStore } from "@/states/page";
 import { Tree } from "./components/Tree";
 import { DragAndDropFileUpload } from "./components/DragFileUpload";
 import { Mesh } from "./components/Mesh";
+import { SpaceOptions } from "./components/SpaceOptions";
 
 export function MySpace() {
   const toast = useToast();
@@ -177,6 +178,8 @@ export function MySpace() {
             </Column>
 
             <Mesh />
+
+            <SpaceOptions />
 
             <Tree />
           </Column>

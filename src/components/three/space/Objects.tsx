@@ -169,7 +169,7 @@ function ObjectModel({
 
   const meshRef = useRef<THREE.Mesh>(null!);
   const [isActive, setIsActive] = useState(false);
-  const url: string = props.userData.url;
+  const [url, setUrl] = useState(props.userData.url);
 
   const cursorStore = useCursorStore();
   const objectStore = useObjectsStore();
@@ -367,31 +367,39 @@ function ExtractGeometry({
   url?: string;
   materials?: ObjectMaterialsType[];
 }) {
-  try {
-    const { nodes } = useGLTF(url);
-
-    const geometries = Object.values(nodes)
+  const [model, setModel] = useState<any>(useGLTF(url));
+  const [geometries, setGeometries] = useState<any>(
+    Object.values(model.nodes)
       .filter((node: any) => node.isMesh)
-      .map((mesh: any) => mesh.geometry);
+      .map((mesh: any) => mesh.geometry)
+  );
 
-    return (
-      <group>
-        {geometries.map((geometry, index) => (
-          <>
-            <mesh key={index} geometry={geometry}>
-              {materials.map((material) => (
-                <>
-                  {material.type == "STANDARD" && (
-                    <meshBasicMaterial color={`${material.value}`} />
-                  )}
-                  {material.type == "DEPTH" && <meshDepthMaterial />}
-                  {material.type == "NORMAL" && <meshNormalMaterial />}
-                </>
-              ))}
-            </mesh>
-          </>
-        ))}
-      </group>
+  useEffect(() => {
+    const { nodes } = useGLTF(url);
+    setGeometries(
+      Object.values(nodes)
+        .filter((node: any) => node.isMesh)
+        .map((mesh: any) => mesh.geometry)
     );
-  } catch (error) {}
+  }, [url]);
+
+  return (
+    <group>
+      {geometries.map((geometry, index) => (
+        <>
+          <mesh key={index} geometry={geometry}>
+            {materials.map((material) => (
+              <>
+                {material.type == "STANDARD" && (
+                  <meshStandardMaterial color={`${material.value}`} />
+                )}
+                {material.type == "DEPTH" && <meshDepthMaterial />}
+                {material.type == "NORMAL" && <meshNormalMaterial />}
+              </>
+            ))}
+          </mesh>
+        </>
+      ))}
+    </group>
+  );
 }

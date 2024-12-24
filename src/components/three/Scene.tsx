@@ -28,6 +28,7 @@ import { hosts } from "@/api/hosts";
 import { useObjectsStore } from "@/states/objects";
 import { useObject } from "@/hooks/useObject";
 import instance from "@/api/axios";
+import { useSpaceStore } from "@/states/space";
 const CubeLoader = () => {
   return (
     <mesh>
@@ -60,8 +61,9 @@ const CubeLoader = () => {
 
 export function EntryScene({ children }: { children?: React.ReactNode }) {
   const { isPhysicsDebug } = usePageStore();
-
   const { list } = useObjectsStore();
+  const { options } = useSpaceStore();
+
   const [responseList, setResponseList] = useState([]);
   const [whenScreenshot, setWhenScreenshot] = useState(false);
 
@@ -152,6 +154,7 @@ export function EntryScene({ children }: { children?: React.ReactNode }) {
     <Canvas id="mainCanvas" shadows>
       <Suspense fallback={<CubeLoader />}>
         <Screenshot whenScreenshot={whenScreenshot} />
+        <color attach="background" args={[`#${options.backgroundColor}`]} />
 
         <directionalLight
           castShadow

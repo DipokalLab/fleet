@@ -12,6 +12,7 @@ import { useDebounce, useDebouncedCallback } from "use-debounce";
 import { OptionPanelContext } from "@/context/OptionPanelContext";
 import { usePageStore } from "@/states/page";
 import { Row } from "../common/Row";
+import { useSpaceStore } from "@/states/space";
 
 export const TOP_PANEL_HEIGHT = "3rem";
 export const OTHER_TOP_PADDING = "4rem";
@@ -31,10 +32,7 @@ export function TopPanel() {
   const [isShow, setIsShow] = useState(true);
 
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
-  const [spaceInfo, setSpaceInfo] = useState({
-    spaceTitle: "",
-    isPublic: "false",
-  });
+  const { setOptions, options } = useSpaceStore();
 
   const [isMobileShow, setIsMobileShow] = useState(false);
 
@@ -53,10 +51,13 @@ export function TopPanel() {
     try {
       const spaceId = location.pathname.split("/")[2];
       const getSpace = await instance.get(`space/${spaceId}`);
-      setSpaceInfo({
-        spaceTitle: getSpace.data.space.title,
+      setOptions({
+        title: getSpace.data.space.title,
         isPublic: String(getSpace.data.space.isPublic),
+        backgroundColor: getSpace.data.space.backgroundColor,
       });
+
+      console.log(getSpace);
 
       console.log(getSpace.data.space.isPublic);
     } catch (error) {}
@@ -68,7 +69,8 @@ export function TopPanel() {
       const makePublic = await instance.put(`space`, {
         id: spaceId,
         title: title,
-        isPublic: spaceInfo.isPublic,
+        isPublic: options.isPublic,
+        backgroundColor: options.backgroundColor,
       });
 
       toast.message({
@@ -82,17 +84,19 @@ export function TopPanel() {
       const spaceId = location.pathname.split("/")[2];
       const makePublic = await instance.put(`space`, {
         id: spaceId,
-        title: spaceInfo.spaceTitle,
+        title: options.title,
         isPublic: "true",
+        backgroundColor: options.backgroundColor,
       });
 
       toast.message({
         text: "Successfully released.",
       });
 
-      setSpaceInfo({
-        ...spaceInfo,
-        ["isPublic"]: "true",
+      setOptions({
+        title: options.title,
+        isPublic: "true",
+        backgroundColor: options.backgroundColor,
       });
     } catch (error) {}
   };
@@ -100,9 +104,11 @@ export function TopPanel() {
   const handleChangeTitle = (e) => {
     try {
       // NOTE: 쓰로틀링 업데이트 적용
-      setSpaceInfo({
-        ...spaceInfo,
-        ["spaceTitle"]: e.target.value,
+
+      setOptions({
+        title: e.target.value,
+        isPublic: options.isPublic,
+        backgroundColor: options.backgroundColor,
       });
 
       debouncedSpaceTitle(e.target.value);
@@ -211,7 +217,7 @@ export function TopPanel() {
           </button>
 
           <input
-            value={spaceInfo.spaceTitle}
+            value={options.title}
             onChange={handleChangeTitle}
             css={css({
               width: "5rem",
@@ -312,7 +318,7 @@ export function TopPanel() {
               has the link. Please click the "Make Public" button below.
             </Description>
           </Column>
-          {spaceInfo.isPublic == "true" && (
+          {options.isPublic == "true" && (
             <div
               css={css({
                 display: "flex",
@@ -347,7 +353,7 @@ export function TopPanel() {
             </div>
           )}
 
-          {spaceInfo.isPublic == "false" && (
+          {options.isPublic == "false" && (
             <Button color="blue" onClick={handleMakePublic}>
               Make Public
             </Button>
